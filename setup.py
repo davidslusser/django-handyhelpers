@@ -1,11 +1,11 @@
 from setuptools import setup
-import helpers
+import handyhelpers
 
 setup(
     name='django_handy_helpers',
-    version=helpers.__version__,
-    packages=['helpers'],
-    license=helpers.__license__,
+    version=handyhelpers.__version__,
+    packages=['handyhelpers'],
+    license=handyhelpers.__license__,
     long_description='A collection of handy utilities to support django operations',
     install_requires=[
         'django-extensions',

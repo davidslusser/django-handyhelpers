@@ -8,7 +8,7 @@ class CsvExportView(View):
     queryset = None
     filename = None
 
-    def get(self):
+    def get(self, request):
         try:
             model = self.queryset.model
             if not self.filename:

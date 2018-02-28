@@ -49,7 +49,7 @@ class IsInAnyGroup(BasePermission):
             required_groups = {'POST': ['site_admins'],
                                'PATCH': ['site_admins'],
                                'PUT': ['site_admins'],
-                               'DELETE': ['site_admins', 'supersusers'],
+                               'DELETE': ['site_admins', 'superusers'],
                               }
     """
     def has_permission(self, request, view):

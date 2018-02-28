@@ -33,17 +33,13 @@ class HandyHelperModelManager(models.Manager):
             return None
 
     def get_fields(self, exclude_list=('OneToOneField')):
-        """
-        return a list of fields in the model
-        """
+        """ return a list of fields in the model """
         if not issubclass(self.model, models.Model):
             return []
         return [i for i in self.model._meta.fields if type(i).__name__ not in exclude_list]
 
     def get_field_names(self, exclude_list=('OneToOneField')):
-        """
-        return a list of field names in the model
-        """
+        """ return a list of field names in the model """
         if not issubclass(self.model, models.Model):
             return []
         return [i.name for i in self.model._meta.fields if type(i).__name__ not in exclude_list]
@@ -54,11 +50,8 @@ class HandyHelperModelManager(models.Manager):
             return []
         properties_list = []
         for name in dir(self.model):
-            try:
-                if isinstance(getattr(self.model, name), property):
-                    properties_list.append(name)
-            except Exception:
-                pass
+            if isinstance(getattr(self.model, name), property):
+                properties_list.append(name)
         return properties_list
 
     def get_fields_and_properties(self):
@@ -71,7 +64,11 @@ class HandyHelperModelManager(models.Manager):
             return []
         return [i for i in self.model._meta.fields if i.get_internal_type() == "ForeignKey"]
 
-    def random_row(self, **kwargs):
+    def get_foreign_key_names(self):
+        """ return a list of names of foreignKeyfields """
+        return [i.name for i in self.get_foreign_keys()]
+
+    def get_random_row(self, **kwargs):
         """ return a single, random entry from a queryset """
         queryset = self.filter(**kwargs)
         if queryset:
