@@ -4,10 +4,13 @@ DESCRIPTION:
 """
 
 # system modules
+import logging
+from simplecrypt import encrypt, decrypt
 from random import randint
 
 # django models
 from django.db import models
+from django.conf import settings
 
 
 class HandyHelperModelManager(models.Manager):
@@ -75,3 +78,47 @@ class HandyHelperModelManager(models.Manager):
             random_index = randint(0, queryset.count() - 1)
             return queryset[random_index]
         return None
+
+
+class ParentModelMixin(object):
+    """ methods for parent models """
+
+    def get_child_list(self):
+        """ return a list of child objects """
+        return [f.get_accessor_name() for f in self._meta.get_fields()
+                if getattr(f, 'field_name', None) and f.one_to_one]
+
+    def get_child(self):
+        """ return the child inherited from this parent object instance """
+        for i in self.get_child_list():
+            child = getattr(self, i, None)
+            if child:
+                return child
+        return None
+
+    def get_grandchild(self):
+        """ return the grandchild inherited from this parent object instance """
+        child = self.get_child()
+        if child:
+            return child.get_child()
+        return None
+
+
+class ExcryptionModelMixin(object):
+    """ methods for handling encrypted fields """
+
+    @staticmethod
+    def decrypt_field(item):
+        """ decrypt an encrypted string """
+        try:
+            return decrypt(settings.SECRET_KEY, item.decode('base64'))
+        except Exception as err:
+            logging.error(str(err))
+
+    @staticmethod
+    def encrypt_field(item):
+        """ encrypt a string """
+        try:
+            return encrypt(settings.SECRET_KEY, item).encode('base64')
+        except Exception as err:
+            logging.error(str(err))

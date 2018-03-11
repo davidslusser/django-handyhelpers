@@ -4,12 +4,11 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # import HandyHelpers
-from handyhelpers.managers import HandyHelperModelManager
+from handyhelpers.models import HandyHelperBaseModel
 
 
-class Genre(models.Model):
+class Genre(HandyHelperBaseModel):
     """ Music Genres """
-    objects = HandyHelperModelManager()
     name = models.CharField(max_length=32, help_text="name of contact")
     description = models.CharField(max_length=255, blank=True, null=True, help_text="describe this genre")
 
@@ -20,9 +19,8 @@ class Genre(models.Model):
         db_table = 'genres'
 
 
-class Artist(models.Model):
+class Artist(HandyHelperBaseModel):
     """ Artist """
-    objects = HandyHelperModelManager()
     name = models.CharField(max_length=32, blank=True, null=True, help_text="name of artist")
     website = models.URLField(blank=True, null=True, help_text="artists website")
     instagram = models.CharField(max_length=32, blank=True, null=True, help_text="Instagram handle")
@@ -34,9 +32,8 @@ class Artist(models.Model):
         db_table = 'artists'
 
 
-class Album(models.Model):
+class Album(HandyHelperBaseModel):
     """ Album """
-    objects = HandyHelperModelManager()
     name = models.CharField(max_length=32, blank=True, null=True, help_text="album name")
     artist = models.ForeignKey(Artist, help_text="artist for this album")
     genre = models.ForeignKey(Genre, help_text="genre for this album")
@@ -49,9 +46,8 @@ class Album(models.Model):
         db_table = 'albums'
 
 
-class Song(models.Model):
+class Song(HandyHelperBaseModel):
     """ Song on an album """
-    objects = HandyHelperModelManager()
     name = models.CharField(max_length=32, blank=True, null=True, help_text="name of song")
     album = models.ForeignKey(Album, help_text="album this song is on")
     track = models.IntegerField(help_text="tack number on album")
@@ -64,9 +60,8 @@ class Song(models.Model):
         db_table = 'songs'
 
 
-class Favorite(models.Model):
+class Favorite(HandyHelperBaseModel):
     """ Track favorite songs """
-    objects = HandyHelperModelManager()
     user = models.ForeignKey(User)
     song = models.ForeignKey(Song)
 
