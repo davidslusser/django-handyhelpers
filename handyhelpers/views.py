@@ -32,6 +32,7 @@ class FilterByQueryParamsMixin:
     queryset = None
     page_description = None
 
+
     def dispatch(self, request, *args, **kwargs):
         self.queryset = self.filter_by_query_params()
         return super(FilterByQueryParamsMixin, self).dispatch(request, *args, **kwargs)
