@@ -4,18 +4,8 @@ from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
 
-class MethodGroupPermissions(object):
-    """
-    Description:
-        Restrict access based on request method and user group
-
-    Usage:
-        permission_dict must be in the view example:
-        class MyViewClass(MethodGroupPermissions, DetailView)
-            permission_dict = {'POST': ['site_admins'],
-                               'GET': ['site_operators']
-                              }
-    """
+class MethodGroupPermissionBase(object):
+    """ Base class for method group permissions """
     def dispatch(self, request, *args, **kwargs):
         if not self.has_permission(request, *args, **kwargs):
             if settings.LOGIN_URL and REDIRECT_FIELD_NAME:
@@ -25,11 +15,49 @@ class MethodGroupPermissions(object):
                                          )
             else:
                 raise PermissionDenied
-        return super(MethodGroupPermissions, self).dispatch(request, *args, **kwargs)
+        return super(MethodGroupPermissionBase, self).dispatch(request, *args, **kwargs)
+
+
+class InAllGroups(MethodGroupPermissionBase):
+    """
+    Description:
+        Restrict access based on request method and user group; user must be in ALL required groups
+
+    Usage:
+        put the following in your viewset:
+            permission_classes = (IsInAllGroups,)
+            required_groups = {'POST': ['site_operators', 'site_admins'],
+                               'GET': ['site_operators'],
+                              }
+
+    """
 
     def has_permission(self, request, *args, **kwargs):
         if not hasattr(self, 'permission_dict'):
             return False
         permission_dict_mapping = getattr(self, 'permission_dict', {})
         permission_dict = permission_dict_mapping.get(request.method, [])
+        if permission_dict is None:
+            return False
         return set(permission_dict).issubset([i.name for i in request.user.groups.all()])
+
+
+class InAnyGroup(MethodGroupPermissionBase):
+    """
+    Description:
+        Restrict access based on request method and user group; user can be in ANY required group
+
+    Usage:
+        put the following in your viewset:
+            permission_classes = (IsInAnyGroup,)
+            required_groups = {'POST': ['site_admins'],
+                               'GET': ['site_admins', 'site_operators'],
+                              }
+    """
+
+    def has_permission(self, request, *args, **kwargs):
+        if not hasattr(self, 'permission_dict'):
+            return False
+        permission_dict_mapping = getattr(self, 'permission_dict', {})
+        permission_dict = permission_dict_mapping.get(request.method, [])
+        return any(group in [i.name for i in request.user.groups.all()] for group in permission_dict)
