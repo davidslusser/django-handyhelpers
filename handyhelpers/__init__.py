@@ -6,7 +6,7 @@ A collection of handy utilities to support django operations.
 :license: GPL-3.0. See LICENSE for more details
 """
 
-__title__ = 'braces'
+__title__ = 'django-handy-helpers'
 __version__ = '0.0.1'
 __author__ = 'David Slusser'
 __license__ = 'GPL-3.0'
