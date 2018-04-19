@@ -1,3 +1,9 @@
+"""
+Description:
+    Collection of handy generic views
+
+"""
+
 import csv
 from django.http import HttpResponse
 from django.shortcuts import render

@@ -1,3 +1,17 @@
+"""
+Description:
+    Collection of helpers to assist with permissions on views
+
+How to use:
+    Add in your view as a mixin and define groups per method in permission_dict.
+    Example:
+
+        class MyView(InAnyGroup, View):
+            permission_dict = {'POST': ['superusers'],
+                               'GET': ['operators'] }
+
+"""
+
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.views import redirect_to_login
 from django.conf import settings
@@ -24,9 +38,8 @@ class InAllGroups(MethodGroupPermissionBase):
         Restrict access based on request method and user group; user must be in ALL required groups
 
     Usage:
-        put the following in your viewset:
-            permission_classes = (IsInAllGroups,)
-            required_groups = {'POST': ['site_operators', 'site_admins'],
+        add as mixin to class definition and put the following in your viewset:
+            permission_dict = {'POST': ['site_operators', 'site_admins'],
                                'GET': ['site_operators'],
                               }
 
@@ -48,9 +61,8 @@ class InAnyGroup(MethodGroupPermissionBase):
         Restrict access based on request method and user group; user can be in ANY required group
 
     Usage:
-        put the following in your viewset:
-            permission_classes = (IsInAnyGroup,)
-            required_groups = {'POST': ['site_admins'],
+        add as mixin to class definition and put the following in your viewset:
+            permission_dict = {'POST': ['site_admins'],
                                'GET': ['site_admins', 'site_operators'],
                               }
     """
