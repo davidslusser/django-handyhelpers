@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.views.generic import (View)
 from django.utils import timezone
 import datetime
-from djangohelpers.querysets import count_by_month
+import logging
 
 
 class CsvExportView(View):
@@ -78,13 +78,13 @@ class AnnualTrendView(View):
         removed in the past day, week, month and year.
         Also includes counts of elements added and removed by month for the past year.
     """
-    title = "Annual Trend Report"   # page title (for template)
-    sub_title = None                # page subtitle (for template)
-    template_name = None            # django template
-    added_queryset = None           # initial queryset of elements added
-    removed_queryset = None         # initial queryset of elements removed
-    added_query_field = None        # datetime field used to filter elements added (such as a 'create_at' timestamp)
-    removed_query_field = None      # datetime field used to filter elements removed (such as an 'updated_at' timestamp)
+    title = "Annual Trend Report"
+    sub_title = None
+    template_name = None
+    added_queryset = None
+    removed_queryset = None
+    added_query_field = None
+    removed_query_field = None
 
     def get(self, request):
         context = dict()
@@ -92,7 +92,7 @@ class AnnualTrendView(View):
         context['sub_title'] = self.sub_title
         last_day = timezone.now() - datetime.timedelta(days=1)
         last_week = timezone.now() - datetime.timedelta(days=7)
-        last_month = timezone.now() - datetime.timedelta(days=365.2425/12)
+        last_month = timezone.now() - datetime.timedelta(days=365.2425 / 12)
         last_year = timezone.now() - datetime.timedelta(days=365.2425)
 
         added_query_field = self.added_query_field + "__gte"
@@ -107,10 +107,26 @@ class AnnualTrendView(View):
         added_year = self.added_queryset.filter(**{added_query_field: last_year})
         removed_year = self.removed_queryset.filter(**{removed_query_field: last_year})
 
-        context['added_per_month'] = count_by_month(queryset=added_year, field_name=self.added_query_field)
-        context['removed_per_month'] = count_by_month(queryset=removed_year, field_name=self.removed_query_field)
-        context['month_labels'] = [(timezone.now() - datetime.timedelta(i * 365 / 12)
-                                    ).strftime("%B") for i in range(0, 12)]
+        context['month_labels'] = []
+        context['added_per_month'] = []
+        context['removed_per_month'] = []
+        for i in range(0, 13):
+            ts = timezone.now() - datetime.timedelta(i * 365.2425 / 12)
+            context['month_labels'].append(ts.strftime("%B"))
+            try:
+                context['added_per_month'].append(len(
+                    [i for i in added_year if getattr(i, self.added_query_field).month == ts.month and
+                     getattr(i, self.added_query_field).year == ts.year]))
+            except Exception as err:
+                logging.error(err)
+                context['added_per_month'].append(0)
+            try:
+                context['removed_per_month'].append(len(
+                    [i for i in removed_year if getattr(i, self.removed_query_field).month == ts.month and
+                     getattr(i, self.removed_query_field).year == ts.year]))
+            except Exception as err:
+                logging.error(err)
+                context['removed_per_month'].append(0)
 
         context['added_day'] = added_day.count()
         context['removed_day'] = removed_day.count()
