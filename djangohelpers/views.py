@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.views.generic import (View)
 from django.utils import timezone
 import datetime
-from handyhelpers.querysets import count_by_month
+from djangohelpers.querysets import count_by_month
 
 
 class CsvExportView(View):
