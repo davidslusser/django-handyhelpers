@@ -13,6 +13,15 @@ import datetime
 from djangohelpers.querysets import count_by_month
 
 
+class SimpleView(View):
+    """ super simple view for displaying a page with no queried data """
+    template_name = None
+    data = dict()
+
+    def get(self, request):
+        return render(request, self.template_name, self.data)
+
+
 class CsvExportView(View):
     """ dump a queryset to a csv file """
     queryset = None
@@ -41,10 +50,6 @@ class FilterByQueryParamsMixin:
     request = None
     queryset = None
     page_description = None
-
-    def dispatch(self, request, *args, **kwargs):
-        self.queryset = self.filter_by_query_params()
-        return super(FilterByQueryParamsMixin, self).dispatch(request, *args, **kwargs)
 
     def filter_by_query_params(self):
             """
