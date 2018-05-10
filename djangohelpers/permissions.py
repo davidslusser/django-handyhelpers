@@ -21,15 +21,18 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 class MethodGroupPermissionBase(object):
     """ Base class for method group permissions """
     def dispatch(self, request, *args, **kwargs):
-        if not self.has_permission(request, *args, **kwargs):
-            if settings.LOGIN_URL and REDIRECT_FIELD_NAME:
-                return redirect_to_login(request.get_full_path(),
-                                         settings.LOGIN_URL,
-                                         REDIRECT_FIELD_NAME
-                                         )
-            else:
-                raise PermissionDenied
-        return super(MethodGroupPermissionBase, self).dispatch(request, *args, **kwargs)
+        try:
+            if not self.has_permission(request, *args, **kwargs):
+                if settings.LOGIN_URL and REDIRECT_FIELD_NAME:
+                    return redirect_to_login(request.get_full_path(),
+                                             settings.LOGIN_URL,
+                                             REDIRECT_FIELD_NAME
+                                             )
+                else:
+                    raise PermissionDenied
+            return super(MethodGroupPermissionBase, self).dispatch(request, *args, **kwargs)
+        except:
+            raise PermissionDenied
 
 
 class InAllGroups(MethodGroupPermissionBase):
@@ -50,6 +53,8 @@ class InAllGroups(MethodGroupPermissionBase):
             return False
         permission_dict_mapping = getattr(self, 'permission_dict', {})
         permission_dict = permission_dict_mapping.get(request.method, [])
+        if request.method not in permission_dict_mapping.keys():
+            return True
         if permission_dict is None:
             return False
         return set(permission_dict).issubset([i.name for i in request.user.groups.all()])
@@ -72,4 +77,6 @@ class InAnyGroup(MethodGroupPermissionBase):
             return False
         permission_dict_mapping = getattr(self, 'permission_dict', {})
         permission_dict = permission_dict_mapping.get(request.method, [])
+        if request.method not in permission_dict_mapping.keys():
+            return True
         return any(group in [i.name for i in request.user.groups.all()] for group in permission_dict)

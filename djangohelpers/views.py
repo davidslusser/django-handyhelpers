@@ -11,6 +11,7 @@ from django.views.generic import (View)
 from django.utils import timezone
 import datetime
 import logging
+from auditlog.models import LogEntry
 
 
 class SimpleView(View):
@@ -142,3 +143,23 @@ class AnnualTrendView(View):
         context['added_year'] = added_year.count()
         context['removed_year'] = removed_year.count()
         return render(request, self.template_name, context)
+
+
+class AuditLogListView(View):
+    """ get a queryset of LogEntry from auditlog based on the model name and object name """
+    @staticmethod
+    def get(request):
+        context = dict()
+        template = "list_auditlog.html"
+        model = request.GET.dict().get('model', None)
+        entry = request.GET.dict().get('entry', None)
+        title = request.GET.dict().get('title', "Audit Log Entries")
+        queryset = LogEntry.objects.filter()
+        if model:
+            queryset = queryset.filter(content_type__model=model)
+        if entry:
+            queryset = queryset.filter(object_repr__icontains=entry)
+        context['queryset'] = queryset
+        context['title'] = title
+        return render(request, template, context=context)
+
