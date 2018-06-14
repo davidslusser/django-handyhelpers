@@ -66,7 +66,7 @@ class FilterByQueryParamsMixin:
             # build a dictionary of valid model fields
             filter_dict = {}
             model = self.queryset.model
-            for field, val in self.request.GET.dict().iteritems():
+            for field, val in self.request.GET.dict().items():
                 if field.split("__")[0] not in [i.name for i in model._meta.fields]:
                     continue
                 if val is not None:
