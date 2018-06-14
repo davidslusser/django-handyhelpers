@@ -7,7 +7,7 @@ A collection of handy utilities to support django operations.
 """
 
 __title__ = 'django-handyhelpers'
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 __author__ = 'David Slusser'
 __license__ = 'GPL-3.0'
 __copyright__ = 'Copyright 2018 David Slusser'
