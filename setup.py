@@ -11,7 +11,7 @@ setup(
     description='A collection of handy utilities to support django operations',
     long_description='A collection of handy utilities to support django operations',
     url='https://github.com/davidslusser/django-handyhelpers',
-    download_url='https://github.com/davidslusser/django-handyhelpers/archive/0.2.tar.gz',
+    download_url='https://github.com/davidslusser/django-handyhelpers/archive/0.0.6.tar.gz',
     keywords=['django', 'helpers', ],
     classifiers=[],
     install_requires=[

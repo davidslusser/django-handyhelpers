@@ -1,0 +1,15 @@
+from rest_framework import serializers
+
+{%- set margin = app_name|length + models_file|length + 15 %}
+{% set leading_space = " " * margin -%}
+
+# import models
+from {{app_name}}.{{models_file}} import ({% for model in model_list %}{% if not loop.first %}{{leading_space}}{% endif %}{{ model.__name__ }}{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{leading_space}})
+{% for model in model_list %}
+
+class {{ model.__name__ }}Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = {{ model.__name__ }}
+        fields = '__all__'
+        depth = 0
+{% endfor -%}
