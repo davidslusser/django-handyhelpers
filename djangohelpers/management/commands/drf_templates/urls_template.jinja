@@ -12,7 +12,7 @@ router.register(r'{{ model._meta.model_name }}', {{views_file}}.{{ model.__name_
 urlpatterns = [
 
     # API views
-    url(r'^{{app_name}}/', include(router.urls, namespace='{{app_name}}')),
+    path('{{app_name}}/', include(router.urls, namespace='{{app_name}}')),
 
 ]
 

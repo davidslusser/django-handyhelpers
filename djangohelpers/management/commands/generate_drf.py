@@ -18,9 +18,9 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """ define command arguments """
         parser.add_argument('app', type=str, help='enter the name of the django app')
-        parser.add_argument('--api', type=str, help='name and path of api (views) file to generate')
-        parser.add_argument('--serializer', help='path and name of serializer file to generate')
-        parser.add_argument('--url', type=str, help='path of urls file to generate')
+        parser.add_argument('--api', action='store_true', help='name and path of api (views) file to generate')
+        parser.add_argument('--serializer', action='store_true', help='path and name of serializer file to generate')
+        parser.add_argument('--url', action='store_true', help='path of urls file to generate')
         parser.add_argument('--api_template', type=str, help='path to Jinja template used to create api')
         parser.add_argument('--serializer_template', type=str, help='path to Jinja template used to create serializer')
         parser.add_argument('--url_template', type=str, help='path to Jinja template used to create urls')
@@ -45,7 +45,7 @@ class Command(BaseCommand):
         if options['url']:
             self.build_urls()
 
-        self.stdout.write(self.style.SUCCESS('Did the thing'))
+        self.stdout.write(self.style.SUCCESS('Files generated!'))
 
     def get_model_list(self):
         """ return a list of all models in application """
@@ -65,10 +65,15 @@ class Command(BaseCommand):
         if not output_file:
             output_file = "serializers.py"
 
+        model_fields = {}
+        for model in self.model_list:
+            model_fields[model.__name__] = self.get_model_field_names(model)
+
         data = {"import_models": "my import statement here",
                 "model_list": self.model_list,
                 "app_name": self.app,
                 "models_file": "models",
+                "model_fields": model_fields,
                 "field_list": {"get a list of fields in the model"}
                 }
         with open(template_file) as f:

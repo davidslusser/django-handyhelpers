@@ -1,0 +1,2 @@
+include README.md
+recursive-include djangohelpers/management/commands/drf_templates *
