@@ -1,0 +1,28 @@
+from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import FilterSet, filters
+
+
+{%- set model_margin = app_name|length + models_file|length + 15 %}
+{%- set model_leading_space = " " * model_margin %}
+{%- set serializer_margin = app_name|length + serializers_file|length + 15 %}
+{%- set serializer_leading_space = " " * serializer_margin %}
+
+# import models
+from {{app_name}}.{{models_file}} import ({% for model in model_list %}{% if not loop.first %}{{model_leading_space}}{% endif %}{{ model.__name__ }}{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{model_leading_space}})
+
+# import serializers
+from {{app_name}}.{{serializers_file}} import ({% for model in model_list %}{% if not loop.first %}{{serializer_leading_space}}{% endif %}{{ model.__name__ }}Serializer{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{serializer_leading_space}})
+{% for model, field_list in model_fields.items() %}
+
+class {{ model }}ViewSet({{viewset_type}}):
+    """
+    API endpoint that allows {{ model }}s to be viewed or edited.
+    """
+    filter_backends = (DjangoFilterBackend, )
+    model = {{ model }}
+    queryset = model.objects.all().select_related()
+    serializer_class = {{ model }}Serializer
+    filter_fields = [{% for field in field_list %}"{{ field }}", {% endfor %}]
+    search_fields = filter_fields
+{% endfor %}
