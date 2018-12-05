@@ -1,6 +1,9 @@
+from django.urls import path
 from django.conf.urls import url, include
 from rest_framework import routers
 from {{ app_name }} import {{ views_file }}
+
+app_name = "{{ app_name }}"
 
 router = routers.DefaultRouter()
 
@@ -12,7 +15,7 @@ router.register(r'{{ model._meta.model_name }}', {{views_file}}.{{ model.__name_
 urlpatterns = [
 
     # API views
-    path('{{app_name}}/', include(router.urls, namespace='{{app_name}}')),
+    path('{{app_name}}/', include(router.urls),
 
 ]
 
