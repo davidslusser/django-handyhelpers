@@ -6,5 +6,4 @@ django-model-utils==3.0.0
 django-rest-swagger==2.0.2
 djangorestframework-filters==0.8.0
 djangorestframework==3.4.0
-simple-crypt==4.1.7
 model-mommy>=1.4.0

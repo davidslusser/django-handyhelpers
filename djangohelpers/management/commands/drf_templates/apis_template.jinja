@@ -26,3 +26,7 @@ class {{ model }}ViewSet({{viewset_type}}):
     filter_fields = [{% for field in field_list %}"{{ field }}", {% endfor %}]
     search_fields = filter_fields
 {% endfor %}
+
+{% for model, field_list in model_fields.items() %}
+
+{% endfor %}
