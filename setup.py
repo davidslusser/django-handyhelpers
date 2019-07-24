@@ -1,6 +1,5 @@
 import os
 from setuptools import setup, find_packages
-# import djangohelpers
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()
@@ -9,14 +8,14 @@ setup(
     name='django-handyhelpers',
     packages=find_packages(),
     include_package_data=True,
-    version="0.0.6", # djangohelpers.__version__,
-    license=None, # djangohelpers.__license__,
+    version="0.0.9",
+    license=None,
     author='David Slusser',
     author_email='dbslusser@gmail.com',
     description='A collection of handy utilities to support django operations',
     long_description=README,
     url='https://github.com/davidslusser/django-handyhelpers',
-    download_url='https://github.com/davidslusser/django-handyhelpers/archive/0.0.6.tar.gz',
+    download_url='https://github.com/davidslusser/django-handyhelpers/archive/0.0.9.tar.gz',
     keywords=['django', 'helpers', ],
     classifiers=[],
     install_requires=[
@@ -27,7 +26,6 @@ setup(
         'django-rest-swagger',
         'djangorestframework-filters',
         'djangorestframework',
-        'simple-crypt',
         'model-mommy',
     ],
     dependency_links=[],
