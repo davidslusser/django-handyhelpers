@@ -1,0 +1,16 @@
+from django.contrib import admin
+
+# import models
+{%- set model_margin = app_name|length + models_file|length + 15 %}
+{%- set model_leading_space = " " * model_margin %}
+from {{app_name}}.{{models_file}} import ({% for model in model_list %}{% if not loop.first %}{{model_leading_space}}{% endif %}{{ model.__name__ }}{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{model_leading_space}})
+{% for model, lists in model_data.items() %}
+
+class {{ model }}Admin(admin.ModelAdmin):
+    list_display = {{ lists.display_fields }}
+    search_fields = {{ lists.search_fields }}
+    list_filter = {{ lists.filter_fields }}
+{% endfor %}
+
+# register models
+{% for model in model_list %}admin.site.register({{model.__name__}}, {{model.__name__}}Admin){{"\n"}}{% endfor %}

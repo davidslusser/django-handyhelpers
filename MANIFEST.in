@@ -1,2 +1,3 @@
 include README.md
 recursive-include djangohelpers/management/commands/drf_templates *
+recursive-include djangohelpers/management/commands/admin_templates *
