@@ -21,3 +21,15 @@ Example command:
 
 ** see ./manage.py generate_drf --help for a full list of options
 
+
+
+### Admin Generator
+Included with django-handyhelpers are manage.py commands to auto-generate an admin.py file for a given application in 
+your project. This is done using a jinja template that defines the structure of the admin.py file. A default template is 
+provided. 
+
+Example command:
+    ./manage.py generate_admin <my_app>
+    ./manage.py generate_admin <my_app> --template <my_custom_template>
+    
+** see ./manage.py generate-admin --help for a full list of options     

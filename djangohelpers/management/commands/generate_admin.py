@@ -19,7 +19,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """ define command arguments """
         parser.add_argument('app', type=str, help='name of the django app')
-        parser.add_argument('--admin_template', type=str, help='path to Jinja template used to create admin.py file')
+        parser.add_argument('--template', type=str, help='path to Jinja template used to create admin.py file')
         parser.add_argument('--output_file', type=str, help='path of output file to create')
 
     def handle(self, *args, **options):
@@ -42,9 +42,9 @@ class Command(BaseCommand):
 
     def get_admin_template(self):
         """ return the full path of the jinja template to use in creating the admin.py file """
-        if not self.opts['admin_template']:
-            self.opts['admin_template'] = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                       "admin_templates", "admin.jinja")
+        if not self.opts['template']:
+            self.opts['template'] = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                                 "admin_templates", "admin.jinja")
 
     def get_model_list(self):
         """ return a list of all models in application """
@@ -68,7 +68,7 @@ class Command(BaseCommand):
                 "model_data": self.get_models_and_fields(),
                 }
 
-        with open(self.opts['admin_template']) as f:
+        with open(self.opts['template']) as f:
             template = Template(f.read())
         file_text = template.render(data)
 
@@ -86,9 +86,20 @@ class Command(BaseCommand):
         return [i.name for i in model._meta.fields if i.get_internal_type() not in exclude_field_list]
 
     @staticmethod
-    def get_filter_fields(model, include_field_list=('BooleanField', 'ForeignKey')):
+    def get_filter_fields(model, include_field_list=('BooleanField', 'ForeignKey', 'CharField')):
         """ build and return a list of 'filter_fields' to be used in admin.py for a given model """
-        return [i.name for i in model._meta.fields if i.get_internal_type() in include_field_list]
+        # return [i.name for i in model._meta.fields if i.get_internal_type() in include_field_list]
+        return_list = []
+        for i in model._meta.fields:
+            field_type = i.get_internal_type()
+            if field_type in include_field_list:
+                if field_type == 'CharField' and not i.choices:
+                    continue
+                elif field_type == 'CharField' and i.choices:
+                    return_list.append(i.name)
+                else:
+                    return_list.append(i.name)
+        return return_list
 
     def get_models_and_fields(self):
         return_data = {}
