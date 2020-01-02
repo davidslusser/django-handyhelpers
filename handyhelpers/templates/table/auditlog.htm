@@ -1,0 +1,46 @@
+<table class="table table-condensed table-bordered table-striped" data-toggle="table" data-search="true"
+       data-flat="true" data-pagination="true" data-show-pagination-switch="true" data-show-columns="true"
+       data-show-export="true" data-reorderable-columns="true" data-resizable="false" data-export-types="['excel','csv','txt','sql']">
+    <thead>
+    <tr>
+        <th data-field="resource" data-sortable="true">Resource</th>
+        <th data-field="instance" data-sortable="true">Instance</th>
+        <th data-field="event" data-sortable="true">Event</th>
+        <th data-field="action" data-sortable="true">Changes <small>(from -> to)</small></th>
+        <th data-field="user" data-sortable="true">User</th>
+        <th data-field="timestamp" data-sortable="true">Timestamp</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in queryset %}
+        <tr>
+            <td>{{ row.content_type }}</td>
+            <td>
+                {{ row.object_repr }}
+            </td>
+            <td>
+                {% if row.action == 0 %}
+                    Created
+                {% elif row.action == 1 %}
+                    Updated
+                {% elif row.action == 2 %}
+                    Deleted
+                {% endif %}
+            </td>
+            <td>
+                {% if row.action == 1 %}
+                    {% for key, value in row.changes_dict.items %}
+                        <div class="row ">
+                            <div class="col-sm-3"><b>{{ key }}:</b> </div>
+                            <div class="col-sm-4">{{ value.0 }} </div>
+                            <div class="col-sm-4">{{ value.1 }} </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </td>
+            <td>{{ row.actor }}</td>
+            <td>{{ row.timestamp|date:'Y-m-d H:i:s' }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

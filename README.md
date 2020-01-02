@@ -1,11 +1,16 @@
 # django-handy-helpers
 
-A collection of handy utilities to support django operations
+| | | |
+|--------------|------|---|
+| Author       | David Slusser |   |
+| Description  | A collection of handy utilities to support django projects |   |
+| Requirements | `Python 3.x`<br>`Django 2.2.x+` |   |
+
 
 
 # How to Install
 1. pip install django-handyhelpers
-2. add 'djangohelpers' to your INSTALLED_APPS (for management commands)
+2. add 'djangohelpers' to your INSTALLED_APPS (for management commands and templates)
 
 
 # Management Commands 
