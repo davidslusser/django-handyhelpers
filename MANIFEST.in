@@ -3,4 +3,4 @@ include requirements.txt
 recursive-include handyhelpers/management/commands/drf_templates *
 recursive-include handyhelpers/management/commands/admin_templates *
 recursive-include handyhelpers/templates *
-recursive-include djangohelpers
+include djangohelpers
