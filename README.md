@@ -4,13 +4,21 @@
 |--------------|------|---|
 | Author       | David Slusser |   |
 | Description  | A collection of handy utilities to support django projects |   |
-| Requirements | `Python 3.x`<br>`Django 2.2.x+` |   |
-
+| Requirements | `Python 3.x`<br>`Django 2.2.x` |   |
 
 
 # How to Install
-1. pip install django-handyhelpers
-2. add 'djangohelpers' to your INSTALLED_APPS (for management commands and templates)
+The django-userextensions package is available on Python Package Index (PyPI) and can be installed via pip:
+
+    pip install django-handyhelpers
+    
+
+add 'handyhelpers' to your INSTALLED_APPS (for management commands and templates)
+
+    INSTALLED_APPS = [
+        ...
+        'handyhelpers',
+    ]
 
 
 # Management Commands 
@@ -21,10 +29,13 @@ This is done using jinja templates that define the structure of each file. Defau
 can be provided in the command. By default, all models and models fields are included.  
 
 Example command:
-    ./manage.py generate_drf <my_app> --serializer
-    ./manage.py generate_drf <my_app> --serializer --serializer_template <my_custom_template>
 
-** see ./manage.py generate_drf --help for a full list of options
+    manage.py generate_drf <my_app> --serializer
+    manage.py generate_drf <my_app> --serializer --serializer_template <my_custom_template>
+
+** use the --help parameter for a full list of options
+
+    manage.py generate_drf --help
 
 
 
@@ -34,7 +45,10 @@ your project. This is done using a jinja template that defines the structure of 
 provided. 
 
 Example command:
-    ./manage.py generate_admin <my_app>
-    ./manage.py generate_admin <my_app> --template <my_custom_template>
+
+    manage.py generate_admin <my_app>
+    manage.py generate_admin <my_app> --template <my_custom_template>
     
-** see ./manage.py generate-admin --help for a full list of options     
+** use the --help parameter for a full list of options
+ 
+    manage.py generate-admin --help     
