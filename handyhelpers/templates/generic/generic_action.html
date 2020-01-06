@@ -1,0 +1,41 @@
+{% extends base_template|default:"djangohelpers_base.htm" %}
+{% load staticfiles %}
+
+{% block content %}
+    <!-- Page header -->
+    <header>
+        <div class="headline text-center">
+            <div class="container margin-bottom-40">
+                <div class="page-title">{{ page_title }}</div>
+                <h3 class="text-muted">{{ page_subtitle }}</h3>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+
+    {% for row in item_list %}
+        <div class="flex-container wrap">
+
+            <!-- start row -->
+            <div class="row margin-bottom-20">
+                <div class="action-container-wrap text-center">
+                    <!-- item list -->
+                    {% for item in row %}
+                        <div class="hvr-float-shadow">
+                            <a href="{{ item.url }}" class="ism-link-text" {{ item.link_data|safe }}>
+                                <div class="action-icon">
+                                    <i class="{{ item.icon }}"></i>
+                                </div>
+                                <div class="action-data">{{ item.title }}</div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+    {% endfor %}
+
+    {% include 'component/modals.htm' %}
+{% endblock content %}

@@ -1,0 +1,41 @@
+{% extends base_template|default:"djangohelpers_base.htm" %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="container-fluid margin-bottom-40">
+        <div class="list-page-title">{{ title }}:
+            <span class="list-page-subtitle">{{ page_subtitle }}</span>
+        </div>
+    </div>
+
+    <div class="container margin-bottom-40">
+        <div class="row">
+            <div class="col-sm-2"><div class="detail-panel-icon"><larger><i class="fa fa-exclamation-triangle"></i></larger></div></div>
+            <div class="col-sm-10">
+                <p>{{ message }}</p>
+                <table class='table borderless'>
+                    <col width="25%">
+                    <col width="75%">
+                    <tr class="ism-boarder-bottom">
+                        <td><span class="detail-panel-key">Host:</span></td>
+                        <td>{{ request.META.HTTP_HOST }}</td>
+                    </tr>
+                    <tr class="ism-boarder-bottom">
+                        <td><span class="detail-panel-key">Path:</span></td>
+                        <td>{{ request.META.PATH_INFO }}</td>
+                    </tr>
+                    <tr class="ism-boarder-bottom">
+                        <td><span class="detail-panel-key">Method:</span></td>
+                        <td>{{ request.META.REQUEST_METHOD }}</td>
+                    </tr>
+                    <tr class="ism-boarder-bottom">
+                        <td><span class="detail-panel-key">Referrer:</span></td>
+                        <td>{{ request.META.HTTP_REFERER }}</td>
+                    </tr>
+                </table>
+                <br/><p><b><a class="ism-link-text" href="{% url 'home' %}">Return to the home page</a></b></p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

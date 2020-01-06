@@ -1,0 +1,17 @@
+{% block local_javascript %}
+    <!-- local test -->
+    <script language="Javascript">
+        $('div.messages:empty').hide();
+    </script>
+{% endblock %}
+
+{% if messages %}
+    <div id="messages" class="messages alert alert-block">
+        {% for message in messages %}
+            <div class="alert {{ message.extra_tags }}">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

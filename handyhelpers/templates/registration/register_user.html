@@ -1,0 +1,19 @@
+{% extends base_template|default:"base.htm" %}
+{% load staticfiles %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mb-5 animated fadeIn">
+        <h1><b><span class="text-primary">User Registration</span></b></h1>
+    </div>
+
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Sign up</button>
+        </form>
+    </div>
+
+{% endblock %}
