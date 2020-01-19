@@ -24,13 +24,14 @@ class HandyHelperBaseListView(FilterByQueryParamsMixin, ListView):
             modals = "project_modals.htm"
     """
     base_template = settings.BASE_TEMPLATE
+    template = "handyheplers/generic/generic_list.html"
     title = None
     table = None
     modals = None
 
     def get(self, request, *args, **kwargs):
         context = dict()
-        template = "generic/generic_list.html"
+        template = self.template
         context['base_template'] = self.base_template
         context['queryset'] = self.filter_by_query_params()
         context['title'] = self.title
@@ -68,6 +69,7 @@ class HandyHelperBaseCreateListView(FilterByQueryParamsMixin, ListView):
             create_form_link_title = "add project"
     """
     base_template = settings.BASE_TEMPLATE
+    template = "handyheplers/generic/generic_list.html"
     title = None
     table = None
     modals = None
@@ -80,7 +82,7 @@ class HandyHelperBaseCreateListView(FilterByQueryParamsMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         context = dict()
-        template = "generic/generic_list.html"
+        template = self.template
         context['base_template'] = self.base_template
         context['queryset'] = self.filter_by_query_params()
         context['title'] = self.title
