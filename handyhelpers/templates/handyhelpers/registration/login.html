@@ -1,6 +1,4 @@
-{% extends "base.htm" %}
-
-{# https://docs.djangoproject.com/en/1.9/topics/auth/default/#django.contrib.auth.views.login #}
+{% extends base_template|default:"base.htm" %}
 
 {% block local_head %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" integrity="sha256-HtCCUh9Hkh//8U1OwcbD8epVEUdBvuI8wj1KtqMhNkI=" crossorigin="anonymous" />
