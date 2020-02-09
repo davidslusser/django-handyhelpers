@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, View
 
 from .mixins import FilterByQueryParamsMixin
 
@@ -97,4 +97,41 @@ class HandyHelperBaseCreateListView(FilterByQueryParamsMixin, ListView):
             self.create_form['modal_name'] = self.create_form_modal
             self.create_form['link_title'] = self.create_form_link_title
             context['create_form'] = self.create_form
+        return render(request, template, context=context)
+
+
+class HandyHelperAboutView(View):
+    """
+    Generic view to render an 'about' page.
+
+    class parameters:
+        title    - page title to use ('About' if not provided)
+        subtitle - subtitle to use (None if not provided)
+        version  - version to display (None if not provided)
+        details  - any specific details to display (None if not provided)
+        source   - link to source code repository (None if not provided)
+        contact  - any desired contact information (None if not provided)
+        links    - list of dictionary containing links; ex. [{'some reference': 'www.somewebsite.com}, ...]
+    """
+    base_template = settings.BASE_TEMPLATE
+    template = "handyheplers/generic/generic_about.html"
+    title = "About"
+    subtitle = None
+    version = None
+    details = None
+    source = None
+    contact = None
+    links = []
+
+    def get(self, request, *args, **kwargs):
+        context = dict()
+        template = self.template
+        context['base_template'] = self.base_template
+        context['title'] = self.title
+        context['subtitle'] = self.subtitle
+        context['version'] = self.version
+        context['details'] = self.details
+        context['source'] = self.source
+        context['contact'] = self.contact
+        context['links'] = self.links
         return render(request, template, context=context)
