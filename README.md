@@ -1,10 +1,16 @@
 # django-handy-helpers
 
+
 | | | |
 |--------------|------|---|
 | Author       | David Slusser |   |
 | Description  | A collection of handy utilities to support django projects |   |
 | Requirements | `Python 3.x`<br>`Django 2.2.x` |   |
+
+
+# Documentation
+Full documentation can be found on http://django-handyhelpers.readthedocs.org. 
+Documentation source files are available in the docs folder.
 
 
 # How to Install
