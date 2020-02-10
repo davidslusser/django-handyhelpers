@@ -16,7 +16,7 @@ class HandyHelperBaseListView(FilterByQueryParamsMixin, ListView):
          modals - htm file rendering additional modals to be included in the generic_list template
 
     example:
-        class ListHostnames(HandyHelperBaseListView):
+        class ListProjects(HandyHelperBaseListView):
             queryset = Project.objects.all()
             title = "Projects"
             page_description = "my cool projects"
