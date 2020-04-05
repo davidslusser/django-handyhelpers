@@ -32,9 +32,11 @@
                     {% if row.action == 1 %}
                         {% for key, value in row.changes_dict.items %}
                             <div class="row ">
-                                <div class="col-sm-3"><b>{{ key }}:</b> </div>
-                                <div class="col-sm-4">{{ value.0 }} </div>
-                                <div class="col-sm-4">{{ value.1 }} </div>
+                                <small>
+                                    <div class="col-sm-3"><b>{{ key }}:</b> </div>
+                                    <div class="col-sm-4">{{ value.0 }} </div>
+                                    <div class="col-sm-4">{{ value.1 }} </div>
+                                </small>
                             </div>
                         {% endfor %}
                     {% endif %}
