@@ -96,3 +96,19 @@ Examples:
         create_form_link_title = "add project"
 
 ..
+
+InvalidLookupMixin
+------------------
+
+A mixin for Django Rest Framework viewsets to check query parameters and return an error if any query parameter is not
+a included in defined in a filter_class (typically defined in your filterset), and element of filter_fields
+(typically set in your viewset), or a valid model field.
+Order of precedence is: filter_class, filter_fields, model field.
+
+Examples:
+
+.. code-block:: python
+
+    class MyModelViewSet(InvalidLookupMixin, viewsets.ReadOnlyModelViewSet):
+
+..

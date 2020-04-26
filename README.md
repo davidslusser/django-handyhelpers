@@ -58,3 +58,12 @@ Example command:
 ** use the --help parameter for a full list of options
  
     manage.py generate-admin --help     
+
+
+# Mixins
+
+### FilterByQueryParamsMixin
+
+
+### InvalidLookupMixin
+
