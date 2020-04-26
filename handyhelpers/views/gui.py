@@ -24,7 +24,7 @@ class HandyHelperBaseListView(FilterByQueryParamsMixin, ListView):
             modals = "project_modals.htm"
     """
     base_template = settings.BASE_TEMPLATE
-    template = "handyheplers/generic/generic_list.html"
+    template = "handyhelpers/generic/generic_list.html"
     title = None
     table = None
     modals = None
@@ -69,7 +69,7 @@ class HandyHelperBaseCreateListView(FilterByQueryParamsMixin, ListView):
             create_form_link_title = "add project"
     """
     base_template = settings.BASE_TEMPLATE
-    template = "handyheplers/generic/generic_list.html"
+    template = "handyhelpers/generic/generic_list.html"
     title = None
     table = None
     modals = None
@@ -114,7 +114,7 @@ class HandyHelperAboutView(View):
         links    - list of dictionary containing links; ex. [{'some reference': 'www.somewebsite.com}, ...]
     """
     base_template = settings.BASE_TEMPLATE
-    template = "handyheplers/generic/generic_about.html"
+    template = "handyhelpers/generic/generic_about.html"
     title = "About"
     subtitle = None
     version = None

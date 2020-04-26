@@ -8,7 +8,7 @@ Description:
 from django.db import models
 
 # model managers
-from djangohelpers.managers import HandyHelperModelManager
+from handyhelpers.managers import HandyHelperModelManager
 
 
 class HandyHelperBaseModel(models.Model):
