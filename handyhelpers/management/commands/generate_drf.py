@@ -36,15 +36,15 @@ class Command(BaseCommand):
 
         # build serializers file
         if options['serializer']:
-            self.build_serializers(output_file=options['output_path'], template_file=options['serializer_template'])
+            self.build_serializers(output_path=options['output_path'], template_file=options['serializer_template'])
 
         # build apis file
         if options['api']:
-            self.build_apis(output_file=options['output_path'], template_file=options['api_template'])
+            self.build_apis(output_path=options['output_path'], template_file=options['api_template'])
 
         # build urls file
         if options['url']:
-            self.build_urls(output_file=options['output_path'], template_file=options['url_template'])
+            self.build_urls(output_path=options['output_path'], template_file=options['url_template'])
 
         self.stdout.write(self.style.SUCCESS('Files generated!'))
 
