@@ -63,7 +63,10 @@ Example command:
 # Mixins
 
 ### FilterByQueryParamsMixin
+Allows your list views to be filtered by query parameters.
 
 
 ### InvalidLookupMixin
+Returns an applicable error, instead of results based on an unfiltered queryset, if a provided  lookup expression, 
+filter, or model field is invalid.   
 
