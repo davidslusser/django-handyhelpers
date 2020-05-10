@@ -47,8 +47,8 @@ Command Examples:
 ..
 
 
-Views
-=====
+Views and Mixins
+================
 
 FilterByQueryParamsMixin
 ------------------------
@@ -57,6 +57,8 @@ The FilterByQueryParamsMixin allows a list view to show a filtered queryset resu
 Example:
 
 .. code-block:: python
+
+    from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin
 
     class ListProjects(FilterByQueryParamsMixin, ListView):
         def get(self, request, *args, **kwargs):
@@ -74,6 +76,8 @@ Examples:
 
 .. code-block:: python
 
+    from handyhelpers.views.gui import HandyHelperBaseListView
+
     class ListProjects(HandyHelperBaseListView):
         queryset = Project.objects.all()
         title = "Projects"
@@ -83,6 +87,8 @@ Examples:
 ..
 
 .. code-block:: python
+
+    from handyhelpers.views.gui import HandyHelperBaseCreateListView
 
     class ListProjects(HandyHelperBaseCreateListView):
         queryset = Project.objects.all()
@@ -108,6 +114,8 @@ Order of precedence is: filter_class, filter_fields, model field.
 Examples:
 
 .. code-block:: python
+
+    from handyhelpers.mixins.viewset_mixins import InvalidLookupMixin
 
     class MyModelViewSet(InvalidLookupMixin, viewsets.ReadOnlyModelViewSet):
 
