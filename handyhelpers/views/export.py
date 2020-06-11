@@ -1,3 +1,4 @@
+import datetime
 import csv
 import xlwt
 from django.http import HttpResponse
@@ -64,8 +65,11 @@ class ExcelExportView(FilterByQueryParamsMixin, View):
             for row in queryset.values_list():
                 row_num += 1
                 for col_num in range(len(row)):
-                    ws.write(row_num, col_num, row[col_num], font_style)
-
+                    if type(row[col_num]) == datetime.datetime:
+                        cell_data = str(row[col_num])
+                    else:
+                        cell_data = row[col_num]
+                    ws.write(row_num, col_num, cell_data, font_style)
             wb.save(response)
             return response
 
