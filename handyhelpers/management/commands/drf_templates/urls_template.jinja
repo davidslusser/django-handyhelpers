@@ -3,17 +3,19 @@ from django.conf.urls import include
 from rest_framework import routers
 from {{ app_name }} import {{ views_file }}
 
+app_name = '{{ app_name }}'
+
 router = routers.DefaultRouter()
 
 # {{ app_name }} API Endpoints
 {% for model in model_list -%}
-router.register(r'{{ model._meta.model_name }}', {{views_file}}.{{ model.__name__ }}ViewSet, "{{ model._meta.model_name}}")
+router.register(r'{{ model._meta.model_name }}', {{views_file}}.{{ model.__name__ }}ViewSet, '{{ model._meta.model_name}}')
 {% endfor %}
 
 urlpatterns = [
 
     # API views
-    path('{{app_name}}/', include(router.urls, namespace='{{app_name}}')),
+    path('api/', include(router.urls)),
 
 ]
 

@@ -29,7 +29,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """ command entry point """
         if options['app'] not in settings.INSTALLED_APPS:
-            raise CommandError("'{}' is not an available application in this project".format(options['app']))
+            raise CommandError('\'{}\' is not an available application in this project'.format(options['app']))
 
         self.app = options['app']
         self.model_list = self.get_model_list()
@@ -62,67 +62,73 @@ class Command(BaseCommand):
         """ build the serializers.py file for a list of model names """
         if not template_file:
             template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                         "drf_templates", "serializers_template.jinja")
+                                         'drf_templates', 'serializers_template.jinja')
         if not output_path:
-            output_path = "serializers.py"
+            output_path = 'serializers.py'
+        elif os.path.isdir(output_path):
+            output_path = '{}/serializers.py'.format(output_path)
 
         model_fields = {}
         for model in self.model_list:
             model_fields[model.__name__] = self.get_model_field_names(model)
 
-        data = {"import_models": "my import statement here",
-                "model_list": self.model_list,
-                "app_name": self.app,
-                "models_file": "models",
-                "model_fields": model_fields,
-                "field_list": {"get a list of fields in the model"}
+        data = {'import_models': 'my import statement here',
+                'model_list': self.model_list,
+                'app_name': self.app,
+                'models_file': 'models',
+                'model_fields': model_fields,
+                'field_list': {'get a list of fields in the model'}
                 }
         with open(template_file) as f:
             template = Template(f.read())
         file_text = template.render(data)
-        with open(output_path, "w") as f:
+        with open(output_path, 'w') as f:
             f.write(file_text)
 
     def build_apis(self, output_path=None, template_file=None):
         """ build the apis.py (viewsets) file for a list of model names """
         if not template_file:
             template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                         "drf_templates", "apis_template.jinja")
+                                         'drf_templates', 'apis_template.jinja')
         if not output_path:
-            output_path = "apis.py"
+            output_path = 'apis.py'
+        elif os.path.isdir(output_path):
+            output_path = '{}/apis.py'.format(output_path)
 
         model_fields = {}
         for model in self.model_list:
             model_fields[model.__name__] = self.get_model_field_names(model)
 
-        data = {"model_list": self.model_list,
-                "app_name": self.app,
-                "models_file": "models",
-                "model_fields": model_fields,
-                "serializers_file": "serializers",
-                "viewset_type": "viewsets.ReadOnlyModelViewSet",
+        data = {'model_list': self.model_list,
+                'app_name': self.app,
+                'models_file': 'models',
+                'model_fields': model_fields,
+                'serializers_file': 'serializers',
+                'viewset_type': 'viewsets.ReadOnlyModelViewSet',
                 }
         with open(template_file) as f:
             template = Template(f.read())
         file_text = template.render(data)
-        with open(output_path, "w") as f:
+        with open(output_path, 'w') as f:
             f.write(file_text)
 
     def build_urls(self, output_path=None, template_file=None):
         """ build the urls.py file for a list of model names """
         if not template_file:
             template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                         "drf_templates", "urls_template.jinja")
+                                         'drf_templates', 'urls_template.jinja')
         if not output_path:
-            output_path = "urls.py"
+            output_path = 'urls.py'
+        elif os.path.isdir(output_path):
+            output_path = '{}/urls.py'.format(output_path)
 
-        data = {"import_models": "my import statement here",
-                "model_list": self.model_list,
-                "app_name": self.app,
-                "views_file": "apis",
+        data = {'import_models': 'my import statement here',
+                'model_list': self.model_list,
+                'app_name': self.app,
+                'views_file': 'apis',
                 }
         with open(template_file) as f:
             template = Template(f.read())
         file_text = template.render(data)
-        with open(output_path, "w") as f:
+        with open(output_path, 'w') as f:
             f.write(file_text)
