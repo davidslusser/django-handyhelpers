@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework_filters.filters import RelatedFilter
 from django.http import JsonResponse
+from django.conf import settings
 
 
 class InvalidLookupMixin:
@@ -36,6 +37,8 @@ class InvalidLookupMixin:
 
     def dispatch(self, request, *args, **kwargs):
         for field, val in self.request.GET.dict().items():
+            if field in getattr(settings, 'INVALID_LOOKUP_SKIP_LIST',  ['format', 'fields']):
+                continue
             if self.filter_class:
                 # if filter_class is available, return error if any query parameter is not a lookup expression
                 valid_fields = self.get_lookup_expression(self.filter_class.get_filters())
