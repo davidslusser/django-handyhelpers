@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from drf_dynamic_fields import DynamicFieldsMixin
 
 {%- set margin = app_name|length + models_file|length + 15 %}
 {% set leading_space = " " * margin -%}

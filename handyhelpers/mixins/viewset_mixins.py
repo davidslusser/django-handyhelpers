@@ -37,7 +37,7 @@ class InvalidLookupMixin:
 
     def dispatch(self, request, *args, **kwargs):
         for field, val in self.request.GET.dict().items():
-            if field in getattr(settings, 'INVALID_LOOKUP_SKIP_LIST',  ['format', 'fields']):
+            if field in getattr(settings, 'INVALID_LOOKUP_SKIP_LIST',  ['format', 'fields', 'omit', 'expand']):
                 continue
             if self.filter_class:
                 # if filter_class is available, return error if any query parameter is not a lookup expression
