@@ -6,6 +6,7 @@ Description:
 
 # django modules
 from django.db import models
+from django.db.utils import IntegrityError
 
 # model managers
 from handyhelpers.managers import HandyHelperModelManager
@@ -25,3 +26,29 @@ class HandyHelperBaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class SingletonModel(models.Model):
+    """
+    Singleton model to restrict a database table to one row.
+
+    reference:
+        https://medium.com/@SteelKiwiDev/practical-application-of-singleton-design-pattern-in-django-1f053e23d864
+    """
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        try:
+            self.pk = 1
+            super(SingletonModel, self).save(*args, **kwargs)
+        except IntegrityError:
+            pass
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def load(cls):
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
