@@ -7,7 +7,13 @@ from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin
 
 
 class CsvExportView(FilterByQueryParamsMixin, View):
-    """ dump a queryset to a csv file """
+    """
+    View to dump a queryset to a csv file
+
+    class parameters:
+        queryset - queryset to be rendered on the page
+        filename - filename for the output file created; model name used if not provided
+    """
     queryset = None
     filename = None
 
@@ -32,7 +38,13 @@ class CsvExportView(FilterByQueryParamsMixin, View):
 
 
 class ExcelExportView(FilterByQueryParamsMixin, View):
-    """ dump a queryset to an Excel file """
+    """
+    View to dump a queryset to a xls file
+
+    class parameters:
+        queryset - queryset to be rendered on the page
+        filename - filename for the output file created; model name used if not provided
+    """
     queryset = None
     filename = None
 
