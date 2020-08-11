@@ -27,9 +27,9 @@ class HandyHelperIndexView(View):
     protected_group_name = None
 
     def get(self, request):
-        context = dict(base_template=self.base_template, page_title=self.title,
-                       page_subtitle=self.subtitle, item_list=self.item_list,
-                       protected_item_list=self.protected_item_list, protected_group_name=self.protected_group_name)
+        context = dict(base_template=self.base_template, title=self.title, subtitle=self.subtitle,
+                       item_list=self.item_list, protected_item_list=self.protected_item_list,
+                       protected_group_name=self.protected_group_name)
         return render(request, self.template_name, context)
 
 
@@ -57,7 +57,7 @@ class HandyHelperActionView(View):
     form_list = None
 
     def get(self, request):
-        context = dict(base_template=self.base_template, page_title=self.title, page_subtitle=self.subtitle,
+        context = dict(base_template=self.base_template, title=self.title, subtitle=self.subtitle,
                        item_list=self.item_list, form_list=self.form_list,
                        protected_item_list=self.protected_item_list, protected_group_name=self.protected_group_name)
         return render(request, self.template_name, context)
