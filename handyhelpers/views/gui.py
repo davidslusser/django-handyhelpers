@@ -2,7 +2,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import ListView, View
 
-from djangohelpers.mixins.view_mixins import FilterByQueryParamsMixin
+from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin
 
 
 class HandyHelperIndexView(View):
