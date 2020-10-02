@@ -1,0 +1,56 @@
+/* styling for zoom groups, groups of elements that expand selected and shrink siblings on mouse hover */
+
+.zoom-group-container {
+    pointer-events: none;
+}
+
+.zoom-group-flex-container {
+    pointer-events: none;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.zoom-group-container > * {
+    cursor: pointer;
+    pointer-events: auto;
+    transition: .4s;
+}
+
+.zoom-group-flex-container > * {
+    cursor: pointer;
+    pointer-events: auto;
+    transition: .4s;
+}
+
+.zoom-group-container:hover > *,
+.zoom-group-container:focus-within > * {
+    opacity: 0.3;
+    transform: scale(0.8);
+    filter: blur(2px);
+}
+
+.zoom-group-flex-container:hover > *,
+.zoom-group-flex-container:focus-within > * {
+    opacity: 0.3;
+    transform: scale(0.8);
+    filter: blur(2px);
+}
+
+.zoom-group-container:hover > :hover,
+.zoom-group-container:focus-within > :focus {
+    transform: scale(1.2);
+    opacity: 1;
+    outline: none;
+    filter: blur(0px);
+}
+
+.zoom-group-flex-container:hover > :hover,
+.zoom-group-flex-container:focus-within > :focus {
+    transform: scale(1.2);
+    opacity: 1;
+    outline: none;
+    filter: blur(0px);
+}

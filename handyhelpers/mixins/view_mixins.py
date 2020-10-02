@@ -1,5 +1,18 @@
 
 class FilterByQueryParamsMixin:
+    """ Mixin used to evaluate query parameters provided in the URL and update a queryset accordingly. This is typically
+    used on list views. Query parameters passed must be valid model fields. Invalid parameters are ignored.
+
+    class parameters:
+        request          - request object
+        queryset         - django queryset
+        page_description - optional parameter used to describe page; typically used as a page subtitle
+        distinct         - optional parameter to make queryset include only distinct results
+
+    example usage:
+        class HandyHelperGenericBaseListView(FilterByQueryParamsMixin, ListView)
+    """
+
     request = None
     queryset = None
     page_description = None
