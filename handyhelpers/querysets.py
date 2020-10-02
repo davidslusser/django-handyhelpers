@@ -15,12 +15,11 @@ from django.utils import timezone
 
 def count_by_hour(queryset, field_name):
     """
-    Description:
-        sort queryset results by hour of day
+    sort queryset results by hour of day
 
-    Parameters:
-        queryset   - django queryset
-        field_name - field to group data by (string)
+    Args:
+        queryset: django queryset
+        field_name: field to group data by (string)
 
     Returns:
         list of grouped values: count of entries per hour, starting with current hour, descending chronologically
@@ -46,9 +45,9 @@ def count_by_week(queryset, field_name):
     Description:
         sort queryset results by week of year
 
-    Parameters:
-        queryset   - django queryset
-        field_name - field to group data by (string)
+    Args:
+        queryset: django queryset
+        field_name: field to group data by (string)
 
     Returns:
         list of grouped values
@@ -74,9 +73,9 @@ def count_by_month(queryset, field_name):
     Description:
         sort queryset results by month of year
 
-    Parameters:
-        queryset   - django queryset
-        field_name - field to group data by (string)
+    Args:
+        queryset: django queryset
+        field_name: field to group data by (string)
 
     Returns:
         list of grouped values: count of entries per month, starting with current month, descending chronologically

@@ -29,12 +29,7 @@ class HandyHelperBaseModel(models.Model):
 
 
 class SingletonModel(models.Model):
-    """
-    Singleton model to restrict a database table to one row.
-
-    reference:
-        https://medium.com/@SteelKiwiDev/practical-application-of-singleton-design-pattern-in-django-1f053e23d864
-    """
+    """ Singleton model to restrict a database table to one row. """
     class Meta:
         abstract = True
 

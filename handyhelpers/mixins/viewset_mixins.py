@@ -10,6 +10,13 @@ class InvalidLookupMixin:
     filter_fields (typically set in your viewset), or a valid model field.
     Order of precedence is: filter_class, filter_fields, model field.
 
+    class parameters:
+        request       - request object (as provided by Viewset)
+        model         - django model (as provided by Viewset)
+        queryset      - django queryset (as provided by Viewset)
+        filter_class  - optional filter_class (as provided by Viewset)
+        filter_fields - optional filter_fields (as provided by Viewset)
+
     example usage:
         class MyModelViewSet(InvalidLookupMixin, viewsets.ReadOnlyModelViewSet):
     """
@@ -20,7 +27,17 @@ class InvalidLookupMixin:
     filter_fields = []
 
     def get_lookup_expression(self, fs_filter, related_field=None, lookup_expression_list=None):
-        """ get lookup expressions as defined in a FilterSet filter """
+        """
+        get lookup expressions as defined in a FilterSet filter
+
+        Args:
+            fs_filter:              list of filters as defined in the filterset
+            related_field:          related field as defined in filterset
+            lookup_expression_list: list of lookup expressions as defined for a field in a filterset
+
+        Returns:
+            list of filtered lookup expressions
+        """
         if not lookup_expression_list:
             lookup_expression_list = []
         for i, j in fs_filter.items():

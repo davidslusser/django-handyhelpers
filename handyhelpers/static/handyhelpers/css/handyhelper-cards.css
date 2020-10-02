@@ -1,0 +1,111 @@
+
+.zoom-icon-card, .zoom-index-card, .zoom-admin-card .zoom-summary-card {
+    margin: .75rem;
+    padding: .25rem;
+    border: 1px solid var(--secondary);
+    background-color: var(--light);
+}
+
+.zoom-index-card {
+    /* this card is intended to show a navigatable item and contains a title icon (fontawesome or similar)
+    and a description */
+    text-align: center;
+    width: 22rem;
+    height: 11rem;
+}
+
+.zoom-index-card .icon {
+    margin: .25rem .5rem .25rem .5rem;
+    font-size: 2.75rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.zoom-index-card .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.zoom-index-card .description {
+    color: var(--secondary);
+}
+
+
+.zoom-admin-card {
+    /* this card is intended to show an action and contains a centered icon (fontawesome or similar)
+    and a short title */
+    width: 9.5rem;
+    height: 9rem;
+    margin: 1rem;
+    border: 1px solid var(--secondary);
+    text-align: center;
+    background-color: var(--light);
+}
+
+.zoom-admin-card .icon {
+    margin: .25rem .5rem .25rem .5rem;
+    padding: .25rem;
+    font-size: 2.5rem;
+    color: var(--primary);
+}
+
+.zoom-admin-card .title {
+    display: table-cell;
+    color: var(--secondary);
+    height: 4rem;
+    width: 9.5rem;
+    vertical-align: middle;
+    padding: .25rem;
+}
+
+
+.zoom-summary-card {
+    /* this card is intended to show a simple summary and contains a centered icon (fontawesome or similar)
+    and a short description */
+    width: 10rem;
+    height: 10rem;
+    margin: 1rem;
+    border: 1px solid var(--secondary);
+    text-align: center;
+    background-color: var(--light);
+}
+
+.zoom-summary-card .title {
+    margin: .075rem .5rem .075rem .5rem;
+    padding: .25rem;
+    font-size: 3.75rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.zoom-summary-card .description {
+    display: table-cell;
+    color: var(--secondary);
+    font-size: 1.25rem;
+    font-weight: bold;
+    height: 3rem;
+    width: 10rem;
+    vertical-align: middle;
+    margin: .075rem;
+    padding: 0 .25rem 0 .25rem;
+}
+
+
+.zoom-icon-card {
+    /* this card is intended to launch an action and contain a single, centered icon (fontawesome or similar) */
+    width: 5rem;
+    height: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 5px;
+}
+
+.zoom-icon-card .icon {
+    margin: .25rem .5rem .25rem .5rem;
+    padding: .25rem;
+    font-size: 2rem;
+    color: var(--primary);
+}

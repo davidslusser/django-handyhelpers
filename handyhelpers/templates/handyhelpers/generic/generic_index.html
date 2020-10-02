@@ -3,8 +3,8 @@
 {% load user_tags %}
 
 {% block local_head %}
-    {% include 'handyhelpers/component/zoom_cards.htm' %}
-    <link href="{% static 'hostmgr/css/hostmgr_zoom_cards.css' %}" rel="stylesheet">
+    <link href="{% static 'handyhelpers/css/handyhelper-cards.css' %}" rel="stylesheet">
+    <link href="{% static 'handyhelpers/css/zoom-groups.css' %}" rel="stylesheet">
 {% endblock local_head %}
 
 {% block content %}
@@ -22,7 +22,7 @@
 
     <!-- Page Content -->
     <section class="animated fadeIn" style="animation-delay: .25s;">
-        <div class="zoom-card-flex-container">
+        <div class="zoom-group-flex-container">
 
             <!-- unprotected items -->
             {% for item in item_list %}
