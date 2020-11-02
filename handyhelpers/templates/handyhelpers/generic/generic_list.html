@@ -9,10 +9,28 @@
     <div class="container-fluid animated fadeIn mb-5">
         <h1><span class="text-primary"><b>{{ title }}:</b></span> {% if sub_title %}<span class="text-secondary"><small><small>{{ sub_title }}</small></small></span>{% endif %}</h1>
 
-        {# To include a create form, exposed via modal, include create_form (dict) in the context of your view. The create_from must include modal_name and link_title fields #}
-        {% if create_form %}
-        <div class="text-right"><a href="#" data-toggle="modal" data-target="#modal_{{ create_form.modal_name }}"><i class="fas fa-plus-circle mr-2"></i>{{ create_form.link_title }}</a></div>
-        {% endif %}
+        <div class="text-right">
+            {# To include a create form, exposed via modal, include create_form (dict) in the context of your view. The create_from must include modal_name and link_title fields #}
+            {% if create_form %}
+            <a href="#" data-toggle="modal" data-target="#modal_{{ create_form.modal_name }}" title="{{ create_form.tool_tip }}">
+                <i class="fas fa-plus-circle"></i>
+                {% if create_form.link_title %} {{ create_form.link_title }} {% endif %}
+            </a>
+            {% endif %}
+
+            {# To include a filter form, exposed via modal, include filter_form (dict) in the context of your view. The filter_from must include modal_name and link_title fields #}
+            {% if filter_form %}
+            <a href="#" data-toggle="modal" data-target="#modal_{{ filter_form.modal_name }}" title="{{ filter_form.tool_tip }}" class="ml-2">
+                <i class="fas fa-filter"></i>
+                {% if filter_form.link_title %} {{ filter_form.link_title }} {% endif %}
+            </a>
+                {% if filter_form.undo and request.META.QUERY_STRING %}
+                <a href="{% url 'handyhelpers:show_all_list_view' %}" title="clear filters" class="ml-2">
+                    <i class="fas fa-undo-alt"></i>
+                </a>
+                {% endif %}
+            {% endif %}
+        </div>
 
         {% include table %}
     </div>
@@ -21,6 +39,11 @@
 
     {# include generic modal form for the create <object> form if passed from the view #}
     {% with create_form as form_data %}
+        {% include 'handyhelpers/generic/generic_modal_form.htm' %}
+    {% endwith %}
+
+    {# include generic modal form for the filter <object> form if passed from the view #}
+    {% with filter_form as form_data %}
         {% include 'handyhelpers/generic/generic_modal_form.htm' %}
     {% endwith %}
 

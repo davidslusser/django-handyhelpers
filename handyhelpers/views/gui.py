@@ -210,11 +210,13 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
         page_description       - subtitle to use in template
         table                  - htm file rendering the queryset to be included in the generic_list template
         modals                 - htm file rendering additional modals to be included in the generic_list template
+
         create_form_obj        - form object
         create_form_url        - url the form (action) should post to
         create_form_title      - title to use on the create form modal (can be html)
         create_form_modal      - name of modal for the create form
         create_form_link_title - text used for the link opening the create form
+        create_form_tool_tip   - text to use for the tooltip
 
     example:
         class ListProjects(HandyHelperBaseCreateListView):
@@ -222,30 +224,36 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
             title = 'Projects'
             page_description = 'my cool projects'
             table = 'table/table_projects.htm'
+
             create_form_obj = ProjectForm
             create_form_url = '/hostmgr/create_project/'
             create_form_title = '<b>Add Project: </b><small> </small>'
             create_form_modal = 'add_project'
             create_form_link_title = 'add project'
+            create_form_tool_tip = 'add project'
     """
     create_form = dict()
     create_form_obj = None
+    create_form_id = None
     create_form_url = None
     create_form_title = None
     create_form_modal = None
     create_form_link_title = None
+    create_form_tool_tip = None
 
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        sub_title=self.page_description, table=self.table, modals=self.modals,
                        args=self.args, kwargs=self.kwargs)
         if self.create_form_obj:
-            self.create_form['form'] = self.create_form_obj(request.user.username, request.POST or None)
+            self.create_form['form'] = self.create_form_obj(request.POST or None)
+            self.create_form['form_id'] = self.create_form_id
             self.create_form['action'] = 'Add'
             self.create_form['action_url'] = self.create_form_url
             self.create_form['title'] = self.create_form_title
             self.create_form['modal_name'] = self.create_form_modal
             self.create_form['link_title'] = self.create_form_link_title
+            self.create_form['tool_tip'] = self.create_form_tool_tip
             context['create_form'] = self.create_form
         return render(request, self.template, context)
 
@@ -253,3 +261,166 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
 class HandyHelperBaseListPlusCreateView(HandyHelperListView):
     """ maintaining the HandyHelperBaseListPlusCreateView for legacy compatibility """
     pass
+
+
+class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
+    """
+    A reusable generic base view to render a ListView where the child view will provide a html table and filter form.
+
+    class parameters:
+        base_template          - base template used for rendering page; defaults to: handyhelpers_base.htm
+        template_name          - template used when rendering page; defaults to: handyhelpers/generic/generic_list.html
+        args                   - additional args to pass into the template
+        kwargs                 - additional kwargs to pass into the template
+        queryset               - queryset to be rendered on the page
+        title                  - title to use in template
+        page_description       - subtitle to use in template
+        table                  - htm file rendering the queryset to be included in the generic_list template
+        modals                 - htm file rendering additional modals to be included in the generic_list template
+
+        filter_form_obj        - form object
+        filter_form_url        - url the form (action) should post to
+        filter_form_title      - title to use on the filter form modal (can be html)
+        filter_form_modal      - name of modal for the filter form
+        filter_form_link_title - text used for the link opening the filter form
+        filter_form_tool_tip   - text to use for the tooltip
+        filter_form_undo = True
+
+    example:
+        class ListProjects(HandyHelperListPlusFilterView):
+            queryset = Project.objects.all()
+            title = 'Projects'
+            page_description = 'my cool projects'
+            table = 'table/table_projects.htm'
+
+            filter_form_obj = ProjectForm
+            filter_form_url = '/hostmgr/filter_project/'
+            filter_form_title = '<b>Filter Projects: </b><small> </small>'
+            filter_form_modal = 'filter_project'
+            filter_form_link_title = 'filter project'
+            filter_form_tool_tip = 'filter project'
+    """
+    filter_form = dict()
+    filter_form_obj = None
+    filter_form_id = None
+    filter_form_url = '/handyhelpers/filter_list_view'
+    filter_form_title = None
+    filter_form_modal = None
+    filter_form_link_title = None
+    filter_form_tool_tip = None
+    filter_form_undo = True
+
+    def get(self, request, *args, **kwargs):
+        context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
+                       sub_title=self.page_description, table=self.table, modals=self.modals,
+                       args=self.args, kwargs=self.kwargs)
+        if self.filter_form_obj:
+            self.filter_form['form'] = self.filter_form_obj(request.POST or None)
+            self.filter_form['form_id'] = self.filter_form_id
+            self.filter_form['action'] = 'Filter'
+            self.filter_form['action_url'] = self.filter_form_url
+            self.filter_form['title'] = self.filter_form_title
+            self.filter_form['modal_name'] = self.filter_form_modal
+            self.filter_form['link_title'] = self.filter_form_link_title
+            self.filter_form['tool_tip'] = self.filter_form_tool_tip
+            self.filter_form['undo'] = self.filter_form_undo
+            context['filter_form'] = self.filter_form
+        return render(request, self.template, context)
+
+
+class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
+    """
+    A reusable generic base view to render a ListView where the child view will provide a html table and
+    and a create form and a filter form.
+
+    class parameters:
+        base_template          - base template used for rendering page; defaults to: handyhelpers_base.htm
+        template_name          - template used when rendering page; defaults to: handyhelpers/generic/generic_list.html
+        args                   - additional args to pass into the template
+        kwargs                 - additional kwargs to pass into the template
+        queryset               - queryset to be rendered on the page
+        title                  - title to use in template
+        page_description       - subtitle to use in template
+        table                  - htm file rendering the queryset to be included in the generic_list template
+        modals                 - htm file rendering additional modals to be included in the generic_list template
+
+        create_form_obj        - create form object
+        create_form_url        - url the create form (action) should post to
+        create_form_title      - title to use on the create form modal (can be html)
+        create_form_modal      - name of modal for the create form
+        create_form_link_title - text used for the link opening the create form
+        create_form_tool_tip   - text to use for the create form link tooltip
+
+        filter_form_obj        - filter form object
+        filter_form_url        - url the filter form (action) should post to
+        filter_form_title      - title to use on the filter form modal (can be html)
+        filter_form_modal      - name of modal for the filter form
+        filter_form_link_title - text used for the link opening the filter form
+        filter_form_tool_tip   - text to use for the filter form link tooltip
+        filter_form_undo       - include an undo icon to clear applied filters
+
+    example:
+        class ListProjects(HandyHelperBaseCreateListView):
+            queryset = Project.objects.all()
+            title = 'Projects'
+            page_description = 'my cool projects'
+            table = 'table/table_projects.htm'
+
+            create_form_obj = ProjectForm
+            create_form_url = '/hostmgr/create_project/'
+            create_form_title = '<b>Add Project: </b><small> </small>'
+            create_form_modal = 'add_project'
+            create_form_link_title = 'add project'
+            create_form_tool_tip = 'add project'
+
+            filter_form_obj = ProjectForm
+            filter_form_url = '/hostmgr/filter_project/'
+            filter_form_title = '<b>Filter Projects: </b><small> </small>'
+            filter_form_modal = 'filter_projects'
+            filter_form_link_title = 'filter projects'
+            filter_form_tool_tip = 'filter projects'
+            filter_form_undo = True
+    """
+    create_form = dict()
+    create_form_obj = None
+    create_form_url = None
+    create_form_title = None
+    create_form_modal = None
+    create_form_link_title = None
+    create_form_tool_tip = None
+
+    filter_form = dict()
+    filter_form_obj = None
+    filter_form_url = '/handyhelpers/filter_list_view'
+    filter_form_title = None
+    filter_form_modal = None
+    filter_form_link_title = None
+    filter_form_tool_tip = None
+    filter_form_undo = True
+
+    def get(self, request, *args, **kwargs):
+        context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
+                       sub_title=self.page_description, table=self.table, modals=self.modals,
+                       args=self.args, kwargs=self.kwargs)
+        if self.create_form_obj:
+            self.create_form['form'] = self.create_form_obj(request.POST or None)
+            self.create_form['action'] = 'Add'
+            self.create_form['action_url'] = self.create_form_url
+            self.create_form['title'] = self.create_form_title
+            self.create_form['modal_name'] = self.create_form_modal
+            self.create_form['link_title'] = self.create_form_link_title
+            self.create_form['tool_tip'] = self.create_form_tool_tip
+            context['create_form'] = self.create_form
+
+        if self.filter_form_obj:
+            self.filter_form['form'] = self.filter_form_obj(request.POST or None)
+            self.filter_form['action'] = 'Filter'
+            self.filter_form['action_url'] = self.filter_form_url
+            self.filter_form['title'] = self.filter_form_title
+            self.filter_form['modal_name'] = self.filter_form_modal
+            self.filter_form['link_title'] = self.filter_form_link_title
+            self.filter_form['tool_tip'] = self.filter_form_tool_tip
+            self.filter_form['undo'] = self.filter_form_undo
+            context['filter_form'] = self.filter_form
+
+        return render(request, self.template, context)

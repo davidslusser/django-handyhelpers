@@ -3,12 +3,13 @@
 
 About
 =====
-django-handyhelpers is a collection of handy utilities to support Django operations. Included are:
+django-handyhelpers is a collection of handy utilities to support Django operations. Features include:
 
     * management commands to generate admin pages
     * management commands to generate, views, serializers, and urls for Django Rest Framework (DRF)
-    * generic bas model with extensive model manager
+    * generic base model with extensive model manager
     * generic list views and FilterByQueryParamsMixin
+    * xls and csv export views
     * InvalidLookupMixin for DRF viewsets
     * a collection of generic bootstrap-based html templates
 
