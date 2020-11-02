@@ -17,7 +17,7 @@
 .zoom-index-card .icon {
     margin: .25rem .5rem .25rem .5rem;
     font-size: 2.75rem;
-    font-weight: bold;
+    /*font-weight: bold;*/
     color: var(--primary);
 }
 

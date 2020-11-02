@@ -12,7 +12,7 @@
                 </div>
             {% endif %}
 
-            <form class='form-horizontal' action="{{ form_data.action_url }}" method="POST">
+            <form id="form_{{ form_data.modal_name }}" class="form-horizontal" action="{{ form_data.action_url }}" method="POST">
                 <div class="modal-body" id="id_modal_{{ form_data.modal_name }}_form_body">
                     {% with form_data.form as form %}
                         {% include 'handyhelpers/generic/generic_form.htm' %}

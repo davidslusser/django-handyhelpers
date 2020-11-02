@@ -4,10 +4,15 @@
 Version History
 ===============
 
-
-Pre-Release
------------
-
 .. csv-table::
    :header: "Release", "Details"
    :widths: 20, 100
+
+   "0.0.27", "added HandyHelperListPlusFilterView and HandyHelperListPlusCreateAndFilterView"
+   "0.0.26", "updated docstrings for views; added arg/kwargs to views"
+   "0.0.25", "removing djangohelpers path; only using handyhelpers now"
+   "0.0.24", "added zoom and card css"
+   "0.0.23", "adding support for drf-dynamic-fields in INVALID_LOOKUP_SKIP_LIST"
+   "0.0.22", "adding INVALID_LOOKUP_SKIP_LIST parameter via settings variable for InvalidLookupMixin"
+   "0.0.21", "updating jinja templates and output path for drf generation"
+   "0.0.20", "adding related_objects and distinct option to FilterByQueryParamsMixin"

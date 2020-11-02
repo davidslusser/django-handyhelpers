@@ -19,8 +19,8 @@ import django
 sys.path.insert(0, os.path.abspath('../../'))
 print("TEST: ", os.path.abspath('../../'))
 # Django settings
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'handyhelpers_tests.handyhelpers_tests.settings')
-# django.setup()
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'handyhelpers_tests.handyhelpers_tests.settings')
+django.setup()
 import handyhelpers
 
 
