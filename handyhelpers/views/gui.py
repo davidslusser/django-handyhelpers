@@ -53,7 +53,7 @@ class HandyHelperGenericBaseListView(FilterByQueryParamsMixin, ListView):
         modals        - htm file rendering additional modals to be included in the generic_list template
     """
     base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
-    template = 'handyhelpers/generic/generic_list.html'
+    template_name = 'handyhelpers/generic/generic_list.html'
     title = None
     table = None
     modals = None
@@ -126,7 +126,7 @@ class HandyHelperAboutView(HandyHelperGenericBaseView):
         contact       - any desired contact information (None if not provided)
         links         - list of dictionary containing links; ex. [{'some reference': 'www.somewebsite.com}, ...]
     """
-    template = 'handyhelpers/generic/generic_about.html'
+    template_name = 'handyhelpers/generic/generic_about.html'
     title = 'About'
     subtitle = None
     version = None
@@ -139,7 +139,7 @@ class HandyHelperAboutView(HandyHelperGenericBaseView):
         context = dict(base_template=self.base_template, title=self.title, subtitle=self.subtitle, version=self.version,
                        details=self.details, source=self.source, contact=self.contact, links=self.links,
                        args=self.args, kwargs=self.kwargs)
-        return render(request, self.template, context)
+        return render(request, self.template_name, context)
 
 
 class HandyHelperSingletonView(HandyHelperGenericBaseView):
@@ -188,7 +188,7 @@ class HandyHelperListView(HandyHelperGenericBaseListView):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        sub_title=self.page_description, table=self.table, modals=self.modals,
                        args=self.args, kwargs=self.kwargs)
-        return render(request, self.template, context)
+        return render(request, self.template_name, context)
 
 
 class HandyHelperBaseListView(HandyHelperListView):
@@ -255,7 +255,7 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
             self.create_form['link_title'] = self.create_form_link_title
             self.create_form['tool_tip'] = self.create_form_tool_tip
             context['create_form'] = self.create_form
-        return render(request, self.template, context)
+        return render(request, self.template_name, context)
 
 
 class HandyHelperBaseListPlusCreateView(HandyHelperListView):
@@ -325,7 +325,7 @@ class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
             self.filter_form['tool_tip'] = self.filter_form_tool_tip
             self.filter_form['undo'] = self.filter_form_undo
             context['filter_form'] = self.filter_form
-        return render(request, self.template, context)
+        return render(request, self.template_name, context)
 
 
 class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
@@ -423,4 +423,4 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
             self.filter_form['undo'] = self.filter_form_undo
             context['filter_form'] = self.filter_form
 
-        return render(request, self.template, context)
+        return render(request, self.template_name, context)
