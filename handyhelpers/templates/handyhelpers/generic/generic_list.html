@@ -6,13 +6,14 @@
 {% endblock %}
 
 {% block content %}
+    <!-- handyhelpers/generic/generic_list.html -->
     <div class="container-fluid animated fadeIn mb-5">
         <h1><span class="text-primary"><b>{{ title }}:</b></span> {% if sub_title %}<span class="text-secondary"><small><small>{{ sub_title }}</small></small></span>{% endif %}</h1>
 
         <div class="text-right">
             {# To include a create form, exposed via modal, include create_form (dict) in the context of your view. The create_from must include modal_name and link_title fields #}
             {% if create_form %}
-            <a href="#" data-toggle="modal" data-target="#modal_{{ create_form.modal_name }}" title="{{ create_form.tool_tip }}">
+            <a href="#" data-toggle="modal" data-target="#modal_{{ create_form.modal_name }}" title="{{ create_form.tool_tip|default_if_none:'create' }}">
                 <i class="fas fa-plus-circle"></i>
                 {% if create_form.link_title %} {{ create_form.link_title }} {% endif %}
             </a>
@@ -20,7 +21,7 @@
 
             {# To include a filter form, exposed via modal, include filter_form (dict) in the context of your view. The filter_from must include modal_name and link_title fields #}
             {% if filter_form %}
-            <a href="#" data-toggle="modal" data-target="#modal_{{ filter_form.modal_name }}" title="{{ filter_form.tool_tip }}" class="ml-2">
+            <a href="#" data-toggle="modal" data-target="#modal_{{ filter_form.modal_name }}" title="{{ filter_form.tool_tip|default_if_none:'filter' }}" class="ml-2">
                 <i class="fas fa-filter"></i>
                 {% if filter_form.link_title %} {{ filter_form.link_title }} {% endif %}
             </a>
