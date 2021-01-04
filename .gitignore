@@ -12,6 +12,10 @@ env/
 build/
 develop-eggs/
 dist/
+#!/handyhelpers/static/node_modules/*/dist
+!/**/node_modules/*/dist
+package-lock.json
+node_modules/clipboard/
 downloads/
 eggs/
 .eggs/
