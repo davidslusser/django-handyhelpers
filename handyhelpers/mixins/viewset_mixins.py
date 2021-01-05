@@ -55,6 +55,8 @@ class InvalidLookupMixin:
 
     def dispatch(self, request, *args, **kwargs):
         for field, val in self.request.GET.dict().items():
+            # ignore the '!' in 'field!=value' if filters are used
+            field = field.rstrip('!')
             if field in getattr(settings, 'INVALID_LOOKUP_SKIP_LIST',
                                 ['offset', 'limit', 'format', 'fields', 'omit', 'expand']):
                 continue

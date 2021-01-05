@@ -186,7 +186,7 @@ class HandyHelperListView(HandyHelperGenericBaseListView):
     """
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
-                       sub_title=self.page_description, table=self.table, modals=self.modals,
+                       subtitle=self.page_description, table=self.table, modals=self.modals,
                        args=self.args, kwargs=self.kwargs)
         return render(request, self.template_name, context)
 
@@ -243,7 +243,7 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
 
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
-                       sub_title=self.page_description, table=self.table, modals=self.modals,
+                       subtitle=self.page_description, table=self.table, modals=self.modals,
                        args=self.args, kwargs=self.kwargs)
         if self.create_form_obj:
             self.create_form['form'] = self.create_form_obj(request.POST or None)
@@ -312,7 +312,7 @@ class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
 
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
-                       sub_title=self.page_description, table=self.table, modals=self.modals,
+                       subtitle=self.page_description, table=self.table, modals=self.modals,
                        args=self.args, kwargs=self.kwargs)
         if self.filter_form_obj:
             self.filter_form['form'] = self.filter_form_obj(request.POST or None)
@@ -400,7 +400,7 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
 
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
-                       sub_title=self.page_description, table=self.table, modals=self.modals,
+                       subtitle=self.page_description, table=self.table, modals=self.modals,
                        args=self.args, kwargs=self.kwargs)
         if self.create_form_obj:
             self.create_form['form'] = self.create_form_obj(request.POST or None)
