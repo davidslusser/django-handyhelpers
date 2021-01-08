@@ -42,15 +42,20 @@ class InvalidLookupMixin:
         if not lookup_expression_list:
             lookup_expression_list = []
         for i, j in fs_filter.items():
+            # protect agains recursion if field relates to itself
+            if i == related_field:
+                continue
             if isinstance(j, RelatedFilter):
-                lookup_expression_list.append(i)
                 self.get_lookup_expression(j.filterset.get_filters(), related_field=i,
                                            lookup_expression_list=lookup_expression_list)
             else:
                 if related_field:
-                    lookup_expression_list.append('{}__{}'.format(related_field, i))
+                    expression = '{}__{}'.format(related_field, i)
+                    if expression not in lookup_expression_list:
+                        lookup_expression_list.append(expression)
                 else:
-                    lookup_expression_list.append(i)
+                    if i not in lookup_expression_list:
+                        lookup_expression_list.append(i)
         return lookup_expression_list
 
     def dispatch(self, request, *args, **kwargs):
@@ -64,20 +69,22 @@ class InvalidLookupMixin:
                 # if filter_class is available, return error if any query parameter is not a lookup expression
                 valid_fields = self.get_lookup_expression(self.filter_class.get_filters())
                 if field not in valid_fields:
-                    return JsonResponse(data={'detail': '{} is not a defined filter field in {}'
-                                        .format(field, self.model.__name__)}, status=status.HTTP_404_NOT_FOUND)
+                    return JsonResponse(data={'detail': '{} is not a valid filter field:'},
+                                        status=status.HTTP_404_NOT_FOUND)
 
             elif self.filterset_fields:
                 # if filterset_fields are available, return error if any query parameter is not a filter field
                 if field not in self.filterset_fields:
-                    return JsonResponse(data={'detail': '{} is not a defined filter field in {}'
-                                        .format(field, self.model.__name__)}, status=status.HTTP_404_NOT_FOUND)
+                    return JsonResponse(data={'detail': f'{field} is not valid field. Filterable fields are: '
+                                                        f'{self.filterset_fields}'},
+                                        status=status.HTTP_404_NOT_FOUND)
 
             elif self.filter_fields:
                 # if filter_fields are available, return error if any query parameter is not an available filter field
                 if field not in self.filter_fields:
-                    return JsonResponse(data={'detail': '{} is not a defined filter field in {}'
-                                        .format(field, self.model.__name__)}, status=status.HTTP_404_NOT_FOUND)
+                    return JsonResponse(data={'detail': f'{field} is not valid field. Filterable fields are: '
+                                                        f'{self.filter_fields}'},
+                                        status=status.HTTP_404_NOT_FOUND)
 
             else:
                 # if neither filter_class nor filterset_fields are available, return error if any query parameter is
