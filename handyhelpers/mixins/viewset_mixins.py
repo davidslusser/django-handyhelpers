@@ -69,7 +69,7 @@ class InvalidLookupMixin:
                 # if filter_class is available, return error if any query parameter is not a lookup expression
                 valid_fields = self.get_lookup_expression(self.filter_class.get_filters())
                 if field not in valid_fields:
-                    return JsonResponse(data={'detail': '{} is not a valid filter field:'},
+                    return JsonResponse(data={'detail': f'{field} is not a valid filter field:'},
                                         status=status.HTTP_404_NOT_FOUND)
 
             elif self.filterset_fields:
