@@ -11,11 +11,13 @@ class InvalidLookupMixin:
     Order of precedence is: filter_class, filterset_fields, filter_fields, model field.
 
     class parameters:
-        request       - request object (as provided by Viewset)
-        model         - django model (as provided by Viewset)
-        queryset      - django queryset (as provided by Viewset)
-        filter_class  - optional filter_class (as provided by Viewset)
-        filter_fields - optional filter_fields (as provided by Viewset)
+        request          - request object (as provided by Viewset)
+        model            - django model (as provided by Viewset)
+        queryset         - django queryset (as provided by Viewset)
+        filterset_class  - optional filterset_class (as provided by Viewset)
+        filter_class     - optional filter_class (as provided by Viewset)
+        filterset_fields - optional filterset_fields (as provided by Viewset)
+        filter_fields    - optional filter_fields (as provided by Viewset)
 
     example usage:
         class MyModelViewSet(InvalidLookupMixin, viewsets.ReadOnlyModelViewSet):
@@ -24,6 +26,7 @@ class InvalidLookupMixin:
     model = None
     queryset = None
     filter_class = None
+    filterset_class = None
     filterset_fields = []
     filter_fields = []
 
@@ -42,7 +45,7 @@ class InvalidLookupMixin:
         if not lookup_expression_list:
             lookup_expression_list = []
         for i, j in fs_filter.items():
-            # protect agains recursion if field relates to itself
+            # protect against recursion if field relates to itself
             if i == related_field:
                 continue
             if isinstance(j, RelatedFilter):
@@ -65,11 +68,19 @@ class InvalidLookupMixin:
             if field in getattr(settings, 'INVALID_LOOKUP_SKIP_LIST',
                                 ['offset', 'limit', 'format', 'fields', 'omit', 'expand']):
                 continue
+
+            if self.filterset_class:
+                # if filterset_class is available, return error if any query parameter is not a lookup expression
+                valid_fields = self.get_lookup_expression(self.filterset_class.get_filters())
+                if field not in valid_fields:
+                    return JsonResponse(data={'detail': f'{field} is not a valid filter field'},
+                                        status=status.HTTP_404_NOT_FOUND)
+
             if self.filter_class:
                 # if filter_class is available, return error if any query parameter is not a lookup expression
                 valid_fields = self.get_lookup_expression(self.filter_class.get_filters())
                 if field not in valid_fields:
-                    return JsonResponse(data={'detail': f'{field} is not a valid filter field:'},
+                    return JsonResponse(data={'detail': f'{field} is not a valid filter field'},
                                         status=status.HTTP_404_NOT_FOUND)
 
             elif self.filterset_fields:
@@ -91,7 +102,7 @@ class InvalidLookupMixin:
                 # not a field in the model
                 if field.split('__')[0] not in [i.name for i in self.model._meta.fields +
                                                                 self.model._meta.many_to_many]:
-                    return JsonResponse(data={'detail': '{} is not a valid field in {}'
-                                        .format(field, self.model.__name__)}, status=status.HTTP_404_NOT_FOUND)
+                    return JsonResponse(data={'detail': f'{field} is not a valid field in {self.model.__name__}'},
+                                        status=status.HTTP_404_NOT_FOUND)
 
         return super().dispatch(request, *args, **kwargs)
