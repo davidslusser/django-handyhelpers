@@ -45,11 +45,15 @@ class InvalidLookupMixin:
         if not lookup_expression_list:
             lookup_expression_list = []
         for i, j in fs_filter.items():
-            # protect against recursion if field relates to itself
+            # protect against recursion if field is a FK to the model
             if i == related_field:
                 continue
             if isinstance(j, RelatedFilter):
-                self.get_lookup_expression(j.filterset.get_filters(), related_field=i,
+                if related_field:
+                    next_related_field = f'{related_field}__{i}'
+                else:
+                    next_related_field = i
+                self.get_lookup_expression(j.filterset.get_filters(), related_field=next_related_field,
                                            lookup_expression_list=lookup_expression_list)
             else:
                 if related_field:
@@ -76,7 +80,7 @@ class InvalidLookupMixin:
                     return JsonResponse(data={'detail': f'{field} is not a valid filter field'},
                                         status=status.HTTP_404_NOT_FOUND)
 
-            if self.filter_class:
+            elif self.filter_class:
                 # if filter_class is available, return error if any query parameter is not a lookup expression
                 valid_fields = self.get_lookup_expression(self.filter_class.get_filters())
                 if field not in valid_fields:
