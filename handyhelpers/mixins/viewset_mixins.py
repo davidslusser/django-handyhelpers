@@ -45,11 +45,11 @@ class InvalidLookupMixin:
         if not lookup_expression_list:
             lookup_expression_list = []
         for i, j in fs_filter.items():
-            # protect against recursion if field is a FK to the model
-            if i == related_field:
-                continue
             if isinstance(j, RelatedFilter):
                 if related_field:
+                    # protect against recursion if filter field is the same as the related field
+                    if related_field.endswith(f'__{i}'):
+                        return lookup_expression_list
                     next_related_field = f'{related_field}__{i}'
                 else:
                     next_related_field = i
