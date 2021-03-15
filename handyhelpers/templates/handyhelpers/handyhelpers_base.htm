@@ -22,12 +22,13 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" integrity="sha256-HtCCUh9Hkh//8U1OwcbD8epVEUdBvuI8wj1KtqMhNkI=" crossorigin="anonymous" />
 
         {# block to set favicon #}
-        {% block favicon %}
-        {% endblock favicon %}
+        {% block favicon %}{% endblock favicon %}
 
-        {# block for project definied HEAD content #}
-        {% block project_head %}
-        {% endblock project_head %}
+        {# block for project defined HEAD content #}
+        {% block project_head %} {% endblock project_head %}
+
+        {# block for app defined HEAD content #}
+        {% block app_head %}{% endblock app_head %}
 
         {# block for locally defined HEAD content #}
         {% block local_head %}{% endblock local_head %}
@@ -67,8 +68,7 @@
 
     <body class="d-flex flex-column min-vh-100">
         {# block for navigation bar #}
-        {% block mainnavbar %}
-        {% endblock mainnavbar %}
+        {% block mainnavbar %}{% endblock mainnavbar %}
 
         <section id='page-container' class="container-fluid flex-grow-1">
             {# block to display django messages #}
