@@ -315,7 +315,7 @@ class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
                        subtitle=self.page_description, table=self.table, modals=self.modals,
                        args=self.args, kwargs=self.kwargs)
         if self.filter_form_obj:
-            self.filter_form['form'] = self.filter_form_obj(request.POST or None)
+            self.filter_form['form'] = self.filter_form_obj(request.POST or None, initial=self.request.GET.dict())
             self.filter_form['form_id'] = self.filter_form_id
             self.filter_form['action'] = 'Filter'
             self.filter_form['action_url'] = self.filter_form_url
@@ -413,7 +413,7 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
             context['create_form'] = self.create_form
 
         if self.filter_form_obj:
-            self.filter_form['form'] = self.filter_form_obj(request.POST or None)
+            self.filter_form['form'] = self.filter_form_obj(request.POST or None, initial=self.request.GET.dict())
             self.filter_form['action'] = 'Filter'
             self.filter_form['action_url'] = self.filter_form_url
             self.filter_form['title'] = self.filter_form_title
