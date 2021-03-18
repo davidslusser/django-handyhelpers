@@ -70,7 +70,7 @@ class InvalidLookupMixin:
             # ignore the '!' in 'field!=value' if filters are used
             field = field.rstrip('!')
             if field in getattr(settings, 'INVALID_LOOKUP_SKIP_LIST',
-                                ['offset', 'limit', 'format', 'fields', 'omit', 'expand']):
+                                ['offset', 'limit', 'format', 'fields', 'omit', 'expand', 'disable_pagination']):
                 continue
 
             if self.filterset_class:
@@ -109,4 +109,16 @@ class InvalidLookupMixin:
                     return JsonResponse(data={'detail': f'{field} is not a valid field in {self.model.__name__}'},
                                         status=status.HTTP_404_NOT_FOUND)
 
+        return super().dispatch(request, *args, **kwargs)
+
+
+class PaginationControlMixin:
+    """ A mixin for Django Rest Framework viewsets that allows pagination to be disabled by including a
+    specific query parameter. Default query parameter for disabling pagination is 'disable_pagination' and this
+    can be modified by setting the PAGINATION_CONTROL_PARAMETER variable to the desired value in django settings. """
+
+    def dispatch(self, request, *args, **kwargs):
+        disable_pagination_param = getattr(settings, 'PAGINATION_CONTROL_PARAMETER', 'disable_pagination')
+        if disable_pagination_param in self.request.GET.dict():
+            setattr(self, 'pagination_class', None)
         return super().dispatch(request, *args, **kwargs)
