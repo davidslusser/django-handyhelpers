@@ -31,7 +31,7 @@ View Mixins
 Viewset Mixins
 --------------
 .. automodule:: handyhelpers.mixins.viewset_mixins
-    :members: InvalidLookupMixin
+    :members: InvalidLookupMixin, PaginationControlMixin
 
 
 Permission Mixins

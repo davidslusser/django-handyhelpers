@@ -188,7 +188,7 @@ By default, drf viewsets will ignore an invalid field, filter, or lookup express
 records. As this might not be the desired behaviour, handyhelpers provides a mixin for Django Rest Framework viewsets
 that checks query parameters and returns an error if any query parameter is not a included in defined in a filter_class
 (typically defined in your filterset), and element of filter_fields (typically set in your viewset), or a valid model field.
-Order of precedence is: filter_class, filter_fields, model field.
+Order of precedence is: filterset_class,  filter_class, filterset_fields, filter_fields, model field.
 
 Examples:
 
@@ -197,5 +197,21 @@ Examples:
     from handyhelpers.mixins.viewset_mixins import InvalidLookupMixin
 
     class MyModelViewSet(InvalidLookupMixin, viewsets.ReadOnlyModelViewSet):
+
+..
+
+PaginationControlMixin
+----------------------
+A mixin for Django Rest Framework viewsets that allows pagination to be disabled by including a specific query
+parameter. Default query parameter for disabling pagination is 'disable_pagination' and this can be modified by
+setting the PAGINATION_CONTROL_PARAMETER variable to the desired value in django settings.
+
+Examples:
+
+.. code-block:: python
+
+    from handyhelpers.mixins.viewset_mixins import PaginationControlMixin
+
+    class MyModelViewSet(PaginationControlMixin, viewsets.ReadOnlyModelViewSet):
 
 ..
