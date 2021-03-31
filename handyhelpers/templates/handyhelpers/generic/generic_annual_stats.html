@@ -1,0 +1,61 @@
+{% extends base_template|default:"base.htm" %}
+{% load staticfiles %}
+{% load user_tags %}
+
+{% block local_head %}
+    <style>
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
+{% endblock local_head %}
+
+{% block content %}
+    <header>
+        <div class="headline text-center">
+            <div class="container mb-5">
+                <h1 class="text-primary font-weight-bold">{{ title }}</h1>
+                <h3 class="text-secondary">{{ sub_title }} &nbsp; </h3>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid mt-2 mb-5">
+        {% for data in dataset %}
+            <div class="row mb-5">
+                <div class="col-sm-12 col-md-3 col-lg-2 mb-3">
+                    <i class="{{ data.icon }} fa-6x text-primary"></i><br/>
+                </div>
+                <div class="col-sm-12 col-md-9 col-lg-10">
+                    <div class="row">
+                        <h3 class="text-primary font-weight-bold h2 mb-3">{{ data.title }}</h3>
+                    </div>
+                    <div class="row">
+                        <table class="ml-4" style="width: 100%">
+                            <thead class="h5">
+                            <tr>
+                                <th class="bg-transparent text-secondary">Total</th>
+                                <th class="bg-transparent text-secondary">past day</th>
+                                <th class="bg-transparent text-secondary">past week</th>
+                                <th class="bg-transparent text-secondary">past month</th>
+                                <th class="bg-transparent text-secondary">past year</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-primary h5">
+                                    <td><span class="ml-2"><a href="{{data.url}}">{{ data.total }}</a></span></td>
+                                    <td><span class="ml-2"><a href="{{data.url}}?page_description=added in past day&created_at__gte={{data.day_date|date:'Y-m-d H:i:s' }}">{{ data.day_count }}</a></span></td>
+                                    <td><span class="ml-2"><a href="{{data.url}}?page_description=added in past week&created_at__gte={{data.week_date|date:'Y-m-d H:i:s' }}">{{ data.week_count }}</a></span></td>
+                                    <td><span class="ml-2"><a href="{{data.url}}?page_description=added in past month&created_at__gte={{data.month_date|date:'Y-m-d H:i:s' }}">{{ data.month_count }}</a></span></td>
+                                    <td><span class="ml-2"><a href="{{data.url}}?page_description=added in past year&created_at__gte={{data.year_date|date:'Y-m-d H:i:s' }}">{{ data.year_count }}</a></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-5">&nbsp;</div>
+        {% endfor %}
+    </div>
+
+{% endblock content %}

@@ -1,6 +1,10 @@
+import datetime
+import logging
+
 from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import ListView, View
+from django.utils import timezone
 
 from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin
 
@@ -423,4 +427,143 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
             self.filter_form['undo'] = self.filter_form_undo
             context['filter_form'] = self.filter_form
 
+        return render(request, self.template_name, context)
+
+
+class AnnualTrendView(View):
+    """
+    Description:
+        Tallies the number of elements added over the past year. Included are counts of elements added and
+        removed in the past day, week, month and year.
+        Also includes counts of elements added and removed by month for the past year.
+
+    Parameters:
+        title         - title displayed on web page
+        subtitle      - subtitle displayed on web page
+        template_name - template to use in rendering
+        dataset_list  - set of data to display; list of dictionaries containing the following:
+                            title     - title to display for dataset
+                            queryset  - queryset to use in counts
+                            dt_field  - datetime field in model
+
+                        example:
+                        {title='Owners', queryset=Owner.objects.all(), dt_field='created_at'}
+
+    """
+    title = 'Annual Trend Report'
+    sub_title = None
+    template_name = 'handyhelpers/generic/generic_annual_trends.html'
+    dataset_list = []
+
+    def get(self, request):
+        context = dict()
+        context['title'] = self.title
+        context['sub_title'] = self.sub_title
+        context['dataset'] = []
+        context['month_labels'] = []
+
+        color_list = ['theme.primary', 'theme.success', 'theme.secondary', 'theme.info',
+                      'theme.warning', 'theme.danger', 'theme.dark', 'theme.light']
+
+        last_day = timezone.now() - datetime.timedelta(days=1)
+        last_week = timezone.now() - datetime.timedelta(days=7)
+        last_month = timezone.now() - datetime.timedelta(days=365.2425 / 12)
+        last_year = timezone.now() - datetime.timedelta(days=365.2425)
+
+        color = 0
+        for dataset in self.dataset_list:
+            annual_data = []
+            queryset_field_gte = dataset.get('dt_field') + '__gte'
+            data_day = dataset.get('queryset').filter(**{queryset_field_gte: last_day})
+            data_week = dataset.get('queryset').filter(**{queryset_field_gte: last_week})
+            data_month = dataset.get('queryset').filter(**{queryset_field_gte: last_month})
+            data_year = dataset.get('queryset').filter(**{queryset_field_gte: last_year})
+
+            for months_ago in range(0, 13):
+                ts = timezone.now() - datetime.timedelta(months_ago * 365.2425 / 12)
+                if len(context['month_labels']) <= 12:
+                    context['month_labels'].append(ts.strftime('%B'))
+                try:
+                    annual_data.append(len(
+                        [i for i in data_year if getattr(i, dataset.get('dt_field')).month == ts.month and
+                         getattr(i, dataset.get('dt_field')).year == ts.year]))
+                except Exception as err:
+                    logging.error(err)
+                    annual_data.append(0)
+
+            context['dataset'].append(
+                dict(title=dataset.get('title'),
+                     color=color_list[color],
+                     day=data_day.count(),
+                     week=data_week.count(),
+                     month=data_month.count(),
+                     year=data_year.count(),
+                     annual=annual_data,
+                     ),
+            )
+            color += 1
+            if color > len(color_list):
+                color = 0
+        return render(request, self.template_name, context)
+
+
+class AnnualStatView(View):
+    """
+    Description:
+        Tallies the number of entries added over the past year. Included are counts of entries sectioned by
+        past day, week, month and year.
+
+    Parameters:
+        title         - title displayed on web page
+        subtitle      - subtitle displayed on web page
+        template_name - template to use in rendering
+        dataset_list  - set of data to display; list of dictionaries containing the following:
+                            title     - title to display for dataset
+                            queryset  - queryset to use in counts
+                            dt_field  - datetime field in model
+                            icon      - fontawesome icon to display for dataset
+                            list_view - list view of data (used in links)
+
+                        example:
+                        {title='Owners', queryset=Owner.objects.all(), dt_field='created_at',
+                         icon='fas fa-users', list_view='/hostmgr/list_owners'), }
+    """
+    title = 'Annual Statistics Report'
+    sub_title = None
+    template_name = 'handyhelpers/generic/generic_annual_stats.html'
+    dataset_list = []
+
+    def get(self, request):
+        context = dict()
+        context['title'] = self.title
+        context['sub_title'] = self.sub_title
+        context['dataset'] = []
+
+        last_day = timezone.now() - datetime.timedelta(days=1)
+        last_week = timezone.now() - datetime.timedelta(days=7)
+        last_month = timezone.now() - datetime.timedelta(days=365.2425 / 12)
+        last_year = timezone.now() - datetime.timedelta(days=365.2425)
+
+        for dataset in self.dataset_list:
+            queryset_field_gte = dataset.get('dt_field') + '__gte'
+            data_day = dataset.get('queryset').filter(**{queryset_field_gte: last_day})
+            data_week = dataset.get('queryset').filter(**{queryset_field_gte: last_week})
+            data_month = dataset.get('queryset').filter(**{queryset_field_gte: last_month})
+            data_year = dataset.get('queryset').filter(**{queryset_field_gte: last_year})
+
+            context['dataset'].append(
+                dict(title=dataset.get('title'),
+                     icon=dataset.get('icon'),
+                     url=dataset.get('list_view'),
+                     total=dataset.get('queryset').count(),
+                     day_count=data_day.count(),
+                     day_date=last_day,
+                     week_count=data_week.count(),
+                     week_date=last_week,
+                     month_count=data_month.count(),
+                     month_date=last_month,
+                     year_count=data_year.count(),
+                     year_date=last_year,
+                     ),
+            )
         return render(request, self.template_name, context)
