@@ -1,8 +1,8 @@
-{% extends base_template|default:"base.htm" %}
+{% extends base_template|default:"handyhelpers/handyhelpers_base.htm" %}
 {% load staticfiles %}
 
 {% block local_head %}
-    {% include 'handyhelpers/component/chart_components.htm' %}
+    <script src="{% static 'node_modules/chart.js/dist/Chart.bundle.min.js' %}"></script>
 {% endblock local_head %}
 
 {% block content %}

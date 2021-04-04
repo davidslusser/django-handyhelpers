@@ -1,10 +1,15 @@
-{% extends base_template|default:"base.htm" %}
+{% extends base_template|default:"handyhelpers/handyhelpers_base.htm" %}
 {% load staticfiles %}
 
 {% block local_head %}
-    {% include 'handyhelpers/component/chart_components.htm' %}
+    <script src="{% static 'node_modules/chart.js/dist/Chart.bundle.min.js' %}"></script>
+    <style>
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
 {% endblock local_head %}
 
 {% block content %}
-    {% include 'handyhelpers/report/progress_content.htm' %}
+    {% include 'handyhelpers/report/annual_progress_content.htm' %}
 {% endblock content %}
