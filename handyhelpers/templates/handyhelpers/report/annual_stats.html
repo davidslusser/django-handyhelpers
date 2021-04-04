@@ -1,4 +1,4 @@
-{% extends base_template|default:"base.htm" %}
+{% extends base_template|default:"handyhelpers/handyhelpers_base.htm" %}
 {% load staticfiles %}
 
 {% block local_head %}
@@ -14,7 +14,7 @@
         <div class="headline text-center">
             <div class="container mb-5">
                 <h1 class="text-primary font-weight-bold">{{ title }}</h1>
-                <h3 class="text-secondary">{{ sub_title }} &nbsp; </h3>
+                <h3 class="text-secondary">{% if sub_title %}{{ sub_title }}{% endif %} &nbsp; </h3>
             </div>
         </div>
     </header>

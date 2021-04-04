@@ -82,3 +82,9 @@ def percentage(value):
         return "{:4.2f}%".format(float(value)*100)
     except:
         return ""
+
+
+@register.filter(name='title_underscore')
+def field_name_to_label(value):
+    value = value.replace('_', ' ')
+    return value.title()

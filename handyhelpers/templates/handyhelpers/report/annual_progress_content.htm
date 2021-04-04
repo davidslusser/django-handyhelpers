@@ -1,0 +1,46 @@
+    <style>
+        .card-container {
+            align-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .card {
+            width: 16rem;
+            height: 8rem;
+        }
+    </style>
+
+    <header>
+        <div class="headline text-center">
+            <div class="container mb-5">
+                <h1 class="text-primary font-weight-bold">{{ title }}</h1>
+                <h3 class="text-secondary">{% if sub_title %}{{ sub_title }}{% endif %} &nbsp; </h3>
+            </div>
+        </div>
+    </header>
+
+    {# current counts of data #}
+    <div class="card-container mt-5 mb-5">
+        {% for data in annual_progress_dataset_list %}
+        <a href="{{ data.list_view }}" class="hvr-grow">
+            <div class="card shadow text-center vw-75 m-4">
+                <div class="card-body">
+                    <div class="h1 font-weight-bold text-primary">{{ data.data|last }}</div>
+                    <div class="h4 font-weight-bold text-secondary">{{ data.title }}</div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+
+    <div>&nbsp;</div>
+    {# line graph for year #}
+    <div class="container-fluid mt-2 mb-5">
+        <canvas id="annual_progress" width="800" height="250"></canvas>
+    </div>
+
+    {% include 'handyhelpers/report/theme_colors.htm' %}
+    {% include 'handyhelpers/report/annual_progress_chart.htm' %}

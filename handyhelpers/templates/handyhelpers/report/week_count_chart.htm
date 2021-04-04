@@ -1,0 +1,44 @@
+<script>
+    {# bar graph for week #}
+    var canvasP = document.getElementById("bar-chart-week");
+    var ctxP = canvasP.getContext('2d');
+    var bar_chart_day = new Chart(ctxP, {
+        type: 'bar',
+        data: {
+            labels: [{% for data in dataset_list %}"{{ data.title }}",{% endfor %}],
+            datasets: [{
+                backgroundColor: [{% for data in dataset_list %}{{ data.color }},{% endfor %}],
+                data: [{% for data in dataset_list %}{{ data.week }},{% endfor %}]
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Week',
+                fontSize: 20,
+                position: "bottom"
+            },
+            legend: { display: false },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    canvasP.onclick = function(e) {
+        var slice = bar_chart_week.getElementAtEvent(e);
+        if (!slice.length) return; // return if not clicked on slice
+        var label = slice[0]._model.label;
+        switch (label) {
+            {% for data in dataset_list %}
+            case '{{ data.title }}':
+                location.href = "{{ data.list_view }}?{{ data.dt_field }}__gte={{ last_week|date:'Y-m-d H:i:s' }}&page_description=added in the past week";
+                break;
+            {% endfor %}
+        }
+    }
+</script>
