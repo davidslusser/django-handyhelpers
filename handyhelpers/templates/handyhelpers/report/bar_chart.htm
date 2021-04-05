@@ -34,11 +34,19 @@
         if (!slice.length) return; // return if not clicked on slice
         var label = slice[0]._model.label;
         switch (label) {
-            {% for i in chart.label_list %}
-            case '{{ i }}':
-                location.href = "{{ chart.list_view }}{{ i|safe }}&page_description={{ i|safe }}";
-                break;
-            {% endfor %}
+            {% if chart.list_view_link_list %}
+                {% for item in chart.list_view_link_list %}
+                case '{{ item.case|safe }}':
+                    location.href = "{{ item.link }}{{ item.case|safe }}&page_description={{ item.case|safe }}";
+                    break;
+                {% endfor %}
+            {% else %}
+                {% for i in chart.label_list %}
+                case '{{ i }}':
+                    location.href = "{{ chart.list_view }}{{ i|safe }}&page_description={{ i|safe }}";
+                    break;
+                {% endfor %}
+            {% endif %}
         }
     }
 </script>
