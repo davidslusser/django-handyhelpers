@@ -1,4 +1,4 @@
-Django>=2.2.9
+Django>=3.2
 djangorestframework>=3.11.2
 djangorestframework-filters==1.0.0.dev0
 drf-dynamic-fields==0.3.1
