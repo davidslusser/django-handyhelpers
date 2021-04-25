@@ -31,4 +31,4 @@ class ShowAllListView(View):
     def get(self, request, *args, **kwargs):
         """ process GET request """
         redirect_url = self.request.META.get('HTTP_REFERER')
-        return redirect(redirect_url.split("/?")[0])
+        return redirect(redirect_url.split('?')[0])
