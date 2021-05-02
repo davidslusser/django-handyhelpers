@@ -10,7 +10,7 @@ __version__ = "0.0.1"
 class Command(BaseCommand):
     help = "Generate admin.py file, based on a jinja2 template, for a given app"
 
-    def __inti__(self):
+    def __init__(self):
         self.opts = None
         self.app = None
         self.model_list = None
