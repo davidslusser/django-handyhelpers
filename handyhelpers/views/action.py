@@ -18,7 +18,7 @@ class FilterListView(View):
             form_parameters.pop('csrfmiddlewaretoken')
 
         # build filtered URL
-        filter_url = f'{redirect_url.split("/?")[0]}?'
+        filter_url = f'''{redirect_url.split('?')[0]}?'''
         for key, value in form_parameters.items():
             if value:
                 filter_url += f'{key}={value}&'
