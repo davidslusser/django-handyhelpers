@@ -37,7 +37,7 @@
             {% if chart.list_view_link_list %}
                 {% for item in chart.list_view_link_list %}
                 case '{{ item.case|safe }}':
-                    location.href = "{{ item.link }}{{ item.case|safe }}&page_description={{ item.case|safe }}";
+                    location.href = "{{ item.link }}&page_description={{ item.case|safe }}";
                     break;
                 {% endfor %}
             {% else %}

@@ -88,3 +88,8 @@ def percentage(value):
 def field_name_to_label(value):
     value = value.replace('_', ' ')
     return value.title()
+
+
+@register.filter(name='host_ip_address')
+def host_ip_address(value):
+    return value.split(':')[0]
