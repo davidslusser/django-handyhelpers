@@ -16,13 +16,27 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.views import redirect_to_login
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib import messages
+from django.shortcuts import redirect
 
 
 class MethodGroupPermissionBase(object):
-    """ Base class for method group permissions """
+    """ Base class for method group permissions
+    This now includes a check for a settings variable, MESSAGE_ON_PERMISSION_DENY. When MESSAGE_ON_PERMISSION_DENY is
+    set to True, an alert will be sent via messages and redirect will be to the HTTP_REFERER instead of redirecting to
+    the LOGIN_URL. This was added to avoid a login redirect loop that can occur when certain auth packages, that deviate
+    from the standard login url, are used.
+    """
     def dispatch(self, request, *args, **kwargs):
         if not self.has_permission(request, *args, **kwargs):
-            if settings.LOGIN_URL and REDIRECT_FIELD_NAME:
+            if getattr(settings, 'MESSAGE_ON_PERMISSION_DENY', False):
+                messages.add_message(request,
+                                     messages.ERROR,
+                                     f'User {request.user} is not authorized to access contents at URL: {request.get_full_path()}',
+                                     extra_tags='alert-danger', )
+                return redirect(request.META.get('HTTP_REFERER'))
+
+            elif settings.LOGIN_URL and REDIRECT_FIELD_NAME:
                 return redirect_to_login(request.get_full_path(),
                                          settings.LOGIN_URL,
                                          REDIRECT_FIELD_NAME
@@ -48,6 +62,8 @@ class InAllGroups(MethodGroupPermissionBase):
     def has_permission(self, request, *args, **kwargs):
         if not hasattr(self, 'permission_dict'):
             return False
+        if request.user.is_superuser:
+            return True
         permission_dict_mapping = getattr(self, 'permission_dict', {})
         permission_dict = permission_dict_mapping.get(request.method, [])
         if permission_dict is None:
@@ -70,6 +86,8 @@ class InAnyGroup(MethodGroupPermissionBase):
     def has_permission(self, request, *args, **kwargs):
         if not hasattr(self, 'permission_dict'):
             return False
+        if request.user.is_superuser:
+            return True
         permission_dict_mapping = getattr(self, 'permission_dict', {})
         permission_dict = permission_dict_mapping.get(request.method, [])
         return any(group in [i.name for i in request.user.groups.all()] for group in permission_dict)
