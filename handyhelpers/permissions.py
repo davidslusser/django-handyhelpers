@@ -32,7 +32,7 @@ class MethodGroupPermissionBase(object):
             if getattr(settings, 'MESSAGE_ON_PERMISSION_DENY', False):
                 messages.add_message(request,
                                      messages.ERROR,
-                                     f'User {request.user} is not authorized to access contents at URL: {request.get_full_path()}',
+                                     f'User {request.user} is not authorized to perform this operation',
                                      extra_tags='alert-danger', )
                 return redirect(request.META.get('HTTP_REFERER'))
 
@@ -57,18 +57,29 @@ class InAllGroups(MethodGroupPermissionBase):
                                'GET': ['site_operators'],
                               }
 
-    """
+        to restrict POST, but allow GET for all users use the following:
+            permission_dict = {'POST': ['site_admins'],
+                               'GET': [],
+                              }
 
+    """
     def has_permission(self, request, *args, **kwargs):
         if not hasattr(self, 'permission_dict'):
             return False
         if request.user.is_superuser:
             return True
         permission_dict_mapping = getattr(self, 'permission_dict', {})
-        permission_dict = permission_dict_mapping.get(request.method, [])
-        if permission_dict is None:
+        permission_group_list = permission_dict_mapping.get(request.method, [])
+
+        # if method is not provided, deny operation
+        if permission_group_list is None:
             return False
-        return set(permission_dict).issubset([i.name for i in request.user.groups.all()])
+
+        # if method is specified, but the group list is empty, allow operation
+        if permission_group_list == []:
+            return True
+
+        return set(permission_group_list).issubset([i.name for i in request.user.groups.all()])
 
 
 class InAnyGroup(MethodGroupPermissionBase):
@@ -81,13 +92,26 @@ class InAnyGroup(MethodGroupPermissionBase):
             permission_dict = {'POST': ['site_admins'],
                                'GET': ['site_admins', 'site_operators'],
                               }
-    """
 
+        to restrict POST, but allow GET for all users use the following:
+            permission_dict = {'POST': ['site_admins'],
+                               'GET': [],
+                              }
+    """
     def has_permission(self, request, *args, **kwargs):
         if not hasattr(self, 'permission_dict'):
             return False
         if request.user.is_superuser:
             return True
         permission_dict_mapping = getattr(self, 'permission_dict', {})
-        permission_dict = permission_dict_mapping.get(request.method, [])
-        return any(group in [i.name for i in request.user.groups.all()] for group in permission_dict)
+        permission_group_list = permission_dict_mapping.get(request.method, None)
+
+        # if method is not provided, deny operation
+        if permission_group_list is None:
+            return False
+
+        # if method is specified, but the group list is empty, allow operation
+        if permission_group_list == []:
+            return True
+
+        return any(group in [i.name for i in request.user.groups.all()] for group in permission_group_list)
