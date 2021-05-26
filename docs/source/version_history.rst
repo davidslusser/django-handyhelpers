@@ -8,6 +8,7 @@ Version History
    :header: "Release", "Details"
    :widths: 20, 100
 
+   "0.1.0", "updates to support django 3.2"
    "0.0.27", "added HandyHelperListPlusFilterView and HandyHelperListPlusCreateAndFilterView"
    "0.0.26", "updated docstrings for views; added arg/kwargs to views"
    "0.0.25", "removing djangohelpers path; only using handyhelpers now"

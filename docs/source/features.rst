@@ -159,12 +159,19 @@ InAllGroups
 -----------
 The InAllGroups permissions mixin restricts access based on request method and user group. User must be in ALL required groups.
 
+optional: When settings variable MESSAGE_ON_PERMISSION_DENY is set to True, an alert will be sent via messages and
+redirect will be to the HTTP_REFERER instead of redirecting to the LOGIN_URL.
+
 Usage:
     Add as mixin to class definition and put the following in your viewset:
 
 .. code-block:: python
 
+    from handyhelpers.permissions import InAllGroups
+
+    def MyView(InAllGroups, View):
         permission_dict = {'POST': ['site_operators', 'site_admins'], 'GET': ['site_operators']}
+        ...
 
 ..
 
@@ -172,11 +179,18 @@ InAnyGroup
 ----------
 The InAnyGroup permission mixin will restrict access based on request method and user group. User can be in ANY required group.
 
+optional: When settings variable MESSAGE_ON_PERMISSION_DENY is set to True, an alert will be sent via messages and
+redirect will be to the HTTP_REFERER instead of redirecting to the LOGIN_URL.
+
+
 Usage:
     Add as mixin to class definition and put the following in your viewset:
 
 .. code-block:: python
 
+    from handyhelpers.permissions import InAnyGroup
+
+    def MyView(InAnyGroup, View):
         permission_dict = {'POST': ['site_admins'], 'GET': ['site_admins', 'site_operators']}
 
 ..
