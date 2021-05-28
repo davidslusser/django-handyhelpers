@@ -8,6 +8,13 @@ register = template.Library()
 
 @register.filter(name='has_group')
 def has_group(user, group_name):
+    """
+    {% if request.user|has_group:"mygroup" %}
+        <p>User belongs to my group
+    {% else %}
+        <p>User doesn't belong to mygroup</p>
+    {% endif %}
+    """
     try:
         group = Group.objects.get(name=group_name)
         return group in user.groups.all()
@@ -93,3 +100,21 @@ def field_name_to_label(value):
 @register.filter(name='host_ip_address')
 def host_ip_address(value):
     return value.split(':')[0]
+
+
+@register.filter(name='inlist')
+def inlist(value, list):
+    """
+    return True if value is in a 'list' of values
+
+        usage:
+            {% value|inlist:"val1,val2,val3" %}
+
+    Args:
+        value: (str) value to check
+        list: (str) comma separated values
+
+    Returns:
+
+    """
+    return True if value in list else False

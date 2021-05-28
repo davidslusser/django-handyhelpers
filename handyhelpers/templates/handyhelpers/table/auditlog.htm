@@ -30,11 +30,11 @@
             <td>
                 {% if row.action == 1 %}
                     {% for key, value in row.changes_dict.items %}
-                        <div class="row ">
-                            <div class="col-sm-3"><b>{{ key }}:</b> </div>
-                            <div class="col-sm-4">{{ value.0 }} </div>
-                            <div class="col-sm-4">{{ value.1 }} </div>
-                        </div>
+                <div class="row ml-1"><b>{{ key }}:</b></div>
+                <div class="row ml-2">
+                    <div class="col-sm-6"><small>{% if value.0 %}{{ value.0 }}{% else %} <span class="font-italic">None</span> {% endif %}</small></div>
+                    <div class="col-sm-6"><small>{% if value.1 %}{{ value.1 }}{% else %} <span class="font-italic">None</span> {% endif %}</small></div>
+                </div>
                     {% endfor %}
                 {% endif %}
             </td>
