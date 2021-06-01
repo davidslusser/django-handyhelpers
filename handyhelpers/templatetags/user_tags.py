@@ -1,7 +1,7 @@
 from django import template
 from django.contrib.auth.models import Group
 from django.utils.safestring import mark_safe
-
+from django.db import models
 
 register = template.Library()
 
@@ -103,7 +103,7 @@ def host_ip_address(value):
 
 
 @register.filter(name='inlist')
-def inlist(value, list):
+def inlist(value, value_list):
     """
     return True if value is in a 'list' of values
 
@@ -112,9 +112,58 @@ def inlist(value, list):
 
     Args:
         value: (str) value to check
-        list: (str) comma separated values
+        value_list: (str) comma separated values
 
     Returns:
-
+        True if value in list, otherwise False
     """
-    return True if value in list else False
+    return True if value in value_list else False
+
+
+@register.filter(name='in_any_group')
+def in_any_group(user, group_list):
+    """
+    return True if user is in at least one group defined in 'list'
+
+        usage:
+            {% request.user|in_any_group:"admins,operators,users" %}
+
+    Args:
+        user: user object
+        group_list: (str) comma separated values
+
+    Returns:
+        True if user is in at least one group defined in 'value_list'
+    """
+    # user_groups = user.groups.all()
+    # for group_name in group_list.split(','):
+    #     try:
+    #         group = Group.objects.get(name=group_name)
+    #         if group in user_groups:
+    #             return True
+    #     except models.ObjectDoesNotExist:
+    #         return False
+    # return None
+    # group_list = group_list.split('')
+    return any(group in [i.name for i in user.groups.all()] for group in group_list.split(','))
+
+
+@register.filter(name='in_all_group')
+def in_all_group(user, group_list):
+    """
+    return True if user is in all groups defined in 'list'
+
+        usage:
+            {% request.user|in_any_group:"admins,operators,users" %}
+
+    Args:
+        user: user object
+        group_list: (str) comma separated values
+
+    Returns:
+        True if user is in all groups defined in 'value_list'
+        False otherwise
+    """
+    # group_list = group_list.split('')
+    return set(group_list.split(',')).issubset([i.name for i in user.groups.all()])
+
