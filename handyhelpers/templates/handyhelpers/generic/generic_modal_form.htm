@@ -1,5 +1,5 @@
 <!-- {{ form_data.modal_name }} Form -->
-<div class="modal fade" id="modal_{{ form_data.modal_name }}" role="dialog" aria-labelledby="modal_{{ form_data.modal_name }}_label" aria-hidden="true">
+<div class="modal fade" id="modal_{{ form_data.modal_name }}" {% if form_data.modal_backdrop %}data-backdrop="{{ form_data.modal_backdrop }}"{% endif %} role="dialog" aria-labelledby="modal_{{ form_data.modal_name }}_label" aria-hidden="true">
     <div class="modal-dialog {% if form_data.modal_size %}{{ form_data.modal_size }}{% endif %}">
         <div class="modal-content">
             <div class="modal-header">
