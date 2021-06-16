@@ -125,7 +125,7 @@ def in_any_group(user, group_list):
     return True if user is in at least one group defined in 'list'
 
         usage:
-            {% request.user|in_any_group:"admins,operators,users" %}
+            {% if request.user|in_any_group:"admins,operators,users" %}
 
     Args:
         user: user object
@@ -138,12 +138,12 @@ def in_any_group(user, group_list):
 
 
 @register.filter(name='in_all_group')
-def in_all_group(user, group_list):
+def in_all_groups(user, group_list):
     """
     return True if user is in all groups defined in 'list'
 
         usage:
-            {% request.user|in_any_group:"admins,operators,users" %}
+            {% if request.user|in_all_groups:"admins,operators,users" %}
 
     Args:
         user: user object

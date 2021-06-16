@@ -214,6 +214,7 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
         page_description           - subtitle to use in template
         table                      - htm file rendering the queryset to be included in the generic_list template
         modals                     - htm file rendering additional modals to be included in the generic_list template
+        allow_create_groups        - comma separated list of groups that are allowed to create a new record
 
         create_form_obj            - form object
         create_form_url            - url the form (action) should post to
@@ -252,11 +253,12 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
     create_form_link_title = None
     create_form_tool_tip = None
     create_form_autocomplete = None
+    allow_create_groups = None
 
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        subtitle=self.page_description, table=self.table, modals=self.modals,
-                       args=self.args, kwargs=self.kwargs)
+                       allow_create_groups=self.allow_create_groups, args=self.args, kwargs=self.kwargs)
         if self.create_form_obj:
             self.create_form['form'] = self.create_form_obj(request.POST or None)
             self.create_form['form_id'] = self.create_form_id
@@ -369,6 +371,7 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
         page_description           - subtitle to use in template
         table                      - htm file rendering the queryset to be included in the generic_list template
         modals                     - htm file rendering additional modals to be included in the generic_list template
+        allow_create_groups        - comma separated list of groups that are allowed to create a new record
 
         create_form_obj            - create form object
         create_form_url            - url the create form (action) should post to
@@ -425,6 +428,7 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
     create_form_link_title = None
     create_form_tool_tip = None
     create_form_autocomplete = None
+    allow_create_groups = None
 
     filter_form = dict()
     filter_form_obj = None
@@ -441,7 +445,7 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        subtitle=self.page_description, table=self.table, modals=self.modals,
-                       args=self.args, kwargs=self.kwargs)
+                       allow_create_groups=self.allow_create_groups, args=self.args, kwargs=self.kwargs)
         if self.create_form_obj:
             self.create_form['form'] = self.create_form_obj(request.POST or None)
             self.create_form['action'] = 'Add'
