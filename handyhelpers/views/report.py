@@ -315,6 +315,8 @@ class AnnualTrendView(View):
     title = 'Annual Trend Report'
     sub_title = 'data added over the past year'
     template_name = 'handyhelpers/report/annual_trends.html'
+    chart_display_title = True
+    chart_display_legend = False
     dataset_list = list()
 
     def get(self, request):
@@ -327,6 +329,8 @@ class AnnualTrendView(View):
         context['month_labels'], context['month_timestamps'], context['annual_trend_dataset_list'] =  \
             build_annual_trend_chart(self.dataset_list)
         context['dataset_list'] = build_day_week_month_year_charts(self.dataset_list)
+        context['chart_display_title'] = self.chart_display_title
+        context['chart_display_legend'] = self.chart_display_legend
         return render(request, self.template_name, context)
 
 
