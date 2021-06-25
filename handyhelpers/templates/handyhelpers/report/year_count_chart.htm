@@ -13,12 +13,15 @@
         },
         options: {
             title: {
-                display: true,
+                display: {% if chart_display_title %}true{% else %}false{% endif %},
                 text: 'Year',
                 fontSize: 20,
                 position: "bottom"
             },
-            legend: { display: false },
+            legend: {
+                display: {% if chart_display_legend %}true{% else %}false{% endif %},
+                position: "bottom"
+                },
             scales: {
                 yAxes: [{
                     ticks: {
