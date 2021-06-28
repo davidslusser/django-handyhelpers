@@ -40,6 +40,10 @@ class FilterByQueryParamsMixin:
             if val is not None:
                 if val == 'None':
                     val = None
+                elif val in 'TruetrueTRUE':
+                    val = True
+                elif val in 'FalsefalseFALSE':
+                    val = False
                 filter_dict[field] = val
         if 'distinct' in self.request.GET.dict():
             return self.queryset.filter(**filter_dict).distinct()
