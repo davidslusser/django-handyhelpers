@@ -14,7 +14,18 @@
             ]
         },
         options: {
-            legend: { display: false },
+            responsive: true,
+            maintainAspectRatio: false,
+            {% if chart.legend %}
+            legend: {
+                display: true,
+                position: 'bottom'
+            },
+            {% else %}
+            legend: {
+                display: false
+            },
+            {% endif %}
             title: {
                 display: false,
                 text: 'Automation Counts'
