@@ -60,6 +60,10 @@
     padding: .25rem;
 }
 
+.zoom-admin-card:hover, .zoom-admin-card:active {
+    text-decoration: none;
+}
+
 
 .zoom-summary-card {
     /* this card is intended to show a simple summary and contains a centered icon (fontawesome or similar)
