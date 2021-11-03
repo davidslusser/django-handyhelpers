@@ -1,0 +1,22 @@
+
+{% csrf_token %}
+<input type="hidden" name="{{ form_name }}" value="1">
+{% if form.errors %}
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        {{ form.errors }}
+    </div>
+{% endif %}
+{% for field in form.visible_fields %}
+    <div class="form-group">
+        <div class="row m-3">
+            <div class="col-sm-3 font-weight-bold text-primary">
+                <span id="id_{{ field.name }}_required" class="text-danger mr-sm-0 mr-md-2">{% if field.field.required %}*{% else %}&nbsp;{% endif %}</span>
+                {{ field.label }}:
+            </div>
+            <div class="col-sm-9">{{ field }}</div>
+        </div>
+    </div>
+{% for field in form.hidden_fields %}
+    {{ field }}
+{% endfor %}

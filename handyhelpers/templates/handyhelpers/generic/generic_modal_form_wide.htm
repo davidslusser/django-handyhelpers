@@ -1,0 +1,30 @@
+<!-- {{ form_data.modal_name }} Form -->
+<div class="modal fade" id="modal_{{ form_data.modal_name }}" {% if form_data.modal_backdrop %}data-backdrop="{{ form_data.modal_backdrop }}"{% endif %} role="dialog" aria-labelledby="modal_{{ form_data.modal_name }}_label" aria-hidden="true">
+    <div class="modal-dialog {% if form_data.modal_size %}{{ form_data.modal_size }}{% endif %}">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal_{{ form_data.modal_name }}_label">{{ form_data.title|safe }}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            {% if form_selector %}
+                <div class="modal-body">
+                    {{ form_selector }}
+                </div>
+            {% endif %}
+
+            <form {% if form_data.form %} enctype="multipart/form-data" {% endif %} id="form_{{ form_data.modal_name }}" class="form-horizontal" action="{{ form_data.action_url }}" method="POST"
+                  {% if form_data.autocomplete %}autocomplete="{{ form_data.autocomplete }}"{% endif %}">
+                <div class="modal-body" id="id_modal_{{ form_data.modal_name }}_form_body">
+                    {% with form_data.form as form %}
+                        {% include 'handyhelpers/generic/generic_form_wide.htm' %}
+                    {% endwith %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                    <!-- Submit Button-->
+                    <button type="submit" class="btn btn-primary">{{ form_data.action }}</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
