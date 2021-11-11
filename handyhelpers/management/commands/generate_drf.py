@@ -4,7 +4,7 @@ from django.conf import settings
 from jinja2 import Template
 import os
 
-__version__ = "0.0.1"
+__version__ = '0.0.2'
 
 
 class Command(BaseCommand):
@@ -22,6 +22,7 @@ class Command(BaseCommand):
         parser.add_argument('--serializer', action='store_true', help='generate serializers and create serializers.py')
         parser.add_argument('--url', action='store_true', help='generate urls and create urls.py')
         parser.add_argument('--output_path', type=str, default=None, help='path where files should be created')
+        parser.add_argument('--output_file', type=str, default=None, help='fully qualified name of file to be created; only use this when generating one file')
         parser.add_argument('--api_template', type=str, default=None, help='path to Jinja template used to create api')
         parser.add_argument('--serializer_template', type=str, default=None, help='path to Jinja template used to create serializer')
         parser.add_argument('--url_template', type=str, default=None, help='path to Jinja template used to create urls')
@@ -29,22 +30,28 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """ command entry point """
         if options['app'] not in settings.INSTALLED_APPS:
-            raise CommandError('\'{}\' is not an available application in this project'.format(options['app']))
+            raise CommandError(f'\'{options["app"]}\' is not an available application in this project')
 
         self.app = options['app']
         self.model_list = self.get_model_list()
 
         # build serializers file
         if options['serializer']:
-            self.build_serializers(output_path=options['output_path'], template_file=options['serializer_template'])
+            self.build_serializers(output_path=options['output_path'],
+                                   output_file=options['output_file'],
+                                   template_file=options['serializer_template'])
 
         # build apis file
         if options['api']:
-            self.build_apis(output_path=options['output_path'], template_file=options['api_template'])
+            self.build_apis(output_path=options['output_path'],
+                            output_file=options['output_file'],
+                            template_file=options['api_template'])
 
         # build urls file
         if options['url']:
-            self.build_urls(output_path=options['output_path'], template_file=options['url_template'])
+            self.build_urls(output_path=options['output_path'],
+                            output_file=options['output_file'],
+                            template_file=options['url_template'])
 
         self.stdout.write(self.style.SUCCESS('Files generated!'))
 
@@ -58,15 +65,18 @@ class Command(BaseCommand):
         """ return a list of field names for a given model """
         return [i.name for i in model._meta.fields if type(i).__name__ not in exclude_list]
 
-    def build_serializers(self, output_path=None, template_file=None):
+    def build_serializers(self, output_path=None, output_file=None, template_file=None):
         """ build the serializers.py file for a list of model names """
         if not template_file:
             template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                          'drf_templates', 'serializers_template.jinja')
-        if not output_path:
+
+        if output_file:
+            output_path = output_file
+        elif not output_path:
             output_path = 'serializers.py'
         elif os.path.isdir(output_path):
-            output_path = '{}/serializers.py'.format(output_path)
+            output_path = f'{output_path}/serializers.py'
 
         model_fields = {}
         for model in self.model_list:
@@ -85,19 +95,21 @@ class Command(BaseCommand):
         with open(output_path, 'w') as f:
             f.write(file_text)
 
-    def build_apis(self, output_path=None, template_file=None):
+    def build_apis(self, output_path=None, output_file=None, template_file=None):
         """ build the apis.py (viewsets) file for a list of model names """
         if not template_file:
             template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                          'drf_templates', 'apis_template.jinja')
-        if not output_path:
+        if output_file:
+            output_path = output_file
+        elif not output_path:
             output_path = 'apis.py'
         elif os.path.isdir(output_path):
-            output_path = '{}/apis.py'.format(output_path)
+            output_path = f'{output_path}/apis.py'
 
         model_fields = {}
         for model in self.model_list:
-            model_fields[model.__name__] = self.get_model_field_names(model)
+            model_fields[model.__name__] = self.get_model_field_names(model, ['FileField'])
 
         data = {'model_list': self.model_list,
                 'app_name': self.app,
@@ -112,15 +124,17 @@ class Command(BaseCommand):
         with open(output_path, 'w') as f:
             f.write(file_text)
 
-    def build_urls(self, output_path=None, template_file=None):
+    def build_urls(self, output_path=None, output_file=None, template_file=None):
         """ build the urls.py file for a list of model names """
         if not template_file:
             template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                          'drf_templates', 'urls_template.jinja')
-        if not output_path:
+        if output_file:
+            output_path = output_file
+        elif not output_path:
             output_path = 'urls.py'
         elif os.path.isdir(output_path):
-            output_path = '{}/urls.py'.format(output_path)
+            output_path = f'{output_path}/urls.py'
 
         data = {'import_models': 'my import statement here',
                 'model_list': self.model_list,

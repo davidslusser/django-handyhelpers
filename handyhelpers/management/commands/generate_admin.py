@@ -4,7 +4,7 @@ from django.conf import settings
 from jinja2 import Template
 import os
 
-__version__ = "0.0.1"
+__version__ = '0.0.2'
 
 
 class Command(BaseCommand):
@@ -25,7 +25,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """ command entry point """
         if options['app'] not in settings.INSTALLED_APPS:
-            raise CommandError("'{}' is not an available application in this project".format(options['app']))
+            raise CommandError(f"'{options['app']}' is not an available application in this project")
 
         self.opts = options
         self.app = options['app']
@@ -33,18 +33,18 @@ class Command(BaseCommand):
         self.get_admin_template()
         self.get_output_file()
         self.build_admin()
-        self.stdout.write(self.style.SUCCESS('{} generated!'.format(self.opts['output_file'])))
+        self.stdout.write(self.style.SUCCESS(f"{self.opts['output_file']} generated!"))
 
     def get_output_file(self):
         """ return the full path of the generated file """
         if not self.opts['output_file']:
-            self.opts['output_file'] = "{}/{}/admin.py".format(os.getcwd(), self.app)
+            self.opts['output_file'] = f'{os.getcwd()}/{self.app}/admin.py'
 
     def get_admin_template(self):
         """ return the full path of the jinja template to use in creating the admin.py file """
         if not self.opts['template']:
             self.opts['template'] = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                 "admin_templates", "admin.jinja")
+                                                 'admin_templates', 'admin.jinja')
 
     def get_model_list(self):
         """ return a list of all models in application """
@@ -62,17 +62,17 @@ class Command(BaseCommand):
         for model in self.model_list:
             model_fields[model.__name__] = self.get_model_field_names(model)
 
-        data = {"model_list": self.model_list,
-                "app_name": self.app,
-                "models_file": "models",
-                "model_data": self.get_models_and_fields(),
+        data = {'model_list': self.model_list,
+                'app_name': self.app,
+                'models_file': 'models',
+                'model_data': self.get_models_and_fields(),
                 }
 
         with open(self.opts['template']) as f:
             template = Template(f.read())
         file_text = template.render(data)
 
-        with open(self.opts['output_file'], "w") as f:
+        with open(self.opts['output_file'], 'w') as f:
             f.write(file_text)
 
     @staticmethod
@@ -88,7 +88,6 @@ class Command(BaseCommand):
     @staticmethod
     def get_filter_fields(model, include_field_list=('BooleanField', 'ForeignKey', 'CharField')):
         """ build and return a list of 'filter_fields' to be used in admin.py for a given model """
-        # return [i.name for i in model._meta.fields if i.get_internal_type() in include_field_list]
         return_list = []
         for i in model._meta.fields:
             field_type = i.get_internal_type()
