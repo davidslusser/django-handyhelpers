@@ -1,7 +1,5 @@
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
-from django_filters.rest_framework import FilterSet, filters
-from handyhelpers.mixins.viewset_mixins import InvalidLookupMixin
 
 
 {%- set model_margin = app_name|length + models_file|length + 15 %}
@@ -16,7 +14,7 @@ from {{app_name}}.{{models_file}} import ({% for model in model_list %}{% if not
 from {{app_name}}.{{serializers_file}} import ({% for model in model_list %}{% if not loop.first %}{{serializer_leading_space}}{% endif %}{{ model.__name__ }}Serializer{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{serializer_leading_space}})
 {% for model, field_list in model_fields.items() %}
 
-class {{ model }}ViewSet(InvalidLookupMixin, {{viewset_type}}):
+class {{ model }}ViewSet({{viewset_type}}):
     """
     API endpoint that allows {{ model }}s to be viewed or edited.
     """
