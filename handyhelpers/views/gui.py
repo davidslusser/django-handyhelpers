@@ -64,7 +64,7 @@ class HandyHelperGenericBaseListView(FilterByQueryParamsMixin, ListView):
     table = None
     modals = None
     add_static = None
-    additional_template = None
+    add_template = None
     args = None
     kwargs = None
 
@@ -197,7 +197,7 @@ class HandyHelperListView(HandyHelperGenericBaseListView):
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        subtitle=self.page_description, table=self.table, modals=self.modals,
-                       add_static=self.add_static, additional_template=self.additional_template,
+                       add_static=self.add_static, add_template=self.add_template,
                        args=self.args, kwargs=self.kwargs)
         return render(request, self.template_name, context)
 
@@ -267,7 +267,7 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        subtitle=self.page_description, table=self.table, modals=self.modals,
-                       add_static=self.add_static, additional_template=self.additional_template,
+                       add_static=self.add_static, add_template=self.add_template,
                        allow_create_groups=self.allow_create_groups, args=self.args, kwargs=self.kwargs)
         if self.create_form_obj:
             self.create_form['form'] = self.create_form_obj(request.POST or None)
@@ -350,7 +350,7 @@ class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        subtitle=self.page_description, table=self.table, modals=self.modals,
-                       add_static=self.add_static, additional_template=self.additional_template,
+                       add_static=self.add_static, add_template=self.add_template,
                        args=self.args, kwargs=self.kwargs)
         if self.filter_form_obj:
             self.filter_form['form'] = self.filter_form_obj(request.POST or None, initial=self.request.GET.dict())
@@ -460,7 +460,7 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        subtitle=self.page_description, table=self.table, modals=self.modals,
-                       add_static=self.add_static, additional_template=self.additional_template,
+                       add_static=self.add_static, add_template=self.add_template,
                        allow_create_groups=self.allow_create_groups, args=self.args, kwargs=self.kwargs)
         if self.create_form_obj:
             self.create_form['form'] = self.create_form_obj(request.POST or None)

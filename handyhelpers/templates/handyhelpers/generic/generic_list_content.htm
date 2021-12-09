@@ -48,17 +48,15 @@
 {% endif %}
 
 {# block for additional static content #}
-<!-- additional static content -->
 {% block additional_static %}
-{% if additional_static %}
-{{ additional_static|safe }}
+{% if add_static %}
+{{ add_static|safe }}
 {% endif %}
 {% endblock additional_static %}
 
 {# block for additional template content #}
-<!-- additional template content -->
 {% block additional_template %}
-{% if additional_template %}
-{% include additional_template %}
+{% if add_template %}
+{% include add_template %}
 {% endif %}
 {% endblock additional_template %}
