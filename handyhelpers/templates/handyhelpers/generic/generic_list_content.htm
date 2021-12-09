@@ -37,12 +37,26 @@
     {% include 'handyhelpers/generic/generic_modal_form.htm' %}
 {% endwith %}
 
-    {# include generic modal form for the filter object form if passed from the view #}
-    {% with filter_form as form_data %}
-        {% include 'handyhelpers/generic/generic_modal_form.htm' %}
-    {% endwith %}
+{# include generic modal form for the filter object form if passed from the view #}
+{% with filter_form as form_data %}
+    {% include 'handyhelpers/generic/generic_modal_form.htm' %}
+{% endwith %}
 
-    {# include custom modal html/js template if passed in from the view #}
-    {% if modals %}
-        {% include modals %}
-    {% endif %}
+{# include custom modal html/js template if passed in from the view #}
+{% if modals %}
+    {% include modals %}
+{% endif %}
+
+{# block for additional static content #}
+{% block additional_static %}
+{% if add_static %}
+{{ add_static|safe }}
+{% endif %}
+{% endblock additional_static %}
+
+{# block for additional template content #}
+{% block additional_template %}
+{% if add_template %}
+{% include add_template %}
+{% endif %}
+{% endblock additional_template %}

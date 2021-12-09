@@ -20,6 +20,8 @@
             {% endif %}
             <span data-toggle="tooltip" title="{{ field.help_text }}" data-placement="right" data-container="body">
                 {{ field }}
+                <div class="valid-feedback" id="id_{{field.name}}_valid"></div>
+                <div class="invalid-feedback" id="id_{{field.name}}_invalid"></div>
             </span>
         </div>
     </div>
