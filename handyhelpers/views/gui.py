@@ -55,12 +55,16 @@ class HandyHelperGenericBaseListView(FilterByQueryParamsMixin, ListView):
         title         - title to use in template
         table         - htm file rendering the queryset to be included in the generic_list template
         modals        - htm file rendering additional modals to be included in the generic_list template
+        add_static    - additional static file to include on the template
+        add_template  - additional template to include on the template
     """
     base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
     template_name = 'handyhelpers/generic/generic_list.html'
     title = None
     table = None
     modals = None
+    add_static = None
+    additional_template = None
     args = None
     kwargs = None
 
@@ -179,6 +183,8 @@ class HandyHelperListView(HandyHelperGenericBaseListView):
         page_description - subtitle to use in template
         table            - htm file rendering the queryset to be included in the generic_list template
         modals           - htm file rendering additional modals to be included in the generic_list template
+        add_static       - additional static file to include on the template
+        add_template     - additional template to include on the template
 
     example:
         class ListProjects(HandyHelperBaseListView):
@@ -191,6 +197,7 @@ class HandyHelperListView(HandyHelperGenericBaseListView):
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        subtitle=self.page_description, table=self.table, modals=self.modals,
+                       add_static=self.add_static, additional_template=self.additional_template,
                        args=self.args, kwargs=self.kwargs)
         return render(request, self.template_name, context)
 
@@ -214,6 +221,8 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
         page_description           - subtitle to use in template
         table                      - htm file rendering the queryset to be included in the generic_list template
         modals                     - htm file rendering additional modals to be included in the generic_list template
+        add_static                 - additional static file to include on the template
+        add_template               - additional template to include on the template
         allow_create_groups        - comma separated list of groups that are allowed to create a new record
 
         create_form_obj            - form object
@@ -258,6 +267,7 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        subtitle=self.page_description, table=self.table, modals=self.modals,
+                       add_static=self.add_static, additional_template=self.additional_template,
                        allow_create_groups=self.allow_create_groups, args=self.args, kwargs=self.kwargs)
         if self.create_form_obj:
             self.create_form['form'] = self.create_form_obj(request.POST or None)
@@ -294,6 +304,8 @@ class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
         page_description           - subtitle to use in template
         table                      - htm file rendering the queryset to be included in the generic_list template
         modals                     - htm file rendering additional modals to be included in the generic_list template
+        add_static                 - additional static file to include on the template
+        add_template               - additional template to include on the template
 
         filter_form_obj            - form object
         filter_form_url            - url the form (action) should post to
@@ -338,6 +350,7 @@ class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        subtitle=self.page_description, table=self.table, modals=self.modals,
+                       add_static=self.add_static, additional_template=self.additional_template,
                        args=self.args, kwargs=self.kwargs)
         if self.filter_form_obj:
             self.filter_form['form'] = self.filter_form_obj(request.POST or None, initial=self.request.GET.dict())
@@ -371,6 +384,8 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
         page_description           - subtitle to use in template
         table                      - htm file rendering the queryset to be included in the generic_list template
         modals                     - htm file rendering additional modals to be included in the generic_list template
+        add_static                 - additional static file to include on the template
+        add_template               - additional template to include on the template
         allow_create_groups        - comma separated list of groups that are allowed to create a new record
 
         create_form_obj            - create form object
@@ -445,6 +460,7 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
     def get(self, request, *args, **kwargs):
         context = dict(base_template=self.base_template, queryset=self.filter_by_query_params(), title=self.title,
                        subtitle=self.page_description, table=self.table, modals=self.modals,
+                       add_static=self.add_static, additional_template=self.additional_template,
                        allow_create_groups=self.allow_create_groups, args=self.args, kwargs=self.kwargs)
         if self.create_form_obj:
             self.create_form['form'] = self.create_form_obj(request.POST or None)
