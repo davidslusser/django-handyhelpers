@@ -1,3 +1,6 @@
+from django.conf import settings
+from django.core.exceptions import FieldError
+
 
 class FilterByQueryParamsMixin:
     """ Mixin used to evaluate query parameters provided in the URL and update a queryset accordingly. This is typically
@@ -35,7 +38,8 @@ class FilterByQueryParamsMixin:
         for field, val in self.request.GET.dict().items():
             if field.split("__")[0] not in [i.name for i in model._meta.fields +
                                                             model._meta.many_to_many +
-                                                            model._meta.related_objects]:
+                                                            model._meta.related_objects] + \
+                    getattr(settings, 'HH_QUERY_PARAM_PREFIXES', ['eav']):
                 continue
             if val is not None:
                 if val == 'None':
@@ -45,6 +49,11 @@ class FilterByQueryParamsMixin:
                 elif val in 'FalsefalseFALSE':
                     val = False
                 filter_dict[field] = val
-        if 'distinct' in self.request.GET.dict():
-            return self.queryset.filter(**filter_dict).distinct()
-        return self.queryset.filter(**filter_dict)
+        try:
+            if 'distinct' in self.request.GET.dict():
+                return self.queryset.filter(**filter_dict).distinct()
+            return self.queryset.filter(**filter_dict)
+        except FieldError:
+            if getattr(settings, 'HH_FILTERBYQUERYPARAM_NO_FILTER_ON_FAIL', False):
+                return self.queryset
+            return model.objects.none()
