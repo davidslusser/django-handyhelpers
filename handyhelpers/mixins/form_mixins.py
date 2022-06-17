@@ -24,7 +24,7 @@ class SetRequiredMixin:
 
         if getattr(self.Meta, 'not_required', None):
             for field in self.Meta.not_required:
-                self.fields[field].not_required = False
+                self.fields[field].required = False
 
         if getattr(self.Meta, 'required', None):
             for field in self.Meta.required:
