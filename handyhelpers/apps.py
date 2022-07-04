@@ -4,6 +4,8 @@ from django.apps import AppConfig
 from django.db.models.fields import Field
 from handyhelpers.lookups import NotEqual
 
+from .checks import user_tags_depreciated
+
 
 class HandyHelpersConfig(AppConfig):
     name = 'handyhelpers'
