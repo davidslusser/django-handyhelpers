@@ -1,10 +1,7 @@
-import datetime
-import logging
-
 from django.conf import settings
+from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.views.generic import ListView, View
-from django.utils import timezone
 
 from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin
 
@@ -213,7 +210,8 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
 
     class parameters:
         base_template              - base template used for rendering page; defaults to: handyhelpers_base.htm
-        template_name              - template used when rendering page; defaults to: handyhelpers/generic/generic_list.html
+        template_name              - template used when rendering page;
+                                     defaults to: handyhelpers/generic/generic_list.html
         args                       - additional args to pass into the template
         kwargs                     - additional kwargs to pass into the template
         queryset                   - queryset to be rendered on the page
@@ -296,7 +294,8 @@ class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
 
     class parameters:
         base_template              - base template used for rendering page; defaults to: handyhelpers_base.htm
-        template_name              - template used when rendering page; defaults to: handyhelpers/generic/generic_list.html
+        template_name              - template used when rendering page;
+                                     defaults to: handyhelpers/generic/generic_list.html
         args                       - additional args to pass into the template
         kwargs                     - additional kwargs to pass into the template
         queryset                   - queryset to be rendered on the page
@@ -315,7 +314,7 @@ class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
         filter_form_modal_backdrop - optional data-backdrop value(such as data-backdrop="static")
         filter_form_link_title     - text used for the link opening the filter form
         filter_form_tool_tip       - text to use for the tooltip
-        filter_form_undo           - True
+        filter_form_undo           - include an undo icon to clear applied filters
         filter_form_autocomplete   - autocomplete parameter to use in form tag (on/off)
 
     example:
@@ -375,8 +374,10 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
     and a create form and a filter form.
 
     class parameters:
-        base_template              - base template used for rendering page; defaults to: handyhelpers_base.htm
-        template_name              - template used when rendering page; defaults to: handyhelpers/generic/generic_list.html
+        base_template              - base template used for rendering page;
+                                     defaults to: handyhelpers_base.htm
+        template_name              - template used when rendering page; defaults to:
+                                     handyhelpers/generic/generic_list.html
         args                       - additional args to pass into the template
         kwargs                     - additional kwargs to pass into the template
         queryset                   - queryset to be rendered on the page
@@ -386,7 +387,8 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
         modals                     - htm file rendering additional modals to be included in the generic_list template
         add_static                 - additional static file to include on the template
         add_template               - additional template to include on the template
-        allow_create_groups        - comma separated list of groups that are allowed to create a new record
+        allow_create_groups        - comma separated list of groups that are allowed to create a new record; used with
+                                     InAnyGroup mixin
 
         create_form_obj            - create form object
         create_form_url            - url the create form (action) should post to
@@ -489,4 +491,135 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
             self.filter_form['autocomplete'] = self.filter_form_autocomplete
             context['filter_form'] = self.filter_form
 
+        return render(request, self.template_name, context)
+
+
+class HandyHelperPaginatedListView(HandyHelperGenericBaseListView):
+    """
+    A reusable generic base view to render a ListView with pagination where the child view will provide a html table.
+
+    class parameters:
+        base_template       - base template used for rendering page; defaults to: handyhelpers_base.htm
+        template_name       - template used when rendering page; defaults to: handyhelpers/generic/generic_list.html
+        args                - additional args to pass into the template
+        kwargs              - additional kwargs to pass into the template
+        queryset            - queryset to be rendered on the page
+        title               - title to use in template
+        page_description    - subtitle to use in template
+        table               - htm file rendering the queryset to be included in the generic_list template
+        modals              - htm file rendering additional modals to be included in the generic_list template
+        add_static          - additional static file to include on the template
+        add_template        - additional template to include on the template
+        allow_create_groups - comma separated list of groups that are allowed to create a new record; used with
+                              InAnyGroup mixin
+
+        paginate_by         - number of objects to list per page; defaults to 10
+        elided_on_each_side - number of pages to show on either side of an ellipsis
+        elided_on_ends      - number of pages to show on ends when ellipsis is present
+        include_total       - display the total number of objects on the page (below pagination controls)
+
+        create_form_obj            - create form object
+        create_form_url            - url the create form (action) should post to
+        create_form_title          - title to use on the create form modal (can be html)
+        create_form_modal          - name of modal for the create form
+        create_form_modal_size     - bootstrap modal size class (such as modal-lg)
+        create_form_modal_backdrop - optional data-backdrop value(such as data-backdrop="static")
+        create_form_link_title     - text used for the link opening the create form
+        create_form_tool_tip       - text to use for the create form link tooltip
+        create_form_autocomplete   - autocomplete parameter to use in form tag (on/off)
+
+        filter_form_obj            - filter form object
+        filter_form_url            - url the form (action) should post to
+        filter_form_title          - title to use on the filter form modal (can be html)
+        filter_form_modal          - name of modal for the filter form
+        filter_form_modal_size     - bootstrap modal size class (such as modal-lg)
+        filter_form_modal_backdrop - optional data-backdrop value(such as data-backdrop="static")
+        filter_form_link_title     - text used for the link opening the filter form
+        filter_form_tool_tip       - text to use for the tooltip
+        filter_form_undo           - include an undo icon to clear applied filters
+        filter_form_autocomplete   - autocomplete parameter to use in form tag (on/off)
+
+    example:
+        class ListProjects(HandyHelperPaginatedListView):
+            queryset = Project.objects.all()
+            title = 'Projects'
+            page_description = 'my cool projects'
+            table = 'table/table_projects.htm'
+            modals = 'project_modals.htm'
+    """
+    paginate_by = 10
+    elided_on_each_side = 1
+    elided_on_ends = 1
+    include_total = True
+    template_name = 'handyhelpers/generic/generic_paginated_list.html'
+
+    create_form = dict()
+    create_form_obj = None
+    create_form_url = None
+    create_form_title = None
+    create_form_modal = None
+    create_form_modal_size = None
+    create_form_modal_backdrop = None
+    create_form_link_title = None
+    create_form_tool_tip = None
+    create_form_autocomplete = None
+    allow_create_groups = None
+
+    filter_form = dict()
+    filter_form_obj = None
+    filter_form_id = None
+    filter_form_url = '/handyhelpers/filter_list_view'
+    filter_form_title = None
+    filter_form_modal = None
+    filter_form_modal_size = None
+    filter_form_modal_backdrop = None
+    filter_form_link_title = None
+    filter_form_tool_tip = None
+    filter_form_undo = True
+    filter_form_autocomplete = None
+
+    def get(self, request, *args, **kwargs):
+        try:
+            page = int(request.GET.get('page', 1))
+        except ValueError:
+            page = 1
+        paginator = Paginator(self.filter_by_query_params(), per_page=self.paginate_by)
+        if page > paginator.num_pages:
+            page = paginator.num_pages
+        page_object = paginator.get_page(page)
+        page_object.adjusted_elided_pages = paginator.get_elided_page_range(page,
+                                                                            on_each_side=self.elided_on_each_side,
+                                                                            on_ends=self.elided_on_ends)
+        context = dict(base_template=self.base_template, page_obj=page_object, include_total=self.include_total,
+                       queryset=page_object, title=self.title, subtitle=self.page_description, table=self.table,
+                       modals=self.modals, add_static=self.add_static, add_template=self.add_template,
+                       args=self.args, kwargs=self.kwargs)
+
+        if self.create_form_obj:
+            self.create_form['form'] = self.create_form_obj(request.POST or None)
+            self.create_form['action'] = 'Add'
+            self.create_form['action_url'] = self.create_form_url
+            self.create_form['title'] = self.create_form_title
+            self.create_form['modal_name'] = self.create_form_modal
+            self.create_form['modal_size'] = self.create_form_modal_size
+            self.create_form['modal_backdrop'] = self.create_form_modal_backdrop
+            self.create_form['link_title'] = self.create_form_link_title
+            self.create_form['tool_tip'] = self.create_form_tool_tip
+            self.create_form['autocomplete'] = self.create_form_autocomplete
+            context['create_form'] = self.create_form
+
+        if self.filter_form_obj:
+            self.filter_form['form'] = self.filter_form_obj(request.POST or None, initial=self.request.GET.dict())
+            self.filter_form['form_id'] = self.filter_form_id
+            self.filter_form['action'] = 'Filter'
+            self.filter_form['action_url'] = self.filter_form_url
+            self.filter_form['title'] = self.filter_form_title
+            self.filter_form['modal_name'] = self.filter_form_modal
+            self.filter_form['modal_size'] = self.filter_form_modal_size
+            self.filter_form['modal_backdrop'] = self.filter_form_modal_backdrop
+            self.filter_form['link_title'] = self.filter_form_link_title
+            self.filter_form['tool_tip'] = self.filter_form_tool_tip
+            self.filter_form['undo'] = self.filter_form_undo
+            self.filter_form['autocomplete'] = self.filter_form_autocomplete
+            context['filter_form'] = self.filter_form
         return render(request, self.template_name, context)

@@ -1,0 +1,98 @@
+{% load handyhelper_tags %}
+
+<div class="container-fluid animated fadeIn mb-5">
+    <h1><span class="text-primary"><b>{{ title }}:</b></span> {% if subtitle %}<span class="text-secondary"><small><small>{{ subtitle }}</small></small></span>{% endif %}</h1>
+
+    <div class="text-right">
+        {# To include a create form, exposed via modal, include create_form (dict) in the context of your view. The create_from must include modal_name and link_title fields #}
+        {% if create_form %}
+        {% if allow_create_groups and request.user|in_any_group:allow_create_groups %}
+        <a href="#" data-toggle="modal" data-target="#modal_{{ create_form.modal_name }}" title="{{ create_form.tool_tip|default_if_none:'create' }}">
+            <i class="fas fa-plus-circle"></i>
+            {% if create_form.link_title %} {{ create_form.link_title }} {% endif %}
+        </a>
+        {% endif %}
+        {% endif %}
+
+        {# To include a filter form, exposed via modal, include filter_form (dict) in the context of your view. The filter_from must include modal_name and link_title fields #}
+        {% if filter_form %}
+        <a href="#" data-toggle="modal" data-target="#modal_{{ filter_form.modal_name }}" title="{{ filter_form.tool_tip|default_if_none:'filter' }}" class="ml-2">
+            <i class="fas fa-filter"></i>
+            {% if filter_form.link_title %} {{ filter_form.link_title }} {% endif %}
+        </a>
+            {% if filter_form.undo and request.META.QUERY_STRING %}
+            <a href="{% url 'handyhelpers:show_all_list_view' %}" title="clear filters" class="ml-2">
+                <i class="fas fa-undo-alt"></i>
+            </a>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {% include table %}
+</div>
+
+{% if page_obj.has_other_pages %}
+<ul class="pagination justify-content-end mr-3">
+    {% if page_obj.has_previous %}
+    <li class="page-item"><a href="?page={{ 1|get_filtered_pagination_link:request.META.QUERY_STRING  }}" class="page-link"><i class="fas fa-fast-backward"></i></a></li>
+    <li class="page-item"><a href="?page={{ page_obj.previous_page_number|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link"><i class="fas fa-step-backward"></i></a></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link"><i class="fas fa-fast-backward"></i></span></li>
+    <li class="page-item disabled"><span class="page-link"><i class="fas fa-step-backward"></i></span></li>
+    {% endif %}
+
+    {% for page_number in page_obj.adjusted_elided_pages %}
+        {% if page_number == page_obj.paginator.ELLIPSIS %}
+    <li class="page-item disabled"><span class="page-link">{{ page_obj.paginator.ELLIPSIS }}</span></li>
+        {% else %}
+            {% if page_obj.number == page_number %}
+    <li class="page-item disabled"><a href="?page={{ page_number|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link">{{ page_number }}</a></li>
+            {% else %}
+    <li class="page-item"><a href="?page={{ page_number|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link">{{ page_number }}</a></li>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <li class="page-item" ><a href="?page={{ page_obj.next_page_number|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link"><i class="fas fa-step-forward"></i></a></li>
+    <li class="page-item"><a href="?page={{ page_obj.paginator.num_pages|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link"><i class="fas fa-fast-forward"></i></a></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link"><i class="fas fa-step-forward"></i></span></li>
+    <li class="page-item disabled"><span class="page-link"><i class="fas fa-fast-forward"></i></span></li>
+    {% endif %}
+</ul>
+{% if include_total %}
+<div class="small text-secondary font-italic text-right mr-4">{{ page_obj.paginator.count }} total objects</div>
+{% endif %}
+{% endif %}
+
+{% include 'handyhelpers/component/modals.htm' %}
+
+{# include generic modal form for the create object form if passed from the view #}
+{% with create_form as form_data %}
+    {% include 'handyhelpers/generic/generic_modal_form.htm' %}
+{% endwith %}
+
+{# include generic modal form for the filter object form if passed from the view #}
+{% with filter_form as form_data %}
+    {% include 'handyhelpers/generic/generic_modal_form.htm' %}
+{% endwith %}
+
+{# include custom modal html/js template if passed in from the view #}
+{% if modals %}
+    {% include modals %}
+{% endif %}
+
+{# block for additional static content #}
+{% block additional_static %}
+{% if add_static %}
+{{ add_static|safe }}
+{% endif %}
+{% endblock additional_static %}
+
+{# block for additional template content #}
+{% block additional_template %}
+{% if add_template %}
+{% include add_template %}
+{% endif %}
+{% endblock additional_template %}
