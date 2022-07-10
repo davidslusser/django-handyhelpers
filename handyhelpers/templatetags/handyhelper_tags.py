@@ -1,3 +1,5 @@
+import re
+
 from django import template
 from django.contrib.auth.models import Group
 from django.utils.safestring import mark_safe
@@ -154,3 +156,25 @@ def in_all_groups(user, group_list):
     """
     return set(group_list.split(',')).issubset([i.name for i in user.groups.all()])
 
+
+@register.filter(name='get_filtered_pagination_link')
+def get_filtered_pagination_link(page, query_params):
+    """
+    return the paginated link with (filter) query parameters included
+        usage example:
+            <a href="?page={{ page_obj.paginator.num_pages|get_filtered_pagination_link:request.META.QUERY_STRING }}">
+
+    Args:
+        page: page number (probably from paginator)
+        query_params: request query string
+    """
+    query_params = str(query_params)
+    match = re.search('^page=\d+(.*)$', query_params)
+    if match:
+        filter_string = match.groups()[0]
+        if not filter_string:
+            return page
+        return f'{page}{filter_string}'
+    else:
+        return f'{page}&{query_params}'
+    return page
