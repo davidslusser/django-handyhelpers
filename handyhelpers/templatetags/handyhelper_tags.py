@@ -178,3 +178,48 @@ def get_filtered_pagination_link(page, query_params):
     else:
         return f'{page}&{query_params}'
     return page
+
+
+@register.filter(name='get_groups')
+def get_groups(user):
+    """
+    Args:
+        user: django user object
+
+    Returns:
+        list of group names representing all groups user is a member of
+    """
+    try:
+        return [group.name for group in user.groups.all()]
+    except Exception:
+        return []
+
+
+@register.filter(name='in_any')
+def in_any(l1, l2):
+    """
+    checks if there is any intersection of two lists
+    Args:
+        l1: list
+        l2: list
+
+    Returns:
+        True if there is at least one intersection; otherwise False
+    """
+    return True if set(l1).intersection(l2.split(',')) else False
+
+
+@register.filter(name='next')
+def dj_iter(gen):
+    """
+    return the next value as yielded from a generator
+    Args:
+        gen: generator object
+
+    Returns:
+        value as yielded from generator
+    """
+    try:
+        return next(gen)
+    except StopIteration:
+        return None
