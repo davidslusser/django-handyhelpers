@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from rest_framework import status
 from rest_framework_filters.filters import RelatedFilter
 from django.http import JsonResponse
@@ -122,3 +123,10 @@ class PaginationControlMixin:
         if disable_pagination_param in self.request.GET.dict():
             setattr(self, 'pagination_class', None)
         return super().dispatch(request, *args, **kwargs)
+
+
+class ExcludeNullMixin:
+    """ A mixin to remove fields if value is None. """
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        return OrderedDict([(key, result[key]) for key in result if result[key] is not None])

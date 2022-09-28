@@ -1,0 +1,10 @@
+<script type="text/javascript">
+    function set_active(element_id){
+        let field = document.querySelector('#'+element_id);
+        if (field.value.length > 0) {
+          field.classList.add('active');
+        } else {
+          field.classList.remove('active');
+        }
+    }
+</script>

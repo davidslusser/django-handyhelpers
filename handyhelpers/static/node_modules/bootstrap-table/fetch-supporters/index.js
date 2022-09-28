@@ -1,0 +1,111 @@
+#!/usr/bin/env node
+const fs = require('fs')
+const path = require('path')
+const { promisify } = require('util')
+const request = require('request-promise')
+const { uniqBy } = require('lodash')
+const additionalSupporters = require('./additional-supporters.json')
+const removeSupporters = require('./remove-supporters.json')
+
+const asyncWriteFile = promisify(fs.writeFile)
+
+const API_KEY = '43d883997da5983dc50dfcb288c690903fbebf9a'
+const REQUIRED_KEYS = ['totalDonations', 'slug', 'name']
+const filename = 'supports.json'
+const absoluteFilename = path.resolve('/home/zhixin/www/opencollective', filename)
+
+const graphqlEndpoint = `https://api.opencollective.com/graphql/v2/${API_KEY}`
+
+const graphqlQuery = `query account($limit: Int, $offset: Int) {
+  account(slug: "bootstrap-table") {
+    orders(limit: $limit, offset: $offset) {
+      limit
+      offset
+      totalCount
+      nodes {
+        fromAccount {
+          name
+          slug
+          website
+          imageUrl
+        }
+        totalDonations {
+          value
+        }
+        createdAt
+      }
+    }
+  }
+}`
+
+const graphqlPageSize = 1000
+
+const nodeToSupporter = node => ({
+  name: node.fromAccount.name,
+  slug: node.fromAccount.slug,
+  website: node.fromAccount.website,
+  avatar: node.fromAccount.imageUrl,
+  firstDonation: node.createdAt,
+  totalDonations: node.totalDonations.value
+})
+
+const getAllOrders = async () => {
+  const requestOptions = {
+    method: 'POST',
+    uri: graphqlEndpoint,
+    body: { query: graphqlQuery, variables: { limit: graphqlPageSize, offset: 0 } },
+    json: true
+  }
+
+  let allOrders = []
+
+  // Handling pagination if necessary (2 pages for ~1400 results in May 2019)
+  // eslint-disable-next-line
+  while (true) {
+    const result = await request(requestOptions)
+    const orders = result.data.account.orders.nodes
+    allOrders = [...allOrders, ...orders]
+    requestOptions.body.variables.offset += graphqlPageSize
+    if (orders.length < graphqlPageSize) {
+      return allOrders
+    }
+  }
+}
+
+getAllOrders()
+  .then(orders => {
+    let supporters = orders.map(nodeToSupporter)
+
+    supporters = supporters.concat(additionalSupporters)
+      .sort((a, b) => b.totalDonations - a.totalDonations)
+
+    // Deduplicating supporters with multiple orders
+    supporters = uniqBy(supporters, 'slug')
+
+    supporters = supporters.filter(s => {
+      return s.totalDonations > 0 && !removeSupporters.slugs.includes(s.slug)
+    })
+
+    if (!Array.isArray(supporters)) {
+      throw new Error('Supporters data is not an array.')
+    }
+
+    for (const item of supporters) {
+      for (const key of REQUIRED_KEYS) {
+        if (!item || typeof item !== 'object') {
+          throw new Error(`Supporters: ${JSON.stringify(item)} is not an object.`)
+        }
+        if (!(key in item)) {
+          throw new Error(`Supporters: ${JSON.stringify(item)} doesn't include ${key}.`)
+        }
+      }
+    }
+
+    // Write the file
+    return asyncWriteFile(absoluteFilename, JSON.stringify(supporters, null, 2)).then(() =>
+      console.log(`Fetched 1 file: ${filename}`)
+    )
+  })
+  .catch(error => {
+    console.error('utilities/fetch-supporters:', error)
+  })

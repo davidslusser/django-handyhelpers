@@ -56,7 +56,7 @@ class HandyHelperGenericBaseListView(FilterByQueryParamsMixin, ListView):
         add_template  - additional template to include on the template
     """
     base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
-    template_name = 'handyhelpers/generic/generic_list.html'
+    template_name = 'handyhelpers/generic/bs5/generic_list.html'
     title = None
     table = None
     modals = None
@@ -209,29 +209,30 @@ class HandyHelperListPlusCreateView(HandyHelperGenericBaseListView):
     A reusable generic base view to render a ListView where the child view will provide a html table and create form.
 
     class parameters:
-        base_template              - base template used for rendering page; defaults to: handyhelpers_base.htm
-        template_name              - template used when rendering page;
-                                     defaults to: handyhelpers/generic/generic_list.html
-        args                       - additional args to pass into the template
-        kwargs                     - additional kwargs to pass into the template
-        queryset                   - queryset to be rendered on the page
-        title                      - title to use in template
-        page_description           - subtitle to use in template
-        table                      - htm file rendering the queryset to be included in the generic_list template
-        modals                     - htm file rendering additional modals to be included in the generic_list template
-        add_static                 - additional static file to include on the template
-        add_template               - additional template to include on the template
-        allow_create_groups        - comma separated list of groups that are allowed to create a new record
+        base_template                - base template used for rendering page; defaults to: handyhelpers_base.htm
+        template_name                - template used when rendering page;
+                                       defaults to: handyhelpers/generic/generic_list.html
+        args                         - additional args to pass into the template
+        kwargs                       - additional kwargs to pass into the template
+        queryset                     - queryset to be rendered on the page
+        title                        - title to use in template
+        page_description             - subtitle to use in template
+        table                        - htm file rendering the queryset to be included in the generic_list template
+        modals                       - htm file rendering additional modals to be included in the generic_list template
+        add_static                   - additional static file to include on the template
+        add_template                 - additional template to include on the template
+        allow_create_groups          - comma separated list of groups that are allowed to create a new record
 
-        create_form_obj            - form object
-        create_form_url            - url the form (action) should post to
-        create_form_title          - title to use on the create form modal (can be html)
-        create_form_modal          - name of modal for the create form
-        create_form_modal_size     - bootstrap modal size class (such as modal-lg)
-        create_form_modal_backdrop - optional data-backdrop value(such as data-backdrop="static")
-        create_form_link_title     - text used for the link opening the create form
-        create_form_tool_tip       - text to use for the tooltip
-        create_form_autocomplete   - autocomplete parameter to use in form tag (on/off)
+        create_form_obj              - form object
+        create_form_url              - url the form (action) should post to
+        create_form_title            - title to use on the create form modal (can be html)
+        create_form_modal            - name of modal for the create form
+        create_form_modal_backdrop   - optional data-backdrop value(such as data-backdrop="static")
+        filter_form_modal_scrollable - add vertical scrolling to modal body
+        create_form_modal_size       - bootstrap modal size class (such as modal-lg)
+        create_form_link_title       - text used for the link opening the create form
+        create_form_tool_tip         - text to use for the tooltip
+        create_form_autocomplete     - autocomplete parameter to use in form tag (on/off)
 
     example:
         class ListProjects(HandyHelperBaseCreateListView):
@@ -293,29 +294,30 @@ class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
     A reusable generic base view to render a ListView where the child view will provide a html table and filter form.
 
     class parameters:
-        base_template              - base template used for rendering page; defaults to: handyhelpers_base.htm
-        template_name              - template used when rendering page;
-                                     defaults to: handyhelpers/generic/generic_list.html
-        args                       - additional args to pass into the template
-        kwargs                     - additional kwargs to pass into the template
-        queryset                   - queryset to be rendered on the page
-        title                      - title to use in template
-        page_description           - subtitle to use in template
-        table                      - htm file rendering the queryset to be included in the generic_list template
-        modals                     - htm file rendering additional modals to be included in the generic_list template
-        add_static                 - additional static file to include on the template
-        add_template               - additional template to include on the template
+        base_template                - base template used for rendering page; defaults to: handyhelpers_base.htm
+        template_name                - template used when rendering page;
+                                       defaults to: handyhelpers/generic/generic_list.html
+        args                         - additional args to pass into the template
+        kwargs                       - additional kwargs to pass into the template
+        queryset                     - queryset to be rendered on the page
+        title                        - title to use in template
+        page_description             - subtitle to use in template
+        table                        - htm file rendering the queryset to be included in the generic_list template
+        modals                       - htm file rendering additional modals to be included in the generic_list template
+        add_static                   - additional static file to include on the template
+        add_template                 - additional template to include on the template
 
-        filter_form_obj            - form object
-        filter_form_url            - url the form (action) should post to
-        filter_form_title          - title to use on the filter form modal (can be html)
-        filter_form_modal          - name of modal for the filter form
-        filter_form_modal_size     - bootstrap modal size class (such as modal-lg)
-        filter_form_modal_backdrop - optional data-backdrop value(such as data-backdrop="static")
-        filter_form_link_title     - text used for the link opening the filter form
-        filter_form_tool_tip       - text to use for the tooltip
-        filter_form_undo           - include an undo icon to clear applied filters
-        filter_form_autocomplete   - autocomplete parameter to use in form tag (on/off)
+        filter_form_obj              - form object
+        filter_form_url              - url the form (action) should post to
+        filter_form_title            - title to use on the filter form modal (can be html)
+        filter_form_modal            - name of modal for the filter form
+        filter_form_modal_backdrop   - optional data-backdrop value(such as data-backdrop="static")
+        filter_form_modal_scrollable - add vertical scrolling to modal body
+        filter_form_modal_size       - bootstrap modal size class (such as modal-lg)
+        filter_form_link_title       - text used for the link opening the filter form
+        filter_form_tool_tip         - text to use for the tooltip
+        filter_form_undo             - include an undo icon to clear applied filters
+        filter_form_autocomplete     - autocomplete parameter to use in form tag (on/off)
 
     example:
         class ListProjects(HandyHelperListPlusFilterView):
@@ -339,8 +341,9 @@ class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
     filter_form_url = '/handyhelpers/filter_list_view'
     filter_form_title = None
     filter_form_modal = None
-    filter_form_modal_size = None
     filter_form_modal_backdrop = None
+    filter_form_modal_scrollable = False
+    filter_form_modal_size = None
     filter_form_link_title = None
     filter_form_tool_tip = None
     filter_form_undo = True
@@ -358,8 +361,9 @@ class HandyHelperListPlusFilterView(HandyHelperGenericBaseListView):
             self.filter_form['action_url'] = self.filter_form_url
             self.filter_form['title'] = self.filter_form_title
             self.filter_form['modal_name'] = self.filter_form_modal
-            self.filter_form['modal_size'] = self.filter_form_modal_size
             self.filter_form['modal_backdrop'] = self.filter_form_modal_backdrop
+            self.filter_form['modal_scrollable'] = self.filter_form_modal_scrollable
+            self.filter_form['modal_size'] = self.filter_form_modal_size
             self.filter_form['link_title'] = self.filter_form_link_title
             self.filter_form['tool_tip'] = self.filter_form_tool_tip
             self.filter_form['undo'] = self.filter_form_undo
@@ -374,42 +378,44 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
     and a create form and a filter form.
 
     class parameters:
-        base_template              - base template used for rendering page;
-                                     defaults to: handyhelpers_base.htm
-        template_name              - template used when rendering page; defaults to:
-                                     handyhelpers/generic/generic_list.html
-        args                       - additional args to pass into the template
-        kwargs                     - additional kwargs to pass into the template
-        queryset                   - queryset to be rendered on the page
-        title                      - title to use in template
-        page_description           - subtitle to use in template
-        table                      - htm file rendering the queryset to be included in the generic_list template
-        modals                     - htm file rendering additional modals to be included in the generic_list template
-        add_static                 - additional static file to include on the template
-        add_template               - additional template to include on the template
-        allow_create_groups        - comma separated list of groups that are allowed to create a new record; used with
-                                     InAnyGroup mixin
+        base_template                - base template used for rendering page;
+                                       defaults to: handyhelpers_base.htm
+        template_name                - template used when rendering page; defaults to:
+                                       handyhelpers/generic/generic_list.html
+        args                         - additional args to pass into the template
+        kwargs                       - additional kwargs to pass into the template
+        queryset                     - queryset to be rendered on the page
+        title                        - title to use in template
+        page_description             - subtitle to use in template
+        table                        - htm file rendering the queryset to be included in the generic_list template
+        modals                       - htm file rendering additional modals to be included in the generic_list template
+        add_static                   - additional static file to include on the template
+        add_template                 - additional template to include on the template
+        allow_create_groups          - comma separated list of groups that are allowed to create a new record; used with
+                                       InAnyGroup mixin
 
-        create_form_obj            - create form object
-        create_form_url            - url the create form (action) should post to
-        create_form_title          - title to use on the create form modal (can be html)
-        create_form_modal          - name of modal for the create form
-        create_form_modal_size     - bootstrap modal size class (such as modal-lg)
-        create_form_modal_backdrop - optional data-backdrop value(such as data-backdrop="static")
-        create_form_link_title     - text used for the link opening the create form
-        create_form_tool_tip       - text to use for the create form link tooltip
-        create_form_autocomplete   - autocomplete parameter to use in form tag (on/off)
+        create_form_obj              - create form object
+        create_form_url              - url the create form (action) should post to
+        create_form_title            - title to use on the create form modal (can be html)
+        create_form_modal            - name of modal for the create form
+        create_form_modal_scrollable - add vertical scrolling to modal body
+        create_form_modal_size       - bootstrap modal size class (such as modal-lg)
+        create_form_modal_backdrop   - optional data-backdrop value(such as data-backdrop="static")
+        create_form_link_title       - text used for the link opening the create form
+        create_form_tool_tip         - text to use for the create form link tooltip
+        create_form_autocomplete     - autocomplete parameter to use in form tag (on/off)
 
-        filter_form_obj            - filter form object
-        filter_form_url            - url the filter form (action) should post to
-        filter_form_title          - title to use on the filter form modal (can be html)
-        filter_form_modal          - name of modal for the filter form
-        filter_form_modal_size     - bootstrap modal size class (such as modal-lg)
-        filter_form_modal_backdrop - optional data-backdrop value(such as data-backdrop="static")
-        filter_form_link_title     - text used for the link opening the filter form
-        filter_form_tool_tip       - text to use for the filter form link tooltip
-        filter_form_undo           - include an undo icon to clear applied filters
-        filter_form_autocomplete   - autocomplete parameter to use in form tag (on/off)
+        filter_form_obj              - filter form object
+        filter_form_url              - url the filter form (action) should post to
+        filter_form_title            - title to use on the filter form modal (can be html)
+        filter_form_modal            - name of modal for the filter form
+        filter_form_modal_backdrop   - optional data-backdrop value(such as data-backdrop="static")
+        filter_form_modal_scrollable - add vertical scrolling to modal body
+        filter_form_modal_size       - bootstrap modal size class (such as modal-lg)
+        filter_form_link_title       - text used for the link opening the filter form
+        filter_form_tool_tip         - text to use for the filter form link tooltip
+        filter_form_undo             - include an undo icon to clear applied filters
+        filter_form_autocomplete     - autocomplete parameter to use in form tag (on/off)
 
     example:
         class ListProjects(HandyHelperBaseCreateListView):
@@ -440,8 +446,9 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
     create_form_url = None
     create_form_title = None
     create_form_modal = None
-    create_form_modal_size = None
     create_form_modal_backdrop = None
+    create_form_modal_scrollable = False
+    create_form_modal_size = None
     create_form_link_title = None
     create_form_tool_tip = None
     create_form_autocomplete = None
@@ -452,8 +459,9 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
     filter_form_url = '/handyhelpers/filter_list_view'
     filter_form_title = None
     filter_form_modal = None
-    filter_form_modal_size = None
     filter_form_modal_backdrop = None
+    filter_form_modal_scrollable = False
+    filter_form_modal_size = None
     filter_form_link_title = None
     filter_form_tool_tip = None
     filter_form_undo = True
@@ -470,8 +478,9 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
             self.create_form['action_url'] = self.create_form_url
             self.create_form['title'] = self.create_form_title
             self.create_form['modal_name'] = self.create_form_modal
-            self.create_form['modal_size'] = self.create_form_modal_size
             self.create_form['modal_backdrop'] = self.create_form_modal_backdrop
+            self.create_form['modal_scrollable'] = self.create_form_modal_scrollable
+            self.create_form['modal_size'] = self.create_form_modal_size
             self.create_form['link_title'] = self.create_form_link_title
             self.create_form['tool_tip'] = self.create_form_tool_tip
             self.create_form['autocomplete'] = self.create_form_autocomplete
@@ -483,8 +492,9 @@ class HandyHelperListPlusCreateAndFilterView(HandyHelperGenericBaseListView):
             self.filter_form['action_url'] = self.filter_form_url
             self.filter_form['title'] = self.filter_form_title
             self.filter_form['modal_name'] = self.filter_form_modal
-            self.filter_form['modal_size'] = self.filter_form_modal_size
             self.filter_form['modal_backdrop'] = self.filter_form_modal_backdrop
+            self.filter_form['modal_scrollable'] = self.filter_form_modal_scrollable
+            self.filter_form['modal_size'] = self.filter_form_modal_size
             self.filter_form['link_title'] = self.filter_form_link_title
             self.filter_form['tool_tip'] = self.filter_form_tool_tip
             self.filter_form['undo'] = self.filter_form_undo
@@ -521,9 +531,9 @@ class HandyHelperPaginatedListView(HandyHelperGenericBaseListView):
         create_form_obj            - create form object
         create_form_url            - url the create form (action) should post to
         create_form_title          - title to use on the create form modal (can be html)
-        create_form_modal          - name of modal for the create form
-        create_form_modal_size     - bootstrap modal size class (such as modal-lg)
         create_form_modal_backdrop - optional data-backdrop value(such as data-backdrop="static")
+        create_form_modal_name     - name of modal for the create form
+        create_form_modal_size     - bootstrap modal size class (such as modal-lg)
         create_form_link_title     - text used for the link opening the create form
         create_form_tool_tip       - text to use for the create form link tooltip
         create_form_autocomplete   - autocomplete parameter to use in form tag (on/off)
@@ -531,9 +541,9 @@ class HandyHelperPaginatedListView(HandyHelperGenericBaseListView):
         filter_form_obj            - filter form object
         filter_form_url            - url the form (action) should post to
         filter_form_title          - title to use on the filter form modal (can be html)
-        filter_form_modal          - name of modal for the filter form
-        filter_form_modal_size     - bootstrap modal size class (such as modal-lg)
         filter_form_modal_backdrop - optional data-backdrop value(such as data-backdrop="static")
+        filter_form_modal_name     - name of modal for the filter form
+        filter_form_modal_size     - bootstrap modal size class (such as modal-lg)
         filter_form_link_title     - text used for the link opening the filter form
         filter_form_tool_tip       - text to use for the tooltip
         filter_form_undo           - include an undo icon to clear applied filters
@@ -557,9 +567,10 @@ class HandyHelperPaginatedListView(HandyHelperGenericBaseListView):
     create_form_obj = None
     create_form_url = None
     create_form_title = None
-    create_form_modal = None
-    create_form_modal_size = None
+    create_form_modal_name = None
     create_form_modal_backdrop = None
+    create_form_modal_scrollable = False
+    create_form_modal_size = None
     create_form_link_title = None
     create_form_tool_tip = None
     create_form_autocomplete = None
@@ -570,9 +581,10 @@ class HandyHelperPaginatedListView(HandyHelperGenericBaseListView):
     filter_form_id = None
     filter_form_url = '/handyhelpers/filter_list_view'
     filter_form_title = None
-    filter_form_modal = None
-    filter_form_modal_size = None
+    filter_form_modal_name = None
     filter_form_modal_backdrop = None
+    filter_form_modal_scrollable = False
+    filter_form_modal_size = None
     filter_form_link_title = None
     filter_form_tool_tip = None
     filter_form_undo = True
@@ -600,9 +612,10 @@ class HandyHelperPaginatedListView(HandyHelperGenericBaseListView):
             self.create_form['action'] = 'Add'
             self.create_form['action_url'] = self.create_form_url
             self.create_form['title'] = self.create_form_title
-            self.create_form['modal_name'] = self.create_form_modal
-            self.create_form['modal_size'] = self.create_form_modal_size
             self.create_form['modal_backdrop'] = self.create_form_modal_backdrop
+            self.create_form['modal_name'] = self.create_form_modal_name
+            self.create_form['modal_scrollable'] = self.create_form_modal_scrollable
+            self.create_form['modal_size'] = self.create_form_modal_size
             self.create_form['link_title'] = self.create_form_link_title
             self.create_form['tool_tip'] = self.create_form_tool_tip
             self.create_form['autocomplete'] = self.create_form_autocomplete
@@ -614,9 +627,10 @@ class HandyHelperPaginatedListView(HandyHelperGenericBaseListView):
             self.filter_form['action'] = 'Filter'
             self.filter_form['action_url'] = self.filter_form_url
             self.filter_form['title'] = self.filter_form_title
-            self.filter_form['modal_name'] = self.filter_form_modal
-            self.filter_form['modal_size'] = self.filter_form_modal_size
             self.filter_form['modal_backdrop'] = self.filter_form_modal_backdrop
+            self.filter_form['modal_name'] = self.filter_form_modal_name
+            self.filter_form['modal_scrollable'] = self.filter_form_modal_scrollable
+            self.filter_form['modal_size'] = self.filter_form_modal_size
             self.filter_form['link_title'] = self.filter_form_link_title
             self.filter_form['tool_tip'] = self.filter_form_tool_tip
             self.filter_form['undo'] = self.filter_form_undo
