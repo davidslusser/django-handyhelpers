@@ -24,7 +24,7 @@
     {# current counts of data #}
     <div class="card-container mt-5 mb-5">
         {% for data in annual_progress_dataset_list %}
-        <a href="{{ data.list_view }}" class="hvr-grow">
+        <a href="{{ data.list_view|safe }}" class="hvr-grow">
             <div class="card shadow text-center vw-75 m-4">
                 <div class="card-body">
                     <div class="h1 font-weight-bold text-primary">{{ data.data|last }}</div>
