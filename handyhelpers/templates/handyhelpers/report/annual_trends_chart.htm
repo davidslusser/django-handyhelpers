@@ -15,7 +15,7 @@
                         label: "{{ data.title }}",
                         borderColor: {{ data.color }},
                         fill: true,
-                        list_view: "{{ data.list_view }}",
+                        list_view: "{{ data.list_view|safe }}",
                         dt_field: "{{ data.dt_field }}"
                     },
                     {% endfor %}

@@ -54,7 +54,7 @@
             {% else %}
                 {% for i in chart.label_list %}
                 case '{{ i }}':
-                    location.href = "{{ chart.list_view }}{{ i|safe }}&page_description={{ i|safe }}";
+                    location.href = "{{ chart.list_view|safe }}{{ i|safe }}&page_description={{ i|safe }}";
                     break;
                 {% endfor %}
             {% endif %}
