@@ -1,5 +1,5 @@
     <header>
-        <div class="headline text-center">
+        <div class="headline text-center animated fadeIn" style="animation-delay: .15s;">
             <div class="container mb-5">
                 <h1 class="text-primary font-weight-bold">{{ title }}</h1>
                 <h3 class="text-secondary">{% if sub_title %}{{ sub_title }}{% endif %} &nbsp; </h3>
@@ -8,7 +8,7 @@
     </header>
 
     {# bar graphs for day/week/month/year #}
-    <div class="container-fluid mt-2 mb-5">
+    <div class="container-fluid mt-2 mb-5 animated fadeIn" style="animation-delay: .25s;">
         <div class="row mb-4 text-center">
             <div class="col-sm-12 col-md-3 d-flex justify-content-center mb-4">
                 <canvas id="bar-chart-day" width="400" height="250"></canvas>
@@ -26,7 +26,7 @@
     </div>
 
     {# line graph for annual trend #}
-    <div class="container-fluid mt-2 mb-5">
+    <div class="container-fluid mt-2 mb-5 animated fadeIn" style="animation-delay: .35s;">
         <div class="row mb-4 text-center">
             <div class="col-sm-12 d-flex justify-content-center mb-4">
                 <canvas id="annual_trend" width="800" height="250"></canvas>

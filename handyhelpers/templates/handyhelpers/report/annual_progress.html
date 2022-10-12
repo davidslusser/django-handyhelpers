@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block local_head %}
-    <script src="{% static 'node_modules/chart.js/dist/Chart.bundle.min.js' %}"></script>
+<!--    <script src="{% static 'node_modules/chart.js/dist/Chart.bundle.min.js' %}"></script>-->
+<!--    <script src="{% static 'node_modules/chart.js/chart.js' %}"></script>-->
+    {% include "handyhelpers/component/chart_components.htm" %}
     <style>
         a:hover {
             text-decoration: none;

@@ -13,7 +13,7 @@
     </style>
 
     <header>
-        <div class="headline text-center">
+        <div class="headline text-center animated fadeIn" style="animation-delay: .15s;">
             <div class="container mb-5">
                 <h1 class="text-primary font-weight-bold">{{ title }}</h1>
                 <h3 class="text-secondary">{% if sub_title %}{{ sub_title }}{% endif %} &nbsp; </h3>
@@ -22,7 +22,7 @@
     </header>
 
     {# current counts of data #}
-    <div class="card-container mt-5 mb-5">
+    <div class="card-container mt-5 mb-5 animated fadeIn" style="animation-delay: .25s;">
         {% for data in annual_progress_dataset_list %}
         <a href="{{ data.list_view }}" class="hvr-grow">
             <div class="card shadow text-center vw-75 m-4">
@@ -38,7 +38,7 @@
 
     <div>&nbsp;</div>
     {# line graph for year #}
-    <div class="container-fluid mt-2 mb-5">
+    <div class="container-fluid mt-2 mb-5 animated fadeIn" style="animation-delay: .35s;">
         <canvas id="annual_progress" width="800" height="250"></canvas>
     </div>
 
