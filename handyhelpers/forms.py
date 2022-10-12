@@ -23,3 +23,15 @@ class SetRequiredModelForm(SetRequiredMixin, forms.ModelForm):
                 required = ['some_field']
                 not_required = ['some_other_field']
     """
+
+
+class TimestampFilter(forms.Form):
+    """ Generic Form class to filter by created_at and updated_at timestamps """
+    created_at__gte = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+                                      required=False, label='Created After')
+    created_at__lte = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+                                      required=False, label='Created Before')
+    updated_at__gte = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+                                      required=False, label='Updated After')
+    updated_at__lte = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+                                      required=False, label='Updated Before')
