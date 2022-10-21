@@ -1,0 +1,51 @@
+    <script>
+        {# line graph for annual data #}
+        var canvasP = document.getElementById("annual_progress");
+        var ctxP = canvasP.getContext('2d');
+        var annual_progress_chart = new Chart(ctxP, {
+            type: 'line',
+            data: {
+                labels: {{ month_labels|safe }},
+                year:[{% for ts in month_timestamps %} "{{ ts.year }}", {% endfor %}],
+                month:[{% for ts in month_timestamps %} "{{ ts.month }}", {% endfor %}],
+                ts:[{% for ts in month_timestamps %} "{{ ts|date:'Y-m-d H:00:00' }}", {% endfor %}],
+                datasets: [
+                    {% for data in annual_progress_dataset_list %}
+                    {
+                        data: {{ data.data }},
+                        label: "{{ data.title }}",
+                        borderColor: {{ data.color }},
+                        fill: true,
+                        list_view: "{{ data.list_view|safe }}",
+                        dt_field: "{{ data.dt_field }}",
+                        lineTension: 0.4
+                    },
+                    {% endfor %}
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    fontSize: 20,
+                    position: "bottom",
+                    text: 'cumulative data count per month'
+                },
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                }
+            }
+        });
+
+        canvasP.onclick = function(e) {
+            var points = annual_progress_chart.getElementsAtEventForMode(e, 'nearest', {intersect: true }, true);
+            if (points[0]) {
+                var year = annual_progress_chart.data.year[points[0].index];
+                var month = annual_progress_chart.data.month[points[0].index];
+                var ts = annual_progress_chart.data.ts[points[0].index];
+                var list_view = annual_progress_chart.data.datasets[points[0].datasetIndex].list_view;
+                var dt_field = annual_progress_chart.data.datasets[points[0].datasetIndex].dt_field;
+                location.href = list_view+"?"+dt_field+"__lte="+ts+"&page_description=as of "+month+"/"+year;
+            }
+        }
+     </script>

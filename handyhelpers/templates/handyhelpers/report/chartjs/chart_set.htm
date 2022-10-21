@@ -1,0 +1,56 @@
+    <div class="row mb-4 text-center">
+        {% for chart in chart_set %}
+        <div class="col-sm-12 col-md-4 d-flex justify-content-center mb-4">
+            <div class="card shadow vw-100 bg-light">
+                <div class="card-body">
+                    <canvas id="{{ chart.id }}"></canvas>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% include 'handyhelpers/report/theme_colors.htm' %}
+
+    <script>
+        {% for chart in chart_set %}
+           // hostname status breakdown
+            var canvasP = document.getElementById("{{ chart.id }}");
+            var ctxP = canvasP.getContext('2d');
+            var {{ chart.id }}_chart = new Chart(ctxP, {
+                type: '{{ chart.type }}',
+                data: {
+                    labels: {{ chart.label_list|safe }},
+                    datasets: [{
+                        backgroundColor: [{% for color in chart.color_list %}{{ color }},{% endfor %}],
+                        data: {{ chart.data_list|safe }},
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: '{{ chart.title }}',
+                        fontSize: 20,
+                        position: "bottom"
+                    },
+                    legend: {
+                        position: 'bottom',
+                        display: false
+                    }
+                }
+            });
+
+            canvasP.onclick = function(e) {
+                var slice = {{ chart.id }}_chart.getElementAtEvent(e);
+                if (!slice.length) return; // return if not clicked on slice
+                var label = slice[0]._model.label;
+                switch (label) {
+                    {% for i in chart.label_list %}
+                    case '{{ i|safe }}':
+                        location.href = "{{ chart.list_view|safe }}{{ i|safe }}&page_description={{ i|safe }}";
+                        break;
+                    {% endfor %}
+                }
+            }
+        {% endfor %}
+    </script>

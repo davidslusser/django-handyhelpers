@@ -5,7 +5,7 @@
     "bootstrap": "^5.2.1",
     "bootstrap-icons": "^1.9.1",
     "bootstrap-table": "^1.21.0",
-    "chartjs": "^0.3.24",
+    "chart.js": "3.9.1",
     "hover.css": "^2.3.2",
     "jquery": "^3.6.1",
     "mdb-ui-kit": "^5.0.0",
