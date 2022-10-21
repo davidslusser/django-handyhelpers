@@ -5,5 +5,3 @@ recursive-include handyhelpers/management/commands/admin_templates *
 recursive-include handyhelpers/management/commands/unittest_templates *
 recursive-include handyhelpers/templates *
 recursive-include handyhelpers/static *
-exclude handyhelpers/static/css/menu-kit.css
-exclude handyhelpers/static/js/menu-kit.css
