@@ -258,7 +258,7 @@ class AnnualStatView(View):
     base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
     title = 'Annual Statistics Report'
     sub_title = None
-    template_name = 'handyhelpers/report/annual_stats.html'
+    template_name = 'handyhelpers/report/chartjs/annual_stats.html'
     dataset_list = list()
 
     def get(self, request):
@@ -314,7 +314,7 @@ class AnnualTrendView(View):
     base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
     title = 'Annual Trend Report'
     sub_title = 'data added over the past year'
-    template_name = 'handyhelpers/report/annual_trends.html'
+    template_name = 'handyhelpers/report/chartjs/annual_trends.html'
     chart_display_title = True
     chart_display_legend = False
     dataset_list = list()
@@ -355,7 +355,7 @@ class AnnualProgressView(View):
     base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
     title = 'Annual Progress Report'
     sub_title = 'cumulative data added over the past year'
-    template_name = 'handyhelpers/report/annual_progress.html'
+    template_name = 'handyhelpers/report/chartjs/annual_progress.html'
     dataset_list = list()
 
     def get(self, request):

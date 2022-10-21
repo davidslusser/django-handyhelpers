@@ -1,0 +1,366 @@
+{% block page_javascript %}
+    <script language="Javascript">
+
+        function showModal(id) {
+            /* show modal */
+            $('#'+id).modal('show');
+        }
+
+        function hideModal(id) {
+            /* hide modal */
+            $('#'+id).modal('hide');
+        }
+
+        function toggleModal(id) {
+            /* toggle modal */
+            $('#'+id).modal('toggle');
+        }
+
+        function confirmAction(url, title, confirm, button, method){
+            /*
+             Description:
+             Launch modal to confirm actions
+
+             Parameters:
+             title	- modal window title
+             confirm - confirmation message
+             button	- action button label
+             url     - url to access on confirmation
+             method  - changes the way this confirmation works to send a dummyform post with a DeleteView redirect.
+             */
+            if (url === undefined){
+                return;
+            }
+            if (title === undefined){
+                var title = "Confirm";
+            }
+            if (confirm === undefined){
+                var confirm = "Do you wish to continue?";
+            }
+            if (button === undefined){
+                var button = "Continue";
+            }
+            if (method === undefined){
+                var method = "Not POST";
+            }
+            document.getElementById("id_modalConfirmHeader").innerHTML = "<b>"+title+"</b>";
+            document.getElementById("id_modalConfirmBody").innerHTML = confirm;
+            document.getElementById("id_modalConfirm_OK").innerHTML = button;
+            var okbutton = document.getElementById("id_modalConfirm_OK");
+
+            if(method === 'POST'){
+                document.getElementById("id_modalConfirm_OK").onclick = function(){doPost(url);};
+                $("#id_modalConfirm_OK").attr('class', 'btn btn-primary text-light');
+                $("#id_modalConfirm").modal({show:true});
+            } else {
+                $("#id_modalConfirm_OK").attr('href', url);
+                $("#id_modalConfirm_OK").attr('class', 'btn btn-primary text-light');
+                $("#id_modalConfirm").modal({show:true});
+            }
+            showModal('id_modalConfirm');
+        }
+
+        function doPost(url){
+            /*
+             Description:
+             Send a POST using #modalsubmitform down below.  Updates action to input url.
+
+             Parameters:
+             url   - url to POST a blank form to.
+             */
+            var dummyform = $('#modalsubmitform');
+            dummyform.attr('action', url);
+            dummyform.attr('method', 'POST');
+            dummyform.submit();
+        }
+
+        function showInfo(url, id, title, large){
+            /*
+             Description:
+             Launch modal to display information summary
+
+             Parameters:
+             url   - url to access on confirmation
+             id    - object id
+             title - modal window title
+             large - use large modal
+             */
+            if (url === undefined){
+                return;
+            }
+            if (title === undefined){
+                var title = "Show Info";
+            }
+            if (large === undefined){
+                var large = false;
+            }
+            $.ajax({
+                url : url,
+                type : "GET",
+                dataType: "json",
+                data : {
+                    client_response : id,
+                },
+                success : function(json) {
+                    var body = json.server_response;
+                    if (large == true) {
+                        document.getElementById("id_modalResultsLargeHeader").innerHTML = "<b>" + title + "</b>";
+                        document.getElementById("id_modalResultsLargeBody").innerHTML = body;
+                        showModal('id_modalResultsLarge');
+                    }
+                    else if (large == "xl"){
+                        document.getElementById("id_modalResultsExtraLargeHeader").innerHTML = "<b>" + title + "</b>";
+                        document.getElementById("id_modalResultsExtraLargeBody").innerHTML = body;
+                        showModal('id_modalResultsExtraLarge');
+                    }
+                    else {
+                        document.getElementById("id_modalResultsHeader").innerHTML = "<b>" + title + "</b>";
+                        document.getElementById("id_modalResultsBody").innerHTML = body;
+                        showModal('id_modalResults');
+                    }
+                },
+                error : function(xhr,errmsg,err) {
+                    alert(xhr.status + ": " + xhr.responseText);
+                }
+            });
+            return false;
+        }
+
+        function showImage(id, title, link, link_label){
+            /*
+             Description:
+             Launch modal to display provided content
+
+             Parameters:
+             id    - ID of image content
+             title - modal window title
+             link  - optional link
+             */
+            if (id === undefined){
+                return;
+            }
+            if (title === undefined){
+                var title = "";
+            }
+            document.getElementById("id_modalImageHeader").innerHTML = "<b>" + title + "</b>";
+            if (link){
+                document.getElementById("id_image_link").innerHTML = "<br/>" + link;
+                $('#id_image_link').attr('href', link);
+            }
+            if (link_label){
+                $("#id_image_link_label").text(link_label);
+            }
+            $('.modal_image').attr('src', $('#'+id).attr('src'));
+            showModal('id_modalImage');
+        }
+
+        function showLocalInfo(title, data, large, centered){
+            /*
+             Description:
+             Launch modal to display information summary
+
+             Parameters:
+             data  - data to display in modal
+             title - modal window title
+             large - use large modal
+             */
+            if (data === undefined){
+                return;
+            }
+            if (title === undefined){
+                var title = "Show Info";
+            }
+            if (large === undefined){
+                var large = false;
+            }
+            if (centered === undefined){
+                var centered = true;
+            }
+
+            if (centered == true) {
+                var body = '<br/><div class="text-center">' + data + '</div><br/>';
+            }
+            else {
+                var body = '<br/><div style="padding: 10px">' + data + '</div><br/>';
+            }
+            if (large == true) {
+                document.getElementById("id_modalResultsLargeHeader").innerHTML = "<b>" + title + "</b>";
+                document.getElementById("id_modalResultsLargeBody").innerHTML = body;
+                showModal('id_modalResultsLarge');
+            }
+            else {
+                document.getElementById("id_modalResultsHeader").innerHTML = "<b>" + title + "</b>";
+                document.getElementById("id_modalResultsBody").innerHTML = body;
+                showModal('id_modalResults');
+            }
+        }
+
+        function showObjectInfo(title, data, large, centered){
+            /*
+             Description:
+             Launch modal to display details on from a locally available object
+
+             Parameters:
+             data  - django model object
+             title - modal window title
+             large - use large modal
+             */
+            if (data === undefined){
+                return;
+            }
+            if (title === undefined){
+                var title = "Show Info";
+            }
+            if (large === undefined){
+                var large = false;
+            }
+            if (centered === undefined){
+                var centered = true;
+            }
+
+            if (centered == true) {
+                var body = '<br/><div class="text-center">' + data + '</div><br/>';
+            }
+            else {
+                var body = '<br/><div style="padding: 10px">' + data + '</div><br/>';
+            }
+            if (large == true) {
+                document.getElementById("id_modalResultsLargeHeader").innerHTML = "<b>" + title + "</b>";
+                document.getElementById("id_modalResultsLargeBody").innerHTML = body;
+                showModal('id_modalResultsLarge');
+            }
+            else {
+                document.getElementById("id_modalResultsHeader").innerHTML = "<b>" + title + "</b>";
+                document.getElementById("id_modalResultsBody").innerHTML = body;
+                showModal('id_modalResults');
+            }
+        }
+
+        /* document ready */
+        $(document).ready(function() {
+        });
+
+
+    </script>
+{% endblock %}
+
+<div class="hidden" aria-hidden="true" tabindex="-1" style="display: none">
+    <form id="modalsubmitform">
+        {% csrf_token %}
+        <input type="submit" value="Submit" />
+    </form>
+</div>
+
+<!-- MODAL: results -->
+<div class="modal fade" id="id_modalResults" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="id_modalResultsHeader"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" id="id_modalResultsBody"></div>
+            <div class="modal-footer">
+                <button id="id_modalResultsClose" type="button" class="btn btn-primary text-light" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL: confirmation -->
+<div id="id_modalConfirmationWrapper">
+    <div class="modal fade" id="id_modalConfirm" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="id_modalConfirmHeader"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="id_modalConfirmBody"></div>
+                <div class="modal-footer" id="id_modalConfirmFooter">
+                    <button class="btn btn-light" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                    <a class="btn btn-primary text-light" id="id_modalConfirm_OK"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL: results-large -->
+<div class="modal fade" id="id_modalResultsLarge" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="id_modalResultsLargeHeader"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-container">
+                <div class="modal-body-scroll" id="id_modalResultsLargeBody"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="id_modalResultsLargeOk" type="button" class="btn btn-primary text-light" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL: results-xl -->
+<div class="modal fade" id="id_modalResultsExtraLarge" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="id_modalResultsExtraLargeHeader"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-container">
+                <div class="modal-body-scroll" id="id_modalResultsExtraLargeBody"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="id_modalResultsExtraLargeOk" type="button" class="btn btn-primary text-light" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL: confirmation-large -->
+<div id="id_modalConfirmationLargeWrapper">
+    <div class="modal fade" id="id_modalConfirmLarge" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="id_modalConfirmLargeHeader"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="id_modalConfirmLargeBody"></div>
+                <div class="modal-footer" id="id_modalConfirmLargeFooter">
+                    <button class="btn btn-light" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                    <a class="btn btn-primary text-light" id="id_modalConfirmLarge_OK"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL: image (responsive)-->
+<div class="modal fade" id="id_modalImage" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-relative modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="id_modalImageHeader"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" id="id_modalImageBody">
+                <img src="" class="modal_image">
+                <br/><br/><span id="id_image_link_label"></span><a href="" target="_blank" id="id_image_link"></a>
+            </div>
+            <div class="modal-footer" id="id_modalImageFooter">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

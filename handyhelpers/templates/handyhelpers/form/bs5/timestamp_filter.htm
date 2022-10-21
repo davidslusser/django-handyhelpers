@@ -1,0 +1,43 @@
+<div class="modal fade" id="modal_filter" role="dialog" aria-labelledby="modal_filter" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-primary font-weight-bold" id="modal_filter_form_label">Filter Data</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <form enctype="multipart/form-data" action="" method="GET" autocomplete="off">
+                <div class="modal-body">
+                    <div class="modal-body" id="id_filter_form_body">
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <div class="col-sm-12 font-weight-bold text-primary">{{filter_form.created_at__gte.label}}</div>
+                                    <div class="col-sm-12">{{filter_form.created_at__gte}}</div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12 font-weight-bold text-primary">{{filter_form.created_at__lte.label}}</div>
+                                    <div class="col-sm-12">{{filter_form.created_at__lte}}</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <div class="col-sm-12 font-weight-bold text-primary">{{filter_form.updated_at__gte.label}}</div>
+                                    <div class="col-sm-12">{{filter_form.updated_at__gte}}</div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12 font-weight-bold text-primary">{{filter_form.updated_at__lte.label}}</div>
+                                    <div class="col-sm-12">{{filter_form.updated_at__lte}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="id_filter">Filter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

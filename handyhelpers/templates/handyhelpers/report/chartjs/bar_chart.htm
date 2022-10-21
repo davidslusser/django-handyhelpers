@@ -1,0 +1,55 @@
+<script>
+    var canvasP = document.getElementById("{{ chart.id }}");
+    var ctxP = canvasP.getContext('2d');
+    var {{ chart.id }} = new Chart(ctxP, {
+        type: 'bar',
+        data: {
+            labels: {{ chart.label_list|safe }},
+            datasets: [
+                {
+                    label: "item count",
+                    backgroundColor: [{% for color in chart.color_list %}{{ color }},{% endfor %}],
+                    data: {{ chart.value_list|safe }},
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            {% if chart.legend %}
+            plugins: {
+                legend: {
+                    display: true,
+                }
+            }
+            {% else %}
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+            {% endif %}
+        }
+    });
+
+    canvasP.onclick = function(e) {
+        var slice = {{ chart.id }}.getElementsAtEventForMode(e, 'nearest', {intersect: true }, true);
+        if (!slice.length) return; // return if not clicked on slice
+        var label = {{ chart.id }}.data.labels[slice[0].index];
+        switch (label) {
+            {% if chart.list_view_link_list %}
+                {% for item in chart.list_view_link_list %}
+                case '{{ item.case|safe }}':
+                    location.href = "{{ item.link|safe }}&page_description={{ item.case|safe }}";
+                    break;
+                {% endfor %}
+            {% else %}
+                {% for i in chart.label_list %}
+                case '{{ i }}':
+                    location.href = "{{ chart.list_view|safe }}{{ i|safe }}&page_description={{ i|safe }}";
+                    break;
+                {% endfor %}
+            {% endif %}
+        }
+    }
+</script>

@@ -1,0 +1,31 @@
+{% load static %}
+<!-- bootstrap table -->
+<script type="text/javascript" src="{% static 'node_modules/bootstrap-table/dist/bootstrap-table.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'node_modules/bootstrap-table/dist/locale/bootstrap-table-en-US.min.js' %}"></script>
+<link href="{% static 'node_modules/bootstrap-table/dist/bootstrap-table.min.css' %}" rel="stylesheet">
+<link href="{% static 'node_modules/bootstrap-icons/font/bootstrap-icons.css' %}" rel="stylesheet">
+
+<script language="JavaScript">
+    function dataValueInt(a, b) {
+        /* sort based on integer value in data-value attribute */
+        var a_myRegexp = /(?:^|\s)data-value=\"(.*?)\"(?:\s|$)/g;
+        var b_myRegexp = /(?:^|\s)data-value=\"(.*?)\"(?:\s|$)/g;
+        var a = parseInt(a_myRegexp.exec(a)[1]);
+        var b = parseInt(b_myRegexp.exec(b)[1]);
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+    }
+
+    function dataValueFloat(a, b) {
+        /* sort based on integer value in data-value attribute */
+        var a_myRegexp = /(?:^|\s)data-value=\"(.*?)\"/g;
+        var b_myRegexp = /(?:^|\s)data-value=\"(.*?)\"/g;
+        var a = parseFloat(a_myRegexp.exec(a)[1]);
+        var b = parseFloat(b_myRegexp.exec(b)[1]);
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+    }
+
+</script>

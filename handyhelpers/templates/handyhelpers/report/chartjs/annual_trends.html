@@ -1,0 +1,10 @@
+{% extends base_template|default:"handyhelpers/handyhelpers_base.htm" %}
+{% load static %}
+
+{% block local_head %}
+{% include 'handyhelpers/component/chartjs_components.htm' %}
+{% endblock local_head %}
+
+{% block content %}
+    {% include 'handyhelpers/report/chartjs/annual_trends_content.htm' %}
+{% endblock content %}

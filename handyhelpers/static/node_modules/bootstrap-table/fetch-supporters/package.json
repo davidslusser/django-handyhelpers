@@ -1,0 +1,11 @@
+{
+  "name": "fetch-supporters",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5"
+  }
+}
