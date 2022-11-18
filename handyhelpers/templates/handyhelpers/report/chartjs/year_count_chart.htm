@@ -12,16 +12,18 @@
             }]
         },
         options: {
-            title: {
-                display: {% if chart_display_title %}true{% else %}false{% endif %},
-                text: 'Year',
-                fontSize: 20,
-                position: "bottom"
-            },
             plugins: {
+                title: {
+                    display: {% if chart_display_title %}true{% else %}false{% endif %},
+                    text: 'Year',
+                    position: 'bottom',
+                    font: {
+                        size: 20
+                    }
+                },
                 legend: {
                     display: {% if chart_display_legend %}true{% else %}false{% endif %},
-                    position: "bottom"
+                    position: 'bottom'
                 }
             },
             scales: {
