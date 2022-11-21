@@ -1,4 +1,7 @@
 import re
+import datetime
+
+from hurry.filesize import size
 
 from django import template
 from django.contrib.auth.models import Group
@@ -222,4 +225,20 @@ def dj_iter(gen):
     try:
         return next(gen)
     except StopIteration:
+        return None
+
+
+@register.filter(name='byte_size')
+def byte_size(value):
+    try:
+        return size(value)
+    except:
+        return None
+
+
+@register.filter(name='to_datetime')
+def to_datetime(value):
+    try:
+        return datetime.datetime.fromtimestamp(value)
+    except:
         return None

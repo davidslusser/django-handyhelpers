@@ -1,0 +1,66 @@
+{% extends base_template|default:"base.htm" %}
+{% load static %}
+{% load handyhelper_tags %}
+
+{% block local_head %}
+    <style>
+        .card .card-header {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        .key {
+            color: var(--primary);
+            font-weight: bold;
+            margin-right: .25rem
+        }
+        .value {
+            color: var(--secondary);
+            margin-left: .25rem
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<section class="mb-3 animated fadeIn" style="animation-delay: .15s;">
+    {% if title or subtitle %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="text-primary text-center h1 mb-2"><b>{{ title }}</b></div>
+                <div class="text-secondary text-center h5 mb-5">{{ subtitle|safe }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .25s;">
+    <div class="container-fluid mt-5">
+        <div class="card shadow">
+            <div class="card-header">Processes <span class="small">({{ process_list|length }})</span></div>
+                <div class="card-body" style="overflow-y: auto; overflow-x: hidden; max-height: 50vh">
+                    <ul class="list-group mx-auto justify-content-center" style="max-width: 93%; margin-top: .5%; margin-bottom: .5%">
+                        {% for item in process_list %}
+                        <li class="list-group-item bg-light shadow-sm hvr-grow mb-3">
+                            <a href="#" onClick="showInfo('{% url "handyhelpers:host_process_details" %}', '{{item.pid}}', 'Process Details: <small><i>{{item.name}}</i></small>', true);">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-2"><span class="key">PID:</span><span class="value">{{ item.pid }}</span></div>
+                                    <div class="col-xs-12 col-md-4"><span class="key">Name:</span><span class="value">{{ item.name }}</span></div>
+                                    <div class="col-xs-12 col-md-2"><span class="key">Status:</span><span class="value">{{ item.status }}</span></div>
+                                    <div class="col-xs-12 col-md-4"><span class="key">Started At:</span><span class="value">{{ item.create_time|to_datetime }}</span></div>
+                                </div>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include 'handyhelpers/component/bs5/modals.htm' %}
+{% endblock content %}

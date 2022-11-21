@@ -1,0 +1,37 @@
+{% load handyhelper_tags %}
+{% if data %}
+<div class="container">
+    <diV class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">PID: </div>
+        <div class="col-9 text-secondary">{{ data.pid }}</div>
+    </diV>
+    <diV class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Status:</div>
+        <div class="col-9 text-secondary">{{ data.status }}</div>
+    </diV>
+    <diV class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Stated At:</div>
+        <div class="col-9 text-secondary">{{ data.create_time|to_datetime }}</div>
+    </diV>
+    <diV class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">CPU Percent:</div>
+        <div class="col-9 text-secondary">{{ data.cpu_percent|percentage }}</div>
+    </diV>
+    <diV class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Memory Percent:</div>
+        <div class="col-9 text-secondary">{{ data.memory_percent|percentage }}</div>
+    </diV>
+    <diV class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Username:</div>
+        <div class="col-9 text-secondary">{{ data.username }}</div>
+    </diV>
+    <diV class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Executable:</div>
+        <div class="col-9 text-secondary">{{ data.cmdline|join:" " }}</div>
+    </diV>
+</div>
+{% else %}
+<div class="container">
+    data not available for this process
+</div>
+{% endif %}
