@@ -15,11 +15,10 @@
 
         {# block for project defined HEAD content #}
         {% block project_head %}
+        <script type="text/javascript" src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'node_modules/@popperjs/core/dist/umd/popper.min.js' %}"></script>
         <link href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-        <script type="text/javascript" src="{% static 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'node_modules/popper/dist/popper.min.js' %}"></script>
         <link href="{% static 'node_modules/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
-        <link href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
         <link href="{% static 'node_modules/animate.css/animate.compat.css' %}" rel="stylesheet">
         <link href="{% static 'node_modules/hover.css/css/hover.css' %}" rel="stylesheet">
         {% endblock project_head %}
