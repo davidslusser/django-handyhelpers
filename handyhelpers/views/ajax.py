@@ -53,3 +53,29 @@ def get_host_process_details(request):
             return HttpResponse('Invalid request inputs', status=400)
     else:
         return HttpResponse('Invalid request', status=400)
+
+
+@require_GET
+def get_host_partition_usage(request):
+    """
+    Description:
+        Get disk usage for a given partition on the host machine.
+    Args:
+        request: AJAX request object.
+    Returns:
+        HttpResponse: JSON formatted response.
+    """
+    if (request.is_ajax()) and (request.method == 'GET'):
+        if 'client_response' in request.GET:
+            part = request.GET['client_response']
+            try:
+                data = psutil.disk_usage(part)
+            except psutil.AccessDenied:
+                data = None
+            template = loader.get_template('handyhelpers/ajax/host_partition_usage.htm')
+            return HttpResponse(json.dumps({'server_response': template.render({'data': data})}),
+                                content_type='application/javascript')
+        else:
+            return HttpResponse('Invalid request inputs', status=400)
+    else:
+        return HttpResponse('Invalid request', status=400)

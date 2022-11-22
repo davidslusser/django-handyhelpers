@@ -39,7 +39,6 @@ class ShowHostProcesses(View):
     template_name = 'handyhelpers/host/bs5/processes.html'
 
     def get(self, request, *args, **kwargs):
-        now = datetime.datetime.now()
         context = dict()
         context['title'] = 'Host Processes'
         context['subtitle'] = psutil.os.uname()[1]
@@ -59,4 +58,18 @@ class ShowHostNetwork(View):
         context['interface_list'] = psutil.net_if_addrs()
         context['stats_list'] = psutil.net_if_stats()
         context['counters'] = psutil.net_io_counters()
+        return render(request, self.template_name, context=context)
+
+
+class ShowHostDisk(View):
+    """ Display dashboard like page showing host disk data """
+    template_name = 'handyhelpers/host/bs5/disk.html'
+
+    def get(self, request, *args, **kwargs):
+        context = dict()
+        context['title'] = 'Disk Dashboard'
+        context['subtitle'] = psutil.os.uname()[1]
+        context['usage'] = psutil.disk_usage('/')
+        context['io_counters'] = psutil.disk_io_counters()
+        context['partition_lists'] = psutil.disk_partitions()
         return render(request, self.template_name, context=context)
