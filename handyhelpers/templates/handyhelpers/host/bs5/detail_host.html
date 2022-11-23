@@ -1,0 +1,267 @@
+{% extends base_template|default:"base.htm" %}
+{% load static %}
+{% load handyhelper_tags %}
+
+{% block local_head %}
+    <style>
+        .titlecard-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+        }
+        .titlecard-container > * {
+            flex: 1;
+        }
+        .titlecard {
+            height: 8rem;
+            min-width: 250px;
+            max-width: 475;
+            color: var(--light);
+        }
+        .titlecard .icon {
+            color: var(--primary);
+            font-size: 2.5rem;
+            text-align: left;
+            margin-top: -.5rem;
+        }
+        .titlecard .stat {
+            color: var(--primary);
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: right;
+            margin-top: -.5rem;
+        }
+        .titlecard .description {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 1.25rem;
+            text-align: left;
+        }
+        .even-columns {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .even-columns > * {
+            flex: 1;
+        }
+        .datacard {
+            margin-bottom: 1rem;
+            min-width: 22rem;
+        }
+        .datacard .card-header {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        .datacard .card-body {
+            min-height: 17rem;
+        }
+        .datacard .key {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        .datacard .value {
+            color: var(--secondary);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+<section class="mb-3 animated fadeIn" style="animation-delay: .15s;">
+    {% if title or subtitle %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="text-primary text-center h1 mb-2"><b>{{ title }}</b></div>
+                <div class="text-secondary text-center h5 mb-5">{{ subtitle|safe }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .25s;">
+    <div class="container-fluid mt-5">
+        <div class="titlecard-container">
+            <div class="card titlecard shadow hvr-grow">
+                <a href="{% url 'handyhelpers:host_cpu' %}">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-4 icon"><i class="fa-solid fa-microchip fa-lg"></i></div>
+                            <div class="col-8 stat">{{ cpu_count }}</div>
+                        </div>
+                        <div class="description">CPU Count</div>
+                    </div>
+                </a>
+            </div>
+            <div class="card titlecard shadow hvr-grow">
+                <a href="{% url 'handyhelpers:host_memory' %}">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-4 icon"><i class="fa-solid fa-memory fa-lg"></i></div>
+                            <div class="col-8 stat">{{ memory.percent }}%</div>
+                        </div>
+                        <div class="description">Memory Usage</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="card titlecard shadow hvr-grow">
+                <a href="{% url 'handyhelpers:host_disk' %}">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-4 icon"><i class="fa-solid fa-hard-drive fa-lg"></i></div>
+                            <div class="col-8 stat">{{ disk_usage.percent }}%</div>
+                        </div>
+                        <div class="description">Disk Usage</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="card titlecard shadow hvr-grow">
+                <a href="{% url 'handyhelpers:host_process' %}">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-6 icon"><i class="fa-solid fa-gears fa-lg"></i></div>
+                            <div class="col-6 stat">{{ pids|length }}</div>
+                        </div>
+                        <div class="description">Processes</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="card titlecard shadow hvr-grow">
+                <a href="{% url 'handyhelpers:host_network' %}">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-6 icon"><i class="fa-solid fa-network-wired fa-lg"></i></div>
+                            <div class="col-6 stat">{{ network|length }}</div>
+                        </div>
+                        <div class="description">Network Connections</div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .35s;">
+    <div class="container-fluid mt-5">
+        <div class="m-5">&nbsp;</div>
+        <div class="even-columns">
+            <div class="card datacard shadow">
+                <div class="card-header">OS and Uptime</div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-4 key">Boot Time: </div>
+                        <div class="col-8 value">{{ times.boot_time }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Up Time: </div>
+                        <div class="col-8 value">{{ times.up_time }}</div>
+                    </div>
+                    <div class="row mb-2"></div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">System: </div>
+                        <div class="col-8 value">{{ platform.sysname }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Release: </div>
+                        <div class="col-8 value">{{ platform.release }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Version: </div>
+                        <div class="col-8 value">{{ platform.version }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Machine: </div>
+                        <div class="col-8 value">{{ platform.machine }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Hostname: </div>
+                        <div class="col-8 value">{{ platform.nodename }}</div>
+                    </div>
+                    <div class="row">
+
+                    </div>
+                </div>
+            </div>
+            <div class="card datacard shadow">
+                <div class="card-header">Memory</div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-4 key">Total: </div>
+                        <div class="col-8 value">{{ memory.total|byte_size }}<small class="ml-3">({{ memory.total }})</small></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Available: </div>
+                        <div class="col-8 value">{{ memory.available|byte_size }}<small class="ml-3">({{ memory.available }})</small></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Used: </div>
+                        <div class="col-8 value">{{ memory.used|byte_size }}<small class="ml-3">({{ memory.used }})</small></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Free: </div>
+                        <div class="col-8 value">{{ memory.free|byte_size }}<small class="ml-3">({{ memory.free }})</small></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Active: </div>
+                        <div class="col-8 value">{{ memory.active|byte_size }}<small class="ml-3">({{ memory.active }})</small></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Inactive: </div>
+                        <div class="col-8 value">{{ memory.inactive|byte_size }}<small class="ml-3">({{ memory.inactive }})</small></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Buffers: </div>
+                        <div class="col-8 value">{{ memory.buffers|byte_size }}<small class="ml-3">({{ memory.buffers }})</small></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card datacard shadow">
+                <div class="card-header">Disk</div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-4 key">Total: </div>
+                        <div class="col-8 value">{{ disk_usage.total|byte_size }}<small class="ml-3">({{ disk_usage.total }})</small></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Used: </div>
+                        <div class="col-8 value">{{ disk_usage.used|byte_size }}<small class="ml-3">({{ disk_usage.used }})</small></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Free: </div>
+                        <div class="col-8 value">{{ disk_usage.free|byte_size }}<small class="ml-3">({{ disk_usage.free }})</small></div>
+                    </div>
+                    <div class="row mb-2"></div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Read Count: </div>
+                        <div class="col-8 value">{{ disk_io_counters.read_count|byte_size }}<small class="ml-3">({{ disk_io_counters.read_count }})</small></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Read Bytes: </div>
+                        <div class="col-8 value">{{ disk_io_counters.read_bytes|byte_size }}<small class="ml-3">({{ disk_io_counters.read_bytes }})</small></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Write Count: </div>
+                        <div class="col-8 value">{{ disk_io_counters.write_count|byte_size }}<small class="ml-3">({{ disk_io_counters.write_count }})</small></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 key">Write Bytes: </div>
+                        <div class="col-8 value">{{ disk_io_counters.write_bytes|byte_size }}<small class="ml-3">({{ disk_io_counters.write_bytes }})</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

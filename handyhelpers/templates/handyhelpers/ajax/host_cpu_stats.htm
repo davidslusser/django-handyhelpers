@@ -1,0 +1,76 @@
+
+<div class="container-fluid">
+    <br/>
+    <div class="row">
+        <div class="col-7">
+            <div class="h3 font-weight-bold text-primary">CPU Times</div>
+            <div class="row m-3">
+                <div class="col-3 text-primary font-weight-bold">System: </div>
+                <div class="col-2 text-secondary">{{ data.time_percent.system }}%</div>
+                <div class="col-7 text-secondary">{{ data.time.system }}</div>
+            </div>
+            <div class="row m-3">
+                <div class="col-3 text-primary font-weight-bold">Idle: </div>
+                <div class="col-2 text-secondary">{{ data.time_percent.idle }}%</div>
+                <div class="col-7 text-secondary">{{ data.time.idle }}</div>
+            </div>
+            <div class="row m-3">
+                <div class="col-3 text-primary font-weight-bold">User: </div>
+                <div class="col-2 text-secondary">{{ data.time_percent.user }}%</div>
+                <div class="col-7 text-secondary">{{ data.time.user }}</div>
+            </div>
+            <div class="row m-3">
+                <div class="col-3 text-primary font-weight-bold">Nice: </div>
+                <div class="col-2 text-secondary">{{ data.time_percent.nice }}%</div>
+                <div class="col-7 text-secondary">{{ data.time.nice }}</div>
+            </div>
+            <div class="row m-3">
+                <div class="col-3 text-primary font-weight-bold">IO Wait: </div>
+                <div class="col-2 text-secondary">{{ data.time_percent.iowait }}%</div>
+                <div class="col-7 text-secondary">{{ data.time.iowait }}</div>
+            </div>
+            <div class="row m-3">
+                <div class="col-3 text-primary font-weight-bold">IRQ: </div>
+                <div class="col-2 text-secondary">{{ data.time_percent.irq }}%</div>
+                <div class="col-7 text-secondary">{{ data.time.irq }}</div>
+            </div>
+            <div class="row m-3">
+                <div class="col-3 text-primary font-weight-bold">Soft IRQ: </div>
+                <div class="col-2 text-secondary">{{ data.time_percent.softirq }}%</div>
+                <div class="col-7 text-secondary">{{ data.time.system }}</div>
+            </div>
+            <div class="row m-3">
+                <div class="col-3 text-primary font-weight-bold">Steal: </div>
+                <div class="col-2 text-secondary">{{ data.time_percent.steal }}%</div>
+                <div class="col-7 text-secondary">{{ data.time.steal }}</div>
+            </div>
+            <div class="row m-3">
+                <div class="col-3 text-primary font-weight-bold">Guest: </div>
+                <div class="col-2 text-secondary">{{ data.time_percent.guest }}%</div>
+                <div class="col-7 text-secondary">{{ data.time.guest }}</div>
+            </div>
+            <div class="row m-3">
+                <div class="col-3 text-primary font-weight-bold">Guest Nice: </div>
+                <div class="col-2 text-secondary">{{ data.time_percent.guest_nice }}%</div>
+                <div class="col-7 text-secondary">{{ data.time.guest_nice }}</div>
+            </div>
+
+        </div>
+
+        <div class="col-5">
+            <div class="h3 font-weight-bold text-primary">CPU Frequencies</div>
+            <div class="row m-3">
+                <div class="col-6 text-primary font-weight-bold">Current: </div>
+                <div class="col-6 text-secondary">{{ data.frequency.current }}</div>
+            </div>
+            <div class="row m-3">
+                <div class="col-6 text-primary font-weight-bold">Min: </div>
+                <div class="col-6 text-secondary">{{ data.frequency.min }}</div>
+            </div>
+            <div class="row m-3">
+                <div class="col-6 text-primary font-weight-bold">Max: </div>
+                <div class="col-6 text-secondary">{{ data.frequency.max }}</div>
+            </div>
+        </div>
+    </div>
+</div>

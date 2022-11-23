@@ -1,0 +1,231 @@
+{% extends base_template|default:"base.htm" %}
+{% load static %}
+{% load handyhelper_tags %}
+
+{% block local_head %}
+    {% include 'handyhelpers/component/chartjs_components.htm' %}
+    <style>
+        .card .card-header {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        .key {
+            color: var(--primary);
+            font-weight: bold;
+            margin-right: .25rem
+        }
+        .value {
+            color: var(--secondary);
+            margin-left: .25rem
+        }
+        .titlecard-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+        }
+        .titlecard-container > * {
+            flex: 1;
+        }
+        .titlecard {
+            height: 6rem;
+<!--            min-width: 148px;-->
+<!--            max-width: 475;-->
+        }
+        .titlecard .icon {
+            color: var(--primary);
+            font-size: 2.5rem;
+            text-align: left;
+            margin-top: -.5rem;
+        }
+        .titlecard .stat {
+            color: var(--primary);
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: -.5rem;
+        }
+        .titlecard .description {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: .8rem;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<section class="mb-3 animated fadeIn" style="animation-delay: .15s;">
+    {% if title or subtitle %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="text-primary text-center h1 mb-2"><b>{{ title }}</b></div>
+                <div class="text-secondary text-center h5 mb-5">{{ subtitle|safe }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .35s;">
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <div class="col-xs-12 col-md-5 mb-2 d-flex justify-content-center">
+                <div class="card shadow vw-100 bg-light">
+                    <div class="card-body">
+                        <canvas id="disk-usage-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-5 mb-2 d-flex justify-content-center">
+                <div class="card shadow vw-100 bg-light">
+                    <div class="card-body">
+                        <canvas id="disk-io-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-md-2">
+                <div class="row mb-2">
+                    <div class="card titlecard bg-light shadow">
+                        <div class="card-body">
+                            <div class="stat">{{ io_counters.read_count|byte_size }}</div>
+                            <div class="description">Reads</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="card titlecard bg-light shadow">
+                        <div class="card-body">
+                            <div class="stat">{{ io_counters.write_count|byte_size }}</div>
+                            <div class="description">Writes</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="card titlecard bg-light shadow">
+                        <div class="card-body">
+                            <div class="stat">{{ io_counters.read_bytes|byte_size }}</div>
+                            <div class="description">Read Bytes</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="card titlecard bg-light shadow">
+                        <div class="card-body">
+                            <div class="stat">{{ io_counters.write_bytes|byte_size }}</div>
+                            <div class="description">Write Bytes</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .35s;">
+    <div class="container-fluid mt-5">
+        <div class="card shadow">
+            <div class="card-header">Partitions <span class="small">({{ partition_lists|length }})</span></div>
+                <div class="card-body" style="overflow-y: auto; overflow-x: hidden; max-height: 50vh">
+                    <ul class="list-group mx-auto justify-content-center" style="max-width: 93%; margin-top: .5%; margin-bottom: .5%">
+                        {% for item in partition_lists %}
+                        <li class="list-group-item bg-light shadow-sm hvr-grow mb-3">
+                            <a href="#" onClick="showInfo('{% url "handyhelpers:host_partition_usage" %}', '{{item.mountpoint}}', 'Partition Disk Usage: <small><i>{{item.mountpoint}}</i></small>', true);">
+                                <div class="row mb-1">
+                                    <div class="col-xs-12 col-md-3"><span class="key">Device:</span><span class="value">{{ item.device }}</span></div>
+                                    <div class="col-xs-12 col-md-2"><span class="key">Filesystem:</span><span class="value">{{ item.fstype }}</span></div>
+                                    <div class="col-xs-12 col-md-3"><span class="key">Mount Point:</span><span class="value">{{ item.mountpoint }}</span></div>
+                                    <div class="col-xs-12 col-md-2"><span class="key">Max File:</span><span class="value">{{ item.maxfile }}</span></div>
+                                    <div class="col-xs-12 col-md-2"><span class="key">Max Path:</span><span class="value">{{ item.maxpath }}</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12"><span class="key">Options:</span><span class="value">{{ item.opts }}</span></div>
+                                </div>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var style = getComputedStyle(document.body);
+    var theme = {};
+    theme.primary = style.getPropertyValue('--primary');
+    theme.secondary = style.getPropertyValue('--secondary');
+    new Chart(document.getElementById("disk-usage-chart"), {
+    type: 'pie',
+    data: {
+      labels: ["Used", "Free"],
+      datasets: [{
+        label: "Disk Usage",
+        backgroundColor: [theme.primary, theme.secondary],
+        data: [{{usage.used}}, {{usage.free}}]
+      }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+            },
+          title: {
+            display: true,
+            text: 'Disk Usage',
+              font: {
+                size: 24,
+                weight: 'bold',
+              }
+          }
+        }
+    }
+});
+</script>
+<script>
+    var style = getComputedStyle(document.body);
+    var theme = {};
+    theme.primary = style.getPropertyValue('--primary');
+    theme.secondary = style.getPropertyValue('--secondary');
+    new Chart(document.getElementById("disk-io-chart"), {
+    type: 'bar',
+    data: {
+      labels: ["Read", "Write"],
+      datasets: [{
+        label: "Disk I/O Counters",
+        backgroundColor: [theme.primary, theme.secondary],
+        data: [{{io_counters.read_count}}, {{io_counters.write_count}}]
+      }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false,
+            },
+          title: {
+            display: true,
+            text: 'Disk I/O Counters',
+              font: {
+                size: 24,
+                weight: 'bold',
+              }
+          }
+        }
+    }
+});
+</script>
+
+{% include 'handyhelpers/component/bs5/modals.htm' %}
+{% endblock content %}

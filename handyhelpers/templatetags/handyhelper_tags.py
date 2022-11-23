@@ -1,4 +1,7 @@
 import re
+import datetime
+
+from hurry.filesize import size
 
 from django import template
 from django.contrib.auth.models import Group
@@ -43,6 +46,11 @@ def subtract(value, arg):
         return value - arg
 
 
+@register.filter
+def index(indexable, i):
+    return indexable[i]
+
+
 @register.filter()
 def nbsp(value):
     return mark_safe("&nbsp;".join(value.split(' ')))
@@ -62,7 +70,6 @@ def usd(value):
         return "${0:,.2f}".format(value)
     else:
         return 0
-
 
 @register.filter
 def or_blank(value):
@@ -222,4 +229,20 @@ def dj_iter(gen):
     try:
         return next(gen)
     except StopIteration:
+        return None
+
+
+@register.filter(name='byte_size')
+def byte_size(value):
+    try:
+        return size(value)
+    except:
+        return None
+
+
+@register.filter(name='to_datetime')
+def to_datetime(value):
+    try:
+        return datetime.datetime.fromtimestamp(value)
+    except:
         return None

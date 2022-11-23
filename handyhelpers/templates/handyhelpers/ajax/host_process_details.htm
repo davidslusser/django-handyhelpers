@@ -1,0 +1,65 @@
+{% load handyhelper_tags %}
+{% if data %}
+<div class="container">
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">PID: </div>
+        <div class="col-9 text-secondary">{{ data.pid }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">PPID: </div>
+        <div class="col-9 text-secondary">{{ data.ppid }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Name:</div>
+        <div class="col-9 text-secondary">{{ data.name }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Status:</div>
+        <div class="col-9 text-secondary">{{ data.status }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Stated At:</div>
+        <div class="col-9 text-secondary">{{ data.create_time|to_datetime }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Username:</div>
+        <div class="col-9 text-secondary">{{ data.username }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Command:</div>
+        <div class="col-9 text-secondary">{{ data.cmdline|join:" " }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Executable:</div>
+        <div class="col-9 text-secondary">{{ data.exe }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Working Directory:</div>
+        <div class="col-9 text-secondary">{{ data.cwd }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">CPU:</div>
+        <div class="col-9 text-secondary">{{ data.cpu_num }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">CPU Percent:</div>
+        <div class="col-9 text-secondary">{{ data.cpu_percent }}%</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Memory Percent:</div>
+        <div class="col-9 text-secondary">{{ data.memory_percent|percentage }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Thread Count:</div>
+        <div class="col-9 text-secondary">{{ data.num_threads }}</div>
+    </div>
+    <div class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Threads:</div>
+        <div class="col-9 text-secondary">{{ data.threads|join:", " }}</div>
+    </div>
+</div>
+{% else %}
+<div class="container">
+    data not available for this process
+</div>
+{% endif %}

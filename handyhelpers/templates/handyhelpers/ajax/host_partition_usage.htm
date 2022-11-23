@@ -1,0 +1,25 @@
+{% load handyhelper_tags %}
+{% if data %}
+<div class="container">
+    <diV class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Total: </div>
+        <div class="col-9 text-secondary">{{ data.total|byte_size }}</div>
+    </diV>
+    <diV class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Used:</div>
+        <div class="col-9 text-secondary">{{ data.used|byte_size }}</div>
+    </diV>
+    <diV class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Free:</div>
+        <div class="col-9 text-secondary">{{ data.free|byte_size }}</div>
+    </diV>
+    <diV class="row m-3">
+        <div class="col-3 text-primary font-weight-bold">Percent:</div>
+        <div class="col-9 text-secondary">{{ data.percent }}%</div>
+    </diV>
+</div>
+{% else %}
+<div class="container">
+    data not available for this partition
+</div>
+{% endif %}

@@ -2,8 +2,10 @@ Django
 djangorestframework
 djangorestframework-filters==1.0.0.dev0
 drf-dynamic-fields
+hurry.filesize
 Jinja2
 MarkupSafe
+psutil
 python-dateutil
 pytz
 sqlparse

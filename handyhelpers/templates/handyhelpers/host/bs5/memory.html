@@ -1,0 +1,328 @@
+{% extends base_template|default:"base.htm" %}
+{% load static %}
+{% load handyhelper_tags %}
+
+{% block local_head %}
+    {% include 'handyhelpers/component/chartjs_components.htm' %}
+    <style>
+        .card .card-header {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        .key {
+            color: var(--primary);
+            font-weight: bold;
+            margin-right: .25rem
+        }
+        .value {
+            color: var(--secondary);
+            margin-left: .25rem
+        }
+        .titlecard-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .titlecard-container > * {
+            flex: 1;
+        }
+        .titlecard {
+            height: 8rem;
+        }
+        .titlecard .stat {
+            color: var(--primary);
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: -.75rem;
+        }
+        .titlecard .description {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: center;
+            margin-top: .65rem
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+<section class="mb-3 animated fadeIn" style="animation-delay: .15s;">
+    {% if title or subtitle %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="text-primary text-center h1 mb-2"><b>{{ title }}</b></div>
+                <div class="text-secondary text-center h5 mb-5">{{ subtitle|safe }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .25s;">
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8 mb-2 d-flex justify-content-center">
+                <div class="card shadow vw-100 bg-light">
+                    <div class="card-body">
+                        <canvas id="virtual-stats-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2 mb-2">
+                <div class="card titlecard shadow bg-light mb-2">
+                    <div class="card-body">
+                        <div class="stat">{{virtual.total|byte_size}}</div>
+                        <div class="description">Virtual Total</div>
+                    </div>
+                </div>
+                <div class="card titlecard shadow bg-light mb-2">
+                    <div class="card-body">
+                        <div class="stat">{{virtual.used|byte_size}}</div>
+                        <div class="description">Virtual Used</div>
+                    </div>
+                </div>
+                <div class="card titlecard shadow bg-light">
+                    <div class="card-body">
+                        <div class="stat">{{virtual.active|byte_size}}</div>
+                        <div class="description">Virtual Active</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2 mb-2">
+                <div class="card titlecard shadow bg-light mb-2">
+                    <div class="card-body">
+                        <div class="stat">{{virtual.percent}}%</div>
+                        <div class="description">Virtual Percent</div>
+                    </div>
+                </div>
+                <div class="card titlecard shadow bg-light mb-2">
+                    <div class="card-body">
+                        <div class="stat">{{virtual.free|byte_size}}</div>
+                        <div class="description">Virtual Free</div>
+                    </div>
+                </div>
+                <div class="card titlecard shadow bg-light">
+                    <div class="card-body">
+                        <div class="stat">{{virtual.inactive|byte_size}}</div>
+                        <div class="description">Virtual Inactive</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .35s;">
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 mb-2 d-flex justify-content-center">
+                <div class="card shadow vw-100 bg-light">
+                    <div class="card-body">
+                        <canvas id="swap-usage-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 mb-2 d-flex justify-content-center">
+                <div class="card shadow vw-100 bg-light">
+                    <div class="card-body">
+                        <canvas id="swap-disk-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-2 mb-2">
+                <div class="card titlecard shadow bg-light mb-2">
+                    <div class="card-body">
+                        <div class="stat">{{swap.total|byte_size}}</div>
+                        <div class="description">Swap Total</div>
+                    </div>
+                </div>
+                <div class="card titlecard shadow bg-light mb-2">
+                    <div class="card-body">
+                        <div class="stat">{{swap.used|byte_size}}</div>
+                        <div class="description">Swap Used</div>
+                    </div>
+                </div>
+                <div class="card titlecard shadow bg-light">
+                    <div class="card-body">
+                        <div class="stat">{{swap.sin|byte_size}}</div>
+                        <div class="description">Swap Disk In</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-2 mb-2">
+                <div class="card titlecard shadow bg-light mb-2">
+                    <div class="card-body">
+                        <div class="stat">{{swap.percent}}%</div>
+                        <div class="description">Swap Percent</div>
+                    </div>
+                </div>
+                <div class="card titlecard shadow bg-light mb-2">
+                    <div class="card-body">
+                        <div class="stat">{{swap.free|byte_size}}</div>
+                        <div class="description">Swap Free</div>
+                    </div>
+                </div>
+                <div class="card titlecard shadow bg-light">
+                    <div class="card-body">
+                        <div class="stat">{{swap.sout|byte_size}}</div>
+                        <div class="description">Swap Disk Out</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var style = getComputedStyle(document.body);
+    var theme = {};
+    theme.primary = style.getPropertyValue('--primary');
+    theme.secondary = style.getPropertyValue('--secondary');
+    new Chart(document.getElementById("virtual-usage-chart"), {
+    type: 'pie',
+    data: {
+      labels: ["Used", "Free"],
+      datasets: [{
+        label: "Virtual Memory Usage",
+        backgroundColor: [theme.primary, theme.secondary],
+        data: [{{virtual.used}}, {{virtual.free}}]
+      }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+            },
+          title: {
+            display: true,
+            text: 'Virtual Memory Usage',
+              font: {
+                size: 24,
+                weight: 'bold',
+              }
+          }
+        }
+    }
+});
+</script>
+<script>
+    var style = getComputedStyle(document.body);
+    var theme = {};
+    theme.primary = style.getPropertyValue('--primary');
+    theme.secondary = style.getPropertyValue('--secondary');
+    theme.success = style.getPropertyValue('--success');
+    theme.info = style.getPropertyValue('--info');
+    theme.warning = style.getPropertyValue('--warning');
+    theme.danger = style.getPropertyValue('--danger');
+    theme.dark = style.getPropertyValue('--dark');
+    theme.blue = style.getPropertyValue('--blue');
+    theme.indigo = style.getPropertyValue('--indigo');
+
+    new Chart(document.getElementById("virtual-stats-chart"), {
+    type: 'bar',
+    data: {
+      labels: ["available", "used", "free", "active", "inactive", "buffers", "cached", "shared", "slab"],
+      datasets: [{
+        label: "Virtual Memory Stats",
+        backgroundColor: [theme.primary, theme.secondary, theme.success, theme.info, theme.warning, theme.danger, theme.dark, theme.blue, theme.indigo],
+        data: [{{virtual.available}}, {{virtual.used}}, {{virtual.free}}, {{virtual.active}}, {{virtual.inactive}}, {{virtual.buffers}}, {{virtual.cached}}, {{virtual.shared}}, {{virtual.slab}}]
+      }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false,
+            },
+          title: {
+            display: true,
+            text: 'Virtual Memory Stats',
+              font: {
+                size: 24,
+                weight: 'bold',
+              }
+          }
+        }
+    }
+});
+</script>
+
+<script>
+    var style = getComputedStyle(document.body);
+    var theme = {};
+    theme.primary = style.getPropertyValue('--primary');
+    theme.secondary = style.getPropertyValue('--secondary');
+    new Chart(document.getElementById("swap-usage-chart"), {
+    type: 'pie',
+    data: {
+      labels: ["Used", "Free"],
+      datasets: [{
+        label: "Swap Memory Usage",
+        backgroundColor: [theme.primary, theme.secondary],
+        data: [{{swap.used}}, {{swap.free}}]
+      }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+            },
+          title: {
+            display: true,
+            text: 'Swap Memory Usage',
+              font: {
+                size: 24,
+                weight: 'bold',
+              }
+          }
+        }
+    }
+});
+</script>
+<script>
+    var style = getComputedStyle(document.body);
+    var theme = {};
+    theme.primary = style.getPropertyValue('--primary');
+    theme.secondary = style.getPropertyValue('--secondary');
+    new Chart(document.getElementById("swap-disk-chart"), {
+    type: 'bar',
+    data: {
+      labels: ["In", "Out"],
+      datasets: [{
+        label: "Swap Disk Activity",
+        backgroundColor: [theme.primary, theme.secondary],
+        data: [{{swap.sin}}, {{swap.sout}}]
+      }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false,
+            },
+          title: {
+            display: true,
+            text: 'Swap Disk Activity',
+              font: {
+                size: 24,
+                weight: 'bold',
+              }
+          }
+        }
+    }
+});
+</script>
+
+
+{% endblock content %}

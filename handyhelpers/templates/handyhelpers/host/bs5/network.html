@@ -1,0 +1,193 @@
+{% extends base_template|default:"base.htm" %}
+{% load static %}
+{% load handyhelper_tags %}
+
+{% block local_head %}
+    <style>
+        .card .card-header {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        .connection-card {
+            background-color: var(--light);
+            padding-left: 1rem;
+            padding-right: 1rem;
+            margin-bottom: 1rem;
+        }
+        .key {
+            color: var(--primary);
+            font-weight: bold;
+            margin-right: .25rem
+        }
+        .value {
+            color: var(--secondary);
+            margin-left: .25rem
+        }
+        .titlecard-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+        }
+        .titlecard-container > * {
+            flex: 1;
+        }
+        .titlecard {
+            height: 6rem;
+            min-width: 148px;
+            max-width: 475;
+        }
+        .titlecard .icon {
+            color: var(--primary);
+            font-size: 2.5rem;
+            text-align: left;
+            margin-top: -.5rem;
+        }
+        .titlecard .stat {
+            color: var(--primary);
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: -.5rem;
+        }
+        .titlecard .description {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: .8rem;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<section class="mb-3 animated fadeIn" style="animation-delay: .15s;">
+    {% if title or subtitle %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="text-primary text-center h1 mb-2"><b>{{ title }}</b></div>
+                <div class="text-secondary text-center h5 mb-5">{{ subtitle|safe }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .25s;">
+    <div class="container-fluid mt-5">
+        <div class="titlecard-container">
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counters.bytes_sent|byte_size }}</div>
+                    <div class="description">Bytes Sent</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counters.bytes_recv|byte_size }}</div>
+                    <div class="description">Bytes Received</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counters.packets_sent|byte_size }}</div>
+                    <div class="description">Packets Sent</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counters.packets_recv|byte_size }}</div>
+                    <div class="description">Packets Received</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counters.errin }}</div>
+                    <div class="description">Errors In</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counters.errout }}</div>
+                    <div class="description">Errors Out</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counters.dropin }}</div>
+                    <div class="description">Drops In</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counters.dropout }}</div>
+                    <div class="description">Drops Out</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .35s;">
+    <div class="container-fluid mt-5">
+        <div class="card shadow">
+            <div class="card-header">Network Interfaces <span class="small">({{ interface_list|length }})</span></div>
+                <div class="card-body" style="overflow-y: auto; overflow-x: hidden; height: 200px">
+                    <ul class="list-group mx-auto justify-content-center" style="max-width: 93%; margin-top: .5%; margin-bottom: .5%">
+                        {% for k,v in interface_list.items %}
+                        <li class="list-group-item bg-light shadow-sm hvr-grow mb-3">
+                            <a href="#" onClick="showInfo('{% url "handyhelpers:host_interface_stats" %}', '{{k}}', 'Network Stats: <small><i>{{k}}</i></small>', false);">
+                                <div class="row">
+                                    <div class="key h5">{{ k }}:</div>
+                                    {% for item in v %}
+                                    <div class="col-xs-12 col-md-3"><span class="key">address:</span><span class="value">{{ item.address }}</span></div>
+                                    <div class="col-xs-12 col-md-3"><span class="key">netmask:</span><span class="value">{{ item.netmask }}</span></div>
+                                    <div class="col-xs-12 col-md-3"><span class="key">broadcast:</span><span class="value">{{ item.broadcast }}</span></div>
+                                    <div class="col-xs-12 col-md-2"><span class="key">family:</span><span class="value">{{ item.family.name }}</span></div>
+                                    <div class="col-xs-12 col-md-1"><span class="key">ptp:</span><span class="value">{{ item.ptp }}</span></div>
+                                    {% endfor %}
+                                </div>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .45s;">
+    <div class="container-fluid mt-5">
+        <div class="card shadow">
+            <div class="card-header">Network Connections <span class="small">({{ connection_list|length }})</span></div>
+                <div class="card-body" style="overflow-y: auto; overflow-x: hidden; height: 400px">
+                    <ul class="list-group mx-auto justify-content-center" style="max-width: 93%; margin-top: .5%; margin-bottom: .5%">
+                        {% for connection in connection_list %}
+                        <li class="list-group-item bg-light shadow-sm hvr-grow mb-3">
+                            <div class="row">
+                                <div class="col-xs-12 col-md-4"><span class="key">laddr:</span><span class="value">{{ connection.laddr.ip }}</span></div>
+                                <div class="col-xs-12 col-md-2"><span class="key">lport:</span><span class="value">{{ connection.laddr.port }}</span></div>
+                                <div class="col-xs-12 col-md-3"><span class="key">family:</span><span class="value">{{ connection.family.name }}</span></div>
+                                <div class="col-xs-12 col-md-1"><span class="key">fd:</span><span class="value">{{ connection.fd }}</span></div>
+                                <div class="col-xs-12 col-md-2"><span class="key">status:</span><span class="value">{{ connection.status }}</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-4"><span class="key">raddr:</span><span class="value">{{ connection.raddr.ip }}</span></div>
+                                <div class="col-xs-12 col-md-2"><span class="key">rport:</span><span class="value">{{ connection.raddr.port }}</span></div>
+                                <div class="col-xs-12 col-md-3"><span class="key">type:</span><span class="value">{{ connection.type }}</span></div>
+                                <div class="col-xs-12 col-md-3"><span class="key">pid:</span><span class="value">{{ connection.pid }}</span></div>
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include 'handyhelpers/component/bs5/modals.htm' %}
+{% endblock content %}
