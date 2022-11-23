@@ -19,6 +19,7 @@
             height: 8rem;
             min-width: 250px;
             max-width: 475;
+            color: var(--light);
         }
         .titlecard .icon {
             color: var(--primary);
@@ -88,23 +89,27 @@
 <section class="mb-5 animated fadeIn" style="animation-delay: .25s;">
     <div class="container-fluid mt-5">
         <div class="titlecard-container">
-            <div class="card titlecard shadow">
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-4 icon"><i class="fa-solid fa-microchip fa-lg"></i></div>
-                        <div class="col-8 stat">{{ cpu_count }}</div>
+            <div class="card titlecard shadow hvr-grow">
+                <a href="{% url 'handyhelpers:host_cpu' %}">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-4 icon"><i class="fa-solid fa-microchip fa-lg"></i></div>
+                            <div class="col-8 stat">{{ cpu_count }}</div>
+                        </div>
+                        <div class="description">CPU Count</div>
                     </div>
-                    <div class="description">CPU Count</div>
-                </div>
+                </a>
             </div>
-            <div class="card titlecard shadow">
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-4 icon"><i class="fa-solid fa-memory fa-lg"></i></div>
-                        <div class="col-8 stat">{{ memory.percent }}%</div>
+            <div class="card titlecard shadow hvr-grow">
+                <a href="{% url 'handyhelpers:host_memory' %}">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-4 icon"><i class="fa-solid fa-memory fa-lg"></i></div>
+                            <div class="col-8 stat">{{ memory.percent }}%</div>
+                        </div>
+                        <div class="description">Memory Usage</div>
                     </div>
-                    <div class="description">Memory Usage</div>
-                </div>
+                </a>
             </div>
 
             <div class="card titlecard shadow hvr-grow">

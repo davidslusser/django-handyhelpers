@@ -46,6 +46,11 @@ def subtract(value, arg):
         return value - arg
 
 
+@register.filter
+def index(indexable, i):
+    return indexable[i]
+
+
 @register.filter()
 def nbsp(value):
     return mark_safe("&nbsp;".join(value.split(' ')))
@@ -65,7 +70,6 @@ def usd(value):
         return "${0:,.2f}".format(value)
     else:
         return 0
-
 
 @register.filter
 def or_blank(value):

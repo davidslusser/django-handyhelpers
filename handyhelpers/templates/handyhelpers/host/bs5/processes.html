@@ -18,6 +18,41 @@
             color: var(--secondary);
             margin-left: .25rem
         }
+        .titlecard-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+        }
+        .titlecard-container > * {
+            flex: 1;
+        }
+        .titlecard {
+            height: 6rem;
+            min-width: 148px;
+            max-width: 475;
+        }
+        .titlecard .icon {
+            color: var(--primary);
+            font-size: 2.5rem;
+            text-align: left;
+            margin-top: -.5rem;
+        }
+        .titlecard .stat {
+            color: var(--primary);
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: -.5rem;
+        }
+        .titlecard .description {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: .8rem;
+            text-align: center;
+        }
     </style>
 {% endblock %}
 
@@ -36,8 +71,46 @@
     {% endif %}
 </section>
 
-
 <section class="mb-5 animated fadeIn" style="animation-delay: .25s;">
+    <div class="container-fluid mt-5">
+        <div class="titlecard-container">
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counts.running }}</div>
+                    <div class="description">Running</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counts.sleeping }}</div>
+                    <div class="description">Sleeping</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counts.stopped }}</div>
+                    <div class="description">Stopped</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counts.zombie }}</div>
+                    <div class="description">Zombie</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ counts.dead }}</div>
+                    <div class="description">Dead</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+</section>
+
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .35s;">
     <div class="container-fluid mt-5">
         <div class="card shadow">
             <div class="card-header">Processes <span class="small">({{ process_list|length }})</span></div>

@@ -1,0 +1,181 @@
+{% extends base_template|default:"base.htm" %}
+{% load static %}
+{% load handyhelper_tags %}
+
+{% block local_head %}
+    {% include 'handyhelpers/component/chartjs_components.htm' %}
+    <style>
+        .card .card-header {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        .key {
+            color: var(--primary);
+            font-weight: bold;
+            margin-right: .25rem
+        }
+        .value {
+            color: var(--secondary);
+            margin-left: .25rem
+        }
+        .titlecard-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .titlecard-container > * {
+            flex: 1;
+        }
+        .titlecard {
+            height: 8rem;
+            background-color: var(--light);
+        }
+        .titlecard .stat {
+            color: var(--primary);
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: -.75rem;
+        }
+        .titlecard .description {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: center;
+            margin-top: .65rem
+        }
+
+        @media (max-width: 800px) {
+            .titlecard {
+                height: 6rem;
+            }
+            .titlecard .stat {
+                font-size: 1.5rem;
+            }
+            .titlecard .description {
+                font-size: .75rem;
+            }
+
+        @media (max-width: 650px) {
+            .titlecard {
+                height: 5rem;
+            }
+            .titlecard .stat {
+                font-size: 1.25rem;
+            }
+            .titlecard .description {
+                font-size: .5rem;
+            }
+
+
+    </style>
+{% endblock %}
+
+{% block content %}
+<section class="mb-3 animated fadeIn" style="animation-delay: .15s;">
+    {% if title or subtitle %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="text-primary text-center h1 mb-2"><b>{{ title }}</b></div>
+                <div class="text-secondary text-center h5 mb-5">{{ subtitle|safe }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .25s;">
+    <div class="container-fluid mb-5">
+        <div class="titlecard-container mb-5">
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ physical_count }}</div>
+                    <div class="description">Physical</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ logical_count }}</div>
+                    <div class="description">Logical</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ stats.ctx_switches|byte_size }}</div>
+                    <div class="description">CTX Switches</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ stats.interrupts|byte_size }}</div>
+                    <div class="description">Interrupts</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ stats.soft_interrupts|byte_size }}</div>
+                    <div class="description">Soft Interrupts</div>
+                </div>
+            </div>
+        </div>
+
+         <div class="titlecard-container mb-5">
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ percent }}%</div>
+                    <div class="description">Overall Utilization</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ load_avg_1 }}%</div>
+                    <div class="description">1 minute load average</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ load_avg_5 }}%</div>
+                    <div class="description">5 minute load average</div>
+                </div>
+            </div>
+            <div class="card titlecard shadow">
+                <div class="card-body">
+                    <div class="stat">{{ load_avg_15 }}%</div>
+                    <div class="description">15 minute load average</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5 animated fadeIn" style="animation-delay: .35s;">
+    <div class="container-fluid mt-5">
+        <div class="card shadow">
+            <div class="card-header">CPUs <span class="small">({{ logical_count }})</span></div>
+                <div class="card-body" style="overflow-y: auto; overflow-x: hidden; max-height: 50vh">
+                    <ul class="list-group mx-auto justify-content-center" style="max-width: 93%; margin-top: .5%; margin-bottom: .5%">
+                        {% for cpu, data in cpu_data.items %}
+                        <li class="list-group-item bg-light shadow-sm hvr-grow mb-3">
+                            <a href="#" onClick="showInfo('{% url "handyhelpers:get_host_cpu_stats" %}', '{{cpu}}', 'CPU Stats: <small><i>{{cpu}}</i></small>', true);">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-2"><span class="key">CPU:</span><span class="value">{{ cpu }}</span></div>
+                                    <div class="col-xs-12 col-md-2"><span class="key">Percent:</span><span class="value">{{ data.percent }}%</span></div>
+                                    <div class="col-xs-12 col-md-3"><span class="key">System:</span><span class="value">{{ data.time_percent.system }}%</span></div>
+                                    <div class="col-xs-12 col-md-2"><span class="key">Idle:</span><span class="value">{{ data.time_percent.idle }}%</span></div>
+                                    <div class="col-xs-12 col-md-3"><span class="key">Frequency:</span><span class="value">{{ data.frequency.current }}</span></div>
+                                </div>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include 'handyhelpers/component/bs5/modals.htm' %}
+{% endblock content %}
