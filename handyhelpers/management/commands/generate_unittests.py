@@ -4,7 +4,7 @@ from django.conf import settings
 from jinja2 import Template
 import os
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 
 class Command(BaseCommand):
@@ -24,7 +24,6 @@ class Command(BaseCommand):
         parser.add_argument('--output_path', type=str, default='.', help='path where files should be created')
         parser.add_argument('--output_file', type=str, default=None, help='fully qualified name of file to be created; '
                                                                           'only use this when generating one file')
-        parser.add_argument('--model', action='store_true', help='generate unittest for all models in app')
 
     def handle(self, *args, **options):
         """ command entry point """
@@ -84,6 +83,8 @@ class Command(BaseCommand):
                 'update_field_list': sorted([i for i in model._meta.fields if i.get_internal_type() in
                                              update_field_type_list and not i.name.endswith('_id') and
                                              i.name not in skip_field_list], key=lambda x: x.name),
+                'create_fk_list': sorted([i.name for i in model._meta.fields if i.get_internal_type() == 'ForeignKey'
+                                          and i.null is False and not i._get_default()]),
             }
             if model in auditlog_models:
                 model_dict[model]['auditlog'] = True
