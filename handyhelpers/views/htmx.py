@@ -10,7 +10,6 @@ class GetHostProcesses(View):
     def get(self, request):
         context = dict()
         process_list = list(psutil.process_iter())
-        filtered_process_list = list()
         filter_form = HostProcessFilterForm(request.GET or None)
 
         # check for form clearing
@@ -20,7 +19,8 @@ class GetHostProcesses(View):
         else:
             if filter_form.is_valid():
                 context['clear_filter'] = True
-                if filter_form.cleaned_data['status']:
+                if filter_form.cleaned_data.get('status', None):
+                    filtered_process_list = list()
                     for i in process_list:
                         try:
                             if i.status() in filter_form.cleaned_data['status']:
@@ -30,22 +30,23 @@ class GetHostProcesses(View):
                     process_list = filtered_process_list
 
                 if filter_form.cleaned_data.get('created_at__gte', None):
+                    filtered_process_list = list()
                     for i in process_list:
                         try:
                             if i.create_time() > filter_form.cleaned_data['created_at__gte'].timestamp():
                                 filtered_process_list.append(i)
                         except psutil.NoSuchProcess:
                             continue
-                        process_list = filtered_process_list
+                    process_list = filtered_process_list
                 if filter_form.cleaned_data.get('created_at__lte', None):
+                    filtered_process_list = list()
                     for i in process_list:
                         try:
                             if i.create_time() < filter_form.cleaned_data['created_at__lte'].timestamp():
                                 filtered_process_list.append(i)
                         except psutil.NoSuchProcess:
                             continue
-                        process_list = filtered_process_list
-
+                    process_list = filtered_process_list
         context['process_list'] = process_list
         filter_form = dict()
         filter_form['form'] = HostProcessFilterForm(request.GET or None)
