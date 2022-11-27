@@ -2,6 +2,7 @@ from django.urls import path
 from handyhelpers.views import action
 from handyhelpers.views import ajax
 from handyhelpers.views import host
+from handyhelpers.views import htmx
 
 app_name = 'handyhelpers'
 
@@ -23,5 +24,8 @@ urlpatterns = [
     path('host_process_details', ajax.get_host_process_details, name='host_process_details'),
     path('host_partition_usage', ajax.get_host_partition_usage, name='host_partition_usage'),
     path('get_host_cpu_stats', ajax.get_host_cpu_stats, name='get_host_cpu_stats'),
+
+    # htmx views
+    path('get_host_processes/', htmx.GetHostProcesses.as_view(), name='get_host_processes'),
 
 ]

@@ -1,0 +1,37 @@
+{% load handyhelper_tags %}
+        <div class="card shadow">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-6 text-left">
+                        Processes <span class="small">({{ process_list|length }})</span>
+                    </div>
+                    <div class="col-6 text-right">
+                        <span href="#" data-bs-toggle="modal" data-bs-target="#modal_{{ filter_form.modal_name }}" title="{{ filter_form.tool_tip|default_if_none:'filter' }}" class="mx-1" style="cursor: pointer;">
+                            <i class="fas fa-filter"></i>
+                        </span>
+                        {% if clear_filter %}
+                        <span hx-get="{% url 'handyhelpers:get_host_processes' %}?clear=True" hx-target='#id_process_list_container' title="clear filters" class="mx-1" style="cursor: pointer;" onclick="document.getElementById('form_{{ filter_form.modal_name }}').reset()">
+                            <i class="fas fa-undo-alt"></i>
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+                <div class="card-body" style="overflow-y: auto; overflow-x: hidden; max-height: 50vh; cursor: pointer;">
+                    <ul class="list-group mx-auto justify-content-center" style="max-width: 93%; margin-top: .5%; margin-bottom: .5%">
+                        {% for item in process_list %}
+                        <li class="list-group-item bg-light shadow-sm hvr-grow mb-3">
+                            <div onClick="showInfo('{% url "handyhelpers:host_process_details" %}', '{{item.pid}}', 'Process Details: <small><i>{{item.name}}</i></small>', true);">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-2"><span class="key">PID:</span><span class="value">{{ item.pid }}</span></div>
+                                    <div class="col-xs-12 col-md-4"><span class="key">Name:</span><span class="value">{{ item.name }}</span></div>
+                                    <div class="col-xs-12 col-md-2"><span class="key">Status:</span><span class="value">{{ item.status }}</span></div>
+                                    <div class="col-xs-12 col-md-4"><span class="key">Started At:</span><span class="value">{{ item.create_time|to_datetime }}</span></div>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
