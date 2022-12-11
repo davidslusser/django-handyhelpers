@@ -12,10 +12,7 @@ env/
 build/
 develop-eggs/
 dist/
-#!/handyhelpers/static/node_modules/*/dist
-!/**/node_modules/*/dist
 package-lock.json
-node_modules/clipboard/
 downloads/
 eggs/
 .eggs/
@@ -30,6 +27,11 @@ wheels/
 *.egg
 .pypirc
 local_test/
+
+# node_modules exclusions
+!handyhelpers/static/node_modules/*/*/dist
+!handyhelpers/static/node_modules/*/*/lib
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
