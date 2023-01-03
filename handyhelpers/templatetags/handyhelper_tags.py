@@ -246,3 +246,11 @@ def to_datetime(value):
         return datetime.datetime.fromtimestamp(value)
     except:
         return None
+
+
+@register.filter
+def model_label(value):
+    if value:
+        return value._meta.label_lower
+    else:
+        return 0

@@ -1,0 +1,59 @@
+<br>
+<div class="container-fluid">
+    <h4 class="font-weight-bold text-primary">Changes</h4>
+    <table class="table table-condensed table-bordered table-striped">
+        <col width="30%">
+        <col width="70%">
+        <tbody>
+            {% if object.action == 1 %}
+                {% for key, value in object.changes_dict.items %}
+            <tr>
+                <td><b>{{ key }}</b></td>
+                <td class="small">
+                    <div class="row">
+                        <div class="col-sm-6 font-weight-bold">From:</div>
+                        <div class="col-sm-6 font-weight-bold">To:</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {% if value.0 == "None" %}
+                            <span class="text-warning font-italic">None</span>
+                            {% else %}
+                            {{value.0}}
+                            {% endif %}</div>
+                        <div class="col-sm-6">{{ value.1 }}</div>
+                    </div>
+                </td>
+            </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+    <br/>
+    <h4 class="font-weight-bold text-primary">Metadata</h4>
+    <table class="table table-condensed table-bordered table-striped">
+        <col width="30%">
+        <col width="70%">
+        <tbody>
+            <tr>
+                <td><b>User</b></td>
+                <td>{{ object.actor }}</td>
+            </tr>
+            {% if object.additional_data %}
+            <tr>
+                <td><b>Additional Data</b></td>
+                <td>{{ object.additional_data }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td><b>Remote Address</b></td>
+                <td>{{ object.remote_addr }}</td>
+            </tr>
+            <tr>
+                <td><b>Timestamp</b></td>
+                <td>{{ object.timestamp }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

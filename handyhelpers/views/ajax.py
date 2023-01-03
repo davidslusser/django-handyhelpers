@@ -1,6 +1,7 @@
 import json
 import psutil
 
+from django.apps import apps
 from django.http import HttpResponse
 from django.template import loader
 from django.views.decorators.http import require_GET, require_POST
@@ -105,6 +106,32 @@ def get_host_cpu_stats(request):
                 data = None
             template = loader.get_template('handyhelpers/ajax/host_cpu_stats.htm')
             return HttpResponse(json.dumps({'server_response': template.render({'data': data})}),
+                                content_type='application/javascript')
+        else:
+            return HttpResponse('Invalid request inputs', status=400)
+    else:
+        return HttpResponse('Invalid request', status=400)
+
+
+@require_GET
+def get_auditlog_entry_details(request):
+    """
+    Description:
+        Get details for a LogEntry of auditlog.
+    Args:
+        request: AJAX request object.
+    Returns:
+        HttpResponse: JSON formatted response.
+    """
+    if not apps.is_installed('auditlog'):
+        return HttpResponse('Invalid request', status=400)
+    if (request.is_ajax()) and (request.method == 'GET'):
+        LogEntry = apps.get_model('auditlog', 'LogEntry')
+        if 'client_response' in request.GET:
+            object_id = request.GET['client_response']
+            obj = LogEntry.objects.get(id=object_id)
+            template = loader.get_template('handyhelpers/ajax/get_auditlog_entry_details.htm')
+            return HttpResponse(json.dumps({'server_response': template.render({'object': obj})}),
                                 content_type='application/javascript')
         else:
             return HttpResponse('Invalid request inputs', status=400)
