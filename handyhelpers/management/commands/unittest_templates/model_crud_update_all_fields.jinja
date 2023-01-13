@@ -78,8 +78,7 @@ class {{model.__name__}}Tests(TestCase):
         row = self.bake()
         original_value = row.{{ field.name }}
         {% if field.get_internal_type() == 'ForeignKey' -%}
-        if not self.model.{{ field.name }}.field.related_model.objects.all():
-            baker.make(self.model.{{ field.name }}.field.related_model._meta.label)
+        baker.make(self.model.{{ field.name }}.field.related_model._meta.label)
         if original_value:
             updated_value = random.choice(self.model.{{ field.name }}.field.related_model.objects.exclude(id=original_value.id))
         else:
