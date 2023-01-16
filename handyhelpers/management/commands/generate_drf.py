@@ -19,12 +19,15 @@ class Command(BaseCommand):
         """ define command arguments """
         parser.add_argument('app', type=str, help='enter the name of the django app')
         parser.add_argument('--api', action='store_true', help='generate views and create apis.py')
+        parser.add_argument('--filter', action='store_true', help='generate filtersets and create filters.py')
         parser.add_argument('--serializer', action='store_true', help='generate serializers and create serializers.py')
         parser.add_argument('--url', action='store_true', help='generate urls and create urls.py')
         parser.add_argument('--output_path', type=str, default=None, help='path where files should be created')
-        parser.add_argument('--output_file', type=str, default=None, help='fully qualified name of file to be created; only use this when generating one file')
+        parser.add_argument('--output_file', type=str, default=None,
+                            help='fully qualified name of file to be created; only use this when generating one file')
         parser.add_argument('--api_template', type=str, default=None, help='path to Jinja template used to create api')
-        parser.add_argument('--serializer_template', type=str, default=None, help='path to Jinja template used to create serializer')
+        parser.add_argument('--serializer_template', type=str, default=None,
+                            help='path to Jinja template used to create serializer')
         parser.add_argument('--url_template', type=str, default=None, help='path to Jinja template used to create urls')
 
     def handle(self, *args, **options):
@@ -34,6 +37,7 @@ class Command(BaseCommand):
 
         self.app = options['app']
         self.model_list = self.get_model_list()
+        files_created_list = []
 
         # build serializers file
         if options['serializer']:
@@ -53,12 +57,24 @@ class Command(BaseCommand):
                             output_file=options['output_file'],
                             template_file=options['url_template'])
 
-        self.stdout.write(self.style.SUCCESS('Files generated!'))
+        # build filtersets file
+        if options['filter']:
+            files_created_list.append(
+                self.build_filters(output_path=options['output_path'],
+                                   output_file=options['output_file'],
+                                   template_file=options['url_template'])
+            )
+
+        # self.stdout.write(self.style.SUCCESS('Files generated!'))
+        for item in files_created_list:
+            self.stdout.write(self.style.SUCCESS(f'generated {item}'))
 
     def get_model_list(self):
         """ return a list of all models in application """
         app = apps.get_app_config(self.app)
-        return list(app.get_models())
+        model_list = list(app.get_models())
+        model_list.sort(key=lambda x: x.__name__)
+        return model_list
 
     @staticmethod
     def get_model_field_names(model, exclude_list=()):
@@ -146,3 +162,40 @@ class Command(BaseCommand):
         file_text = template.render(data)
         with open(output_path, 'w') as f:
             f.write(file_text)
+
+    def build_filters(self, output_path=None, output_file=None, template_file=None):
+        """ build the filters.py file for a list of model names """
+        try:
+            if not template_file:
+                template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                             'drf_templates', 'filterset_template.jinja')
+
+            if output_file:
+                output_path = output_file
+            elif not output_path:
+                output_path = 'filters.py'
+            elif os.path.isdir(output_path):
+                output_path = f'{output_path}/filters.py'
+
+            model_list = self.model_list
+            for model in model_list:
+                for field in model._meta.fields:
+                    if field.get_internal_type() in ['JSONField']:
+                        setattr(model, 'has_json', True)
+                        break
+
+            data = {'model_list': model_list,
+                    'app_name': self.app,
+                    'models_file': 'models',
+                    }
+            with open(template_file) as f:
+                template = Template(f.read(), trim_blocks=True)
+            file_text = template.render(data)
+
+            with open(output_path, 'w') as f:
+                f.write(file_text)
+
+            return output_path
+
+        except Exception as err:
+            self.stdout.write(self.style.ERROR(f'error generating filter: {err}'))
