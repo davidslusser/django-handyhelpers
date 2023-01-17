@@ -1,6 +1,5 @@
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
+from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
 
 {%- set model_margin = app_name|length + models_file|length + 15 %}
 {%- set model_leading_space = " " * model_margin %}
@@ -21,23 +20,9 @@ from {{app_name}}.{{filtersets_file}} import ({% for model in model_list %}{% if
 
 class {{ model.__name__ }}ViewSet({{viewset_type}}):
     """ API endpoint that allows {{ model.__name__ }}s to be viewed """
+    filter_backends = (DjangoFilterBackend, )
     model = {{ model.__name__  }}
     queryset = model.objects.all(){% if model.select_related %}.select_related({% for field in model._meta.fields|sort(attribute='name') %}{% if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] %}'{{ field.name }}', {% endif %}{% endfor %}){% endif %}
     serializer_class = {{ model.__name__ }}Serializer
     filterset_class = {{ model.__name__ }}Filter
-    {% for field in model._meta.related_objects|sort(attribute='name') +%}
-    @action(detail=True, methods=['get'])
-    def {% if field.related_name %}{{ field.related_name }}{% else %}{{ field.name }}s{% endif %}(self, request, *args, **kwargs):
-        """ get the {{ field.name }}s associated with this {{ model.__name__ }} instance if available """
-        instance = self.get_object()
-        data = instance.{% if field.related_name %}{{ field.related_name }}{% else %}{{ field.name }}_set{% endif %}.all()
-        if data:
-            try:
-                serializer = {{ field.related_model.__name__ }}Serializer(data, many=True)
-                return Response(serializer.data, status.HTTP_200_OK)
-            except Exception as err:
-                return Response(str(err), status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            return Response('No {% if field.related_name %}{{ field.related_name }}{% else %}{{ field.name }}s{% endif %} available for this {{ model._meta.model_name }} ', status.HTTP_400_BAD_REQUEST)
-    {% endfor -%}
 {% endfor %}
