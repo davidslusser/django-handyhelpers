@@ -1,28 +1,44 @@
-from rest_framework import viewsets
-from django_filters.rest_framework import DjangoFilterBackend
+from django.db import models
+from django_filters.rest_framework.filters import CharFilter
+from rest_framework_filters.filters import RelatedFilter, BooleanFilter
+from rest_framework_filters.filterset import FilterSet
 
-{%- set model_margin = app_name|length + models_file|length + 15 %}
-{%- set model_leading_space = " " * model_margin %}
-{%- set serializer_margin = app_name|length + serializers_file|length + 15 %}
-{%- set serializer_leading_space = " " * serializer_margin %}
-{%- set filterset_margin = app_name|length + filtersets_file|length + 15 %}
-{%- set filterset_leading_space = " " * filterset_margin %}
-
+{% set margin = app_name|length + models_file|length + 15 %}
+{% set leading_space = " " * margin %}
 # import models
-from {{app_name}}.{{models_file}} import ({% for model in model_list %}{% if not loop.first %}{{model_leading_space}}{% endif %}{{ model.__name__ }}{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{model_leading_space}})
-
-# import serializers
-from {{app_name}}.{{serializers_file}} import ({% for model in model_list %}{% if not loop.first %}{{serializer_leading_space}}{% endif %}{{ model.__name__ }}Serializer{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{serializer_leading_space}})
-
-# import filtersets
-from {{app_name}}.{{filtersets_file}} import ({% for model in model_list %}{% if not loop.first %}{{filterset_leading_space}}{% endif %}{{ model.__name__ }}Filter{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{filterset_leading_space}})
+from {{app_name}}.{{models_file}} import ({% for model in model_list %}{% if not loop.first %}{{leading_space}}{% endif %}{{ model.__name__ }}{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{leading_space}})
 {% for model in model_list %}
 
-class {{ model.__name__ }}ViewSet({{viewset_type}}):
-    """ API endpoint that allows {{ model.__name__ }}s to be viewed """
-    filter_backends = (DjangoFilterBackend, )
-    model = {{ model.__name__  }}
-    queryset = model.objects.all(){% if model.select_related %}.select_related({% for field in model._meta.fields|sort(attribute='name') %}{% if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] %}'{{ field.name }}', {% endif %}{% endfor %}){% endif %}
-    serializer_class = {{ model.__name__ }}Serializer
-    filterset_class = {{ model.__name__ }}Filter
-{% endfor %}
+
+class {{ model.__name__ }}Filter(FilterSet):
+{%- for field in model._meta.fields|sort(attribute='name') -%}
+    {%+ if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] +%}
+    {{ field.name }} = RelatedFilter('{{ field.related_model.__name__ }}Filter', field_name='{{ field.name }}', queryset={{ field.related_model.__name__ }}.objects.all())
+    {%- endif %}
+{% endfor +%}
+{% for field in model._meta.related_objects|sort(attribute='name') %}
+    {{ field.name }} = RelatedFilter('{{ field.related_model.__name__ }}Filter', field_name='{{ field.name }}', queryset={{ field.related_model.__name__ }}.objects.all())
+    has_{{ field.name }} = BooleanFilter(field_name='{{ field.name }}', lookup_expr='isnull', exclude=True)
+{% endfor +%}
+{%- for field in model._meta.many_to_many|sort(attribute='name') %}
+    {{ field.name }} = RelatedFilter('{{ field.related_model.__name__ }}Filter', field_name='{{ field.name }}', queryset={{ field.related_model.__name__ }}.objects.all())
+    has_{{ field.name }} = BooleanFilter(field_name='{{ field.name }}', lookup_expr='isnull', exclude=True)
+{% endfor +%}
+    class Meta:
+        model = {{ model.__name__ }}
+        fields = {
+        {%- for field in model._meta.fields|sort(attribute='name') -%}
+        {%+ if field.get_internal_type() not in ['FileField'] +%}
+            '{{ field.name }}': '__all__',
+        {%- endif %}
+        {% endfor +%}
+        }
+        {%+ if model.has_json +%}
+        filter_overrides = {
+            models.JSONField: {
+                'filter_class': CharFilter,
+                'extra': lambda f: {'lookup_expr': 'icontains'},
+            },
+        }
+        {% endif %}
+{% endfor -%}

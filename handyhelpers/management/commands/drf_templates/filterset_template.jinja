@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_flex_fields import is_expanded
 
 {%- set model_margin = app_name|length + models_file|length + 15 %}
 {%- set model_leading_space = " " * model_margin %}
@@ -40,4 +41,20 @@ class {{ model.__name__ }}ViewSet({{viewset_type}}):
         else:
             return Response('No {% if field.related_name %}{{ field.related_name }}{% else %}{{ field.name }}s{% endif %} available for this {{ model._meta.model_name }} ', status.HTTP_400_BAD_REQUEST)
     {% endfor -%}
+
+    {%- if model.select_related %}
+    def get_queryset(self):
+        queryset = self.model.objects.all().select_related({% for field in model._meta.fields|sort(attribute='name') %}{% if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] %}'{{ field.name }}', {% endif %}{% endfor %})
+        {% for field in model._meta.fields|sort(attribute='name') %}{% if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] %}
+        if is_expanded(self.request, '{{ field.name }}'):
+            {%- set relations = field.related_model._meta.fields | selectattr("is_relation") | list -%}
+            {%- if relations %}
+            queryset = queryset.select_related({% for relation in relations %}'{{ field.name }}__{{ relation.name }}', {% endfor %})
+            {% else %}
+            queryset = queryset.select_related('{{ field.name }}')
+            {% endif -%}
+        {% endif %}{% endfor %}
+        return queryset
+    {% endif -%}
+
 {% endfor %}
