@@ -91,7 +91,7 @@ class Command(BaseCommand):
         try:
             if not template_file:
                 template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                             'drf_templates', 'serializers_template.jinja')
+                                             'drf_templates', 'serializer_flex_template.jinja')
 
             if output_file:
                 output_path = output_file
@@ -100,16 +100,16 @@ class Command(BaseCommand):
             elif os.path.isdir(output_path):
                 output_path = f'{output_path}/serializers.py'
 
-            model_fields = {}
-            for model in self.model_list:
-                model_fields[model.__name__] = self.get_model_field_names(model)
+            model_list = self.model_list
+            for model in model_list:
+                for field in model._meta.fields:
+                    if field.get_internal_type() in ['ForeignKey', 'OneToOneField']:
+                        setattr(model, 'has_related', True)
+                        break
 
-            data = {'import_models': 'my import statement here',
-                    'model_list': self.model_list,
+            data = {'model_list': model_list,
                     'app_name': self.app,
                     'models_file': 'models',
-                    'model_fields': model_fields,
-                    'field_list': {'get a list of fields in the model'}
                     }
             with open(template_file) as f:
                 template = Template(f.read())
@@ -128,7 +128,7 @@ class Command(BaseCommand):
         try:
             if not template_file:
                 template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                             'drf_templates', 'apis_template.jinja')
+                                             'drf_templates', 'api_filterset.jinja')
             if output_file:
                 output_path = output_file
             elif not output_path:
@@ -136,17 +136,20 @@ class Command(BaseCommand):
             elif os.path.isdir(output_path):
                 output_path = f'{output_path}/apis.py'
 
-            model_fields = {}
-            for model in self.model_list:
-                model_fields[model.__name__] = self.get_model_field_names(model, ['FileField'])
+            model_list = self.model_list
+            for model in model_list:
+                for field in model._meta.fields:
+                    if field.get_internal_type() in ['ForeignKey', 'OneToOneField']:
+                        setattr(model, 'select_related', True)
 
-            data = {'model_list': self.model_list,
+            data = {'model_list': model_list,
                     'app_name': self.app,
                     'models_file': 'models',
-                    'model_fields': model_fields,
                     'serializers_file': 'serializers',
+                    'filtersets_file': 'filters',
                     'viewset_type': 'viewsets.ReadOnlyModelViewSet',
                     }
+
             with open(template_file) as f:
                 template = Template(f.read())
             file_text = template.render(data)

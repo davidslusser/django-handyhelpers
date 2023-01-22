@@ -1,40 +1,60 @@
-from django.db import models
-from django_filters.rest_framework.filters import CharFilter
-from rest_framework_filters.filters import RelatedFilter, BooleanFilter
-from rest_framework_filters.filterset import FilterSet
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_flex_fields import is_expanded
 
-{% set margin = app_name|length + models_file|length + 15 %}
-{% set leading_space = " " * margin %}
+{%- set model_margin = app_name|length + models_file|length + 15 %}
+{%- set model_leading_space = " " * model_margin %}
+{%- set serializer_margin = app_name|length + serializers_file|length + 15 %}
+{%- set serializer_leading_space = " " * serializer_margin %}
+{%- set filterset_margin = app_name|length + filtersets_file|length + 15 %}
+{%- set filterset_leading_space = " " * filterset_margin %}
+
 # import models
-from {{app_name}}.{{models_file}} import ({% for model in model_list %}{% if not loop.first %}{{leading_space}}{% endif %}{{ model.__name__ }}{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{leading_space}})
+from {{app_name}}.{{models_file}} import ({% for model in model_list %}{% if not loop.first %}{{model_leading_space}}{% endif %}{{ model.__name__ }}{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{model_leading_space}})
+
+# import serializers
+from {{app_name}}.{{serializers_file}} import ({% for model in model_list %}{% if not loop.first %}{{serializer_leading_space}}{% endif %}{{ model.__name__ }}Serializer{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{serializer_leading_space}})
+
+# import filtersets
+from {{app_name}}.{{filtersets_file}} import ({% for model in model_list %}{% if not loop.first %}{{filterset_leading_space}}{% endif %}{{ model.__name__ }}Filter{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{filterset_leading_space}})
 {% for model in model_list %}
 
+class {{ model.__name__ }}ViewSet({{viewset_type}}):
+    """ API endpoint that allows {{ model.__name__ }}s to be viewed """
+    model = {{ model.__name__  }}
+    queryset = model.objects.all(){% if model.select_related %}.select_related({% for field in model._meta.fields|sort(attribute='name') %}{% if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] %}'{{ field.name }}', {% endif %}{% endfor %}){% endif %}
+    serializer_class = {{ model.__name__ }}Serializer
+    filterset_class = {{ model.__name__ }}Filter
+    {% for field in model._meta.related_objects|sort(attribute='name') +%}
+    @action(detail=True, methods=['get'])
+    def {% if field.related_name %}{{ field.related_name }}{% else %}{{ field.name }}s{% endif %}(self, request, *args, **kwargs):
+        """ get the {{ field.name }}s associated with this {{ model.__name__ }} instance if available """
+        instance = self.get_object()
+        data = instance.{% if field.related_name %}{{ field.related_name }}{% else %}{{ field.name }}_set{% endif %}.all()
+        if data:
+            try:
+                serializer = {{ field.related_model.__name__ }}Serializer(data, many=True)
+                return Response(serializer.data, status.HTTP_200_OK)
+            except Exception as err:
+                return Response(str(err), status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response('No {% if field.related_name %}{{ field.related_name }}{% else %}{{ field.name }}s{% endif %} available for this {{ model._meta.model_name }} ', status.HTTP_400_BAD_REQUEST)
+    {% endfor -%}
 
-class {{ model.__name__ }}Filter(FilterSet):
-{%- for field in model._meta.fields|sort(attribute='name') -%}
-    {%+ if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] +%}
-    {{ field.name }} = RelatedFilter('{{ field.related_model.__name__ }}Filter', field_name='{{ field.name }}', queryset={{ field.related_model.__name__ }}.objects.all())
-    {%- endif %}
-{% endfor +%}
-{% for field in model._meta.related_objects|sort(attribute='name') %}
-    {{ field.name }} = RelatedFilter('{{ field.related_model.__name__ }}Filter', field_name='{{ field.name }}', queryset={{ field.related_model.__name__ }}.objects.all())
-    has_{{ field.name }} = BooleanFilter(field_name='{{ field.name }}', lookup_expr='isnull', exclude=True)
-{% endfor +%}
-    class Meta:
-        model = {{ model.__name__ }}
-        fields = {
-        {%- for field in model._meta.fields|sort(attribute='name') -%}
-        {%+ if field.get_internal_type() not in ['FileField'] +%}
-            '{{ field.name }}': '__all__',
-        {%- endif %}
-        {% endfor +%}
-        }
-        {%+ if model.has_json +%}
-        filter_overrides = {
-            models.JSONField: {
-                'filter_class': CharFilter,
-                'extra': lambda f: {'lookup_expr': 'icontains'},
-            },
-        }
-        {% endif %}
-{% endfor -%}
+    {%- if model.select_related %}
+    def get_queryset(self):
+        queryset = self.model.objects.all().select_related({% for field in model._meta.fields|sort(attribute='name') %}{% if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] %}'{{ field.name }}', {% endif %}{% endfor %})
+        {% for field in model._meta.fields|sort(attribute='name') %}{% if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] %}
+        if is_expanded(self.request, '{{ field.name }}'):
+            {%- set relations = field.related_model._meta.fields | selectattr("is_relation") | list -%}
+            {%- if relations %}
+            queryset = queryset.select_related({% for relation in relations %}'{{ field.name }}__{{ relation.name }}', {% endfor %})
+            {% else %}
+            queryset = queryset.select_related('{{ field.name }}')
+            {% endif -%}
+        {% endif %}{% endfor %}
+        return queryset
+    {% endif -%}
+
+{% endfor %}

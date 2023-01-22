@@ -1,0 +1,44 @@
+from django.db import models
+from django_filters.rest_framework.filters import CharFilter
+from rest_framework_filters.filters import RelatedFilter, BooleanFilter
+from rest_framework_filters.filterset import FilterSet
+
+{% set margin = app_name|length + models_file|length + 15 %}
+{% set leading_space = " " * margin %}
+# import models
+from {{app_name}}.{{models_file}} import ({% for model in model_list %}{% if not loop.first %}{{leading_space}}{% endif %}{{ model.__name__ }}{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{leading_space}})
+{% for model in model_list %}
+
+
+class {{ model.__name__ }}Filter(FilterSet):
+{%- for field in model._meta.fields|sort(attribute='name') -%}
+    {%+ if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] +%}
+    {{ field.name }} = RelatedFilter('{{ field.related_model.__name__ }}Filter', field_name='{{ field.name }}', queryset={{ field.related_model.__name__ }}.objects.all())
+    {%- endif %}
+{% endfor +%}
+{% for field in model._meta.related_objects|sort(attribute='name') %}
+    {{ field.name }} = RelatedFilter('{{ field.related_model.__name__ }}Filter', field_name='{{ field.name }}', queryset={{ field.related_model.__name__ }}.objects.all())
+    has_{{ field.name }} = BooleanFilter(field_name='{{ field.name }}', lookup_expr='isnull', exclude=True)
+{% endfor +%}
+{%- for field in model._meta.many_to_many|sort(attribute='name') %}
+    {{ field.name }} = RelatedFilter('{{ field.related_model.__name__ }}Filter', field_name='{{ field.name }}', queryset={{ field.related_model.__name__ }}.objects.all())
+    has_{{ field.name }} = BooleanFilter(field_name='{{ field.name }}', lookup_expr='isnull', exclude=True)
+{% endfor +%}
+    class Meta:
+        model = {{ model.__name__ }}
+        fields = {
+        {%- for field in model._meta.fields|sort(attribute='name') -%}
+        {%+ if field.get_internal_type() not in ['FileField'] +%}
+            '{{ field.name }}': '__all__',
+        {%- endif %}
+        {% endfor +%}
+        }
+        {%+ if model.has_json +%}
+        filter_overrides = {
+            models.JSONField: {
+                'filter_class': CharFilter,
+                'extra': lambda f: {'lookup_expr': 'icontains'},
+            },
+        }
+        {% endif %}
+{% endfor -%}

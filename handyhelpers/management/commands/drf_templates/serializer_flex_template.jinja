@@ -1,0 +1,33 @@
+from rest_framework import serializers
+from rest_flex_fields import FlexFieldsModelSerializer
+
+{%- set margin = app_name|length + models_file|length + 15 %}
+{% set leading_space = " " * margin %}
+
+# import models
+from {{app_name}}.{{models_file}} import ({% for model in model_list %}{% if not loop.first %}{{leading_space}}{% endif %}{{ model.__name__ }}{{ "," if not loop.last }}{{"\n"}}{% endfor %}{{leading_space}})
+{% for model in model_list %}
+
+class {{ model.__name__ }}Serializer(FlexFieldsModelSerializer):
+{%- for field in model._meta.fields|sort(attribute='name') -%}
+    {%+ if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] +%}
+    {{ field.name }} = serializers.StringRelatedField()
+    {%- endif -%}
+{% endfor +%}
+
+    class Meta:
+        model = {{ model.__name__ }}
+        fields = [
+        {% for field in model._meta.fields|sort(attribute='name') %}    '{{ field.name }}',
+        {% endfor -%}
+        ]
+        {%+ if model.has_related +%}
+        expandable_fields = {
+        {%- for field in model._meta.fields|sort(attribute='name') -%}
+        {%+ if field.get_internal_type() in ['ForeignKey', 'OneToOneField'] +%}
+            '{{ field.name }}': '{{ field.related_model.__name__ }}Serializer',
+        {%- endif -%}
+        {%- endfor %}
+        }
+        {% endif -%}
+{% endfor -%}
