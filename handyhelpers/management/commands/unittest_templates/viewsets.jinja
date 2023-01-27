@@ -1,0 +1,84 @@
+import django
+import os
+import pytest
+
+from model_bakery import baker
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+os.environ.setdefault('ENV_PATH', '../envs/.env.test')
+django.setup()
+
+from django.shortcuts import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase, APIClient
+
+
+@pytest.fixture(autouse=True)
+def init_identifiers():
+    """ initialize identifiers for lims entities """
+    from id_bank.management.commands.init_id_bank import Command
+    c = Command()
+    c.handle(**{'limit': 1, 'create_entities': True, 'entity': None, 'include_disabled': None, 'count': 1})
+
+
+def create_custom_client(group_name):
+    """ create a client user in a specified group and return a client for object for that user """
+    user = baker.make('auth.User', username=f'{group_name}_user')
+    group = baker.make('auth.Group', name=group_name)
+    user.groups.add(group)
+    token = baker.make('authtoken.Token', user=user)
+    client = APIClient()
+    headers = dict()
+    headers["HTTP_AUTHORIZATION"] = f"Token {token.key}"
+    client.credentials(**headers)
+    return client
+
+
+class UserSetupMixin:
+    def setUp(self):
+        self.user = baker.make('auth.User', username='tester_basic')
+        self.token = baker.make('authtoken.Token', user=self.user)
+        headers = dict()
+        headers["HTTP_AUTHORIZATION"] = f"Token {self.token.key}"
+        self.client.credentials(**headers)
+
+{% for view, route_list in data.items() %}
+class {{ view.model.__name__ }}Tests(UserSetupMixin, APITestCase):
+    """ test API endpoints provided by the {{ view.__name__ }} viewset """
+    def setUp(self):
+        super({{ view.model.__name__}}Tests, self).setUp()
+        self.row = baker.make('{{ view.model._meta.app_label }}.{{ view.model.__name__}}')
+    {% for route in route_list %}
+    {% if view.permission_dict and view.permission_dict.GET %}
+    def test_{{ route.name|replace("-", "_") }}_authorized(self):
+        """ check that {{ route.name }} endpoint returns a 200 and the row content is found for an authorized user """
+        url = reverse('{{ route.app_name }}:{{ route.name }}'{% if '-list' not in route.name %}, args=[getattr(self.row, '{{ view.lookup_field }}')]{% endif %})
+        client = create_custom_client('{{ view.permission_dict.GET|first }}')
+        response = client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        {% if 'list' in route.name -%}self.assertGreater(len(response.json()['results']), 0)
+        self.assertIn(str(getattr(self.row, '{{ view.lookup_field }}')), response.content.decode('utf-8'))
+        {%- elif 'detail' in route.name -%}self.assertTrue(response.json()['{% if view.lookup_field == 'pk' %}{{ view.model._meta.pk.name }}{% else %}{{ view.lookup_field }}{% endif %}']), getattr(self.row, '{{ view.lookup_field }}')
+        {%- else -%}
+        # custom action here
+        {%- endif %}
+    def test_{{ route.name|replace("-", "_") }}_unauthorized(self):
+        """ check that {{ route.name }} endpoint returns a 403 for an unauthorized user """
+        url = reverse('{{ route.app_name }}:{{ route.name }}'{% if '-list' not in route.name %}, args=[getattr(self.row, '{{ view.lookup_field }}')]{% endif %})
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    {% else %}
+    def test_{{ route.name|replace("-", "_") }}(self):
+        """ check that {{ route.name }} endpoint returns a 200 and the row content is found """
+        url = reverse('{{ route.app_name }}:{{ route.name }}'{% if '-list' not in route.name %}, args=[getattr(self.row, '{{ view.lookup_field }}')]{% endif %})
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        {% if 'list' in route.name -%}self.assertGreater(len(response.json()['results']), 0)
+        self.assertIn(str(getattr(self.row, '{{ view.lookup_field }}')), response.content.decode('utf-8'))
+        {%- elif 'detail' in route.name -%}self.assertTrue(response.json()['{% if view.lookup_field == 'pk' %}{{ view.model._meta.pk.name }}{% else %}{{ view.lookup_field }}{% endif %}']), getattr(self.row, '{{ view.lookup_field }}')
+        {%- else -%}
+        # custom action here
+        {%- endif %}
+    {% endif %}
+    {% endfor %}
+{% endfor %}
