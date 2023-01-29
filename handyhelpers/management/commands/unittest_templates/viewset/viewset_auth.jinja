@@ -1,0 +1,7 @@
+{%+ if '-list' in route.name +%}
+    {% include 'viewset/viewset_auth_list.jinja' %}
+{%- elif '-detail' in route.name +%}
+    {% include 'viewset/viewset_auth_detail.jinja' %}
+{%- else +%}
+    {% include 'viewset/viewset_auth_action.jinja' %}
+{%- endif -%}

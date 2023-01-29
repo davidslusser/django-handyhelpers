@@ -1,0 +1,25 @@
+{% set related_field = '_'.join(route.name.split("-")[1:]) %}
+{%- if related_field in view.related_data_actions %}
+    def test_{{ route.name|replace("-", "_") }}_authorized(self):
+        """ verify the {{ route.name }} endpoint returns a 200 and the row content is found for an authorized user """
+        # {{ view.related_data_actions[related_field].get_accessor_name() }} {{ view.related_data_actions[related_field].remote_field.name }} {{ view.related_data_actions[related_field].related_model.__name__ }}
+        {{ view.related_data_actions[related_field].related_model.__name__|lower }} = baker.make('{{ view.model._meta.app_label }}.{{ view.related_data_actions[related_field].related_model.__name__ }}', {{ view.related_data_actions[related_field].remote_field.name }}=self.row)
+        url = reverse('{{ route.app_name }}:{{ route.name }}'{% if '-list' not in route.name %}, args=[getattr(self.row, '{{ view.lookup_field }}')]{% endif %})
+        client = create_custom_client('lab')
+        response = client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreater(len(response.json()), 0)
+        self.assertIn(str({{ view.related_data_actions[related_field].related_model.__name__|lower }}), response.content.decode('utf-8'))
+        self.assertIn(getattr(self.row, '{% if view.lookup_field == 'pk' %}{{ view.model._meta.pk.name }}{% else %}{{ view.lookup_field }}{% endif %}'), response.content.decode('utf-8'))
+
+    def test_{{ route.name|replace("-", "_") }}_unauthorized(self):
+        """ verify the {{ route.name }} endpoint returns a 401 and the row content is not found """
+        {{ view.related_data_actions[related_field].related_model.__name__|lower }} = baker.make('{{ view.model._meta.app_label }}.{{ view.related_data_actions[related_field].related_model.__name__ }}', {{ view.related_data_actions[related_field].remote_field.name }}=self.row)
+        url = reverse('{{ route.app_name }}:{{ route.name }}'{% if '-list' not in route.name %}, args=[getattr(self.row, '{{ view.lookup_field }}')]{% endif %})
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertNotIn(str({{ view.related_data_actions[related_field].related_model.__name__|lower }}), response.content.decode('utf-8'))
+        self.assertNotIn(getattr(self.row, '{% if view.lookup_field == 'pk' %}{{ view.model._meta.pk.name }}{% else %}{{ view.lookup_field }}{% endif %}'), response.content.decode('utf-8'))
+{%- else -%}
+    # placeholder: endpoint {{ route.name }} appears to be a custom action and a test could not be automatically generated
+{% endif -%}

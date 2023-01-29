@@ -1,0 +1,47 @@
+import django
+import os
+
+from model_bakery import baker
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+os.environ.setdefault('ENV_PATH', '../envs/.env.test')
+django.setup()
+
+from django.shortcuts import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase, APIClient
+
+
+def create_custom_client(group_name):
+    """ create a client user in a specified group and return a client for object for that user """
+    user = baker.make('auth.User', username=f'{group_name}_user')
+    group = baker.make('auth.Group', name=group_name)
+    user.groups.add(group)
+    token = baker.make('authtoken.Token', user=user)
+    client = APIClient()
+    client.credentials(**dict(HTTP_AUTHORIZATION=f'Token {token.key}'))
+    return client
+
+
+class UserSetupMixin:
+    def setUp(self):
+        self.user = baker.make('auth.User', username='tester_basic')
+        self.token = baker.make('authtoken.Token', user=self.user)
+        headers = dict()
+        headers["HTTP_AUTHORIZATION"] = f"Token {self.token.key}"
+        self.client.credentials(**headers)
+
+{% for view, route_list in data.items() %}
+class {{ view.model.__name__ }}Tests(UserSetupMixin, APITestCase):
+    """ test API endpoints provided by the {{ view.__name__ }} viewset """
+    def setUp(self):
+        super({{ view.model.__name__}}Tests, self).setUp()
+        self.row = baker.make('{{ view.model._meta.app_label }}.{{ view.model.__name__}}')
+    {% for route in route_list %}
+    {%- if view.permission_dict and view.permission_dict.GET -%}
+        {% include 'viewset_auth.jinja' %}
+    {%- else -%}
+        {% include 'viewset_noauth.jinja' %}
+    {%- endif %}
+    {% endfor %}
+{% endfor %}

@@ -1,0 +1,7 @@
+def test_{{ route.name|replace("-", "_") }}(self):
+        """ verify the {{ route.name }} endpoint returns a 200 and the row content is found """
+        url = reverse('{{ route.app_name }}:{{ route.name }}'{% if '-list' not in route.name %}, args=[getattr(self.row, '{{ view.lookup_field }}')]{% endif %})
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(str(getattr(self.row, '{{ view.lookup_field }}')), response.content.decode('utf-8'))
+        self.assertGreater(len(response.json()['results']), 0)

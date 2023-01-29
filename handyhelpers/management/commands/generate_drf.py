@@ -128,7 +128,7 @@ class Command(BaseCommand):
         try:
             if not template_file:
                 template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                             'drf_templates', 'api_filterset.jinja')
+                                             'drf_templates', 'viewset.jinja')
             if output_file:
                 output_path = output_file
             elif not output_path:
@@ -197,7 +197,7 @@ class Command(BaseCommand):
         try:
             if not template_file:
                 template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                             'drf_templates', 'filterset_template.jinja')
+                                             'drf_templates', 'filterset.jinja')
 
             if output_file:
                 output_path = output_file

@@ -2,10 +2,10 @@ from django.apps import apps
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.urls import URLPattern, URLResolver
-from jinja2 import Template
+from jinja2 import Template, Environment, FileSystemLoader
 import os
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 
 
 class Command(BaseCommand):
@@ -134,6 +134,7 @@ class Command(BaseCommand):
             elif os.path.isdir(output_path):
                 output_path = f'{output_path}/test_veiwsets.py'
 
+
             test_dict = {} # {'view': view_object, url_list: list_of_route_names}
             route_name_list = []
             url_data = __import__(getattr(settings, 'ROOT_URLCONF'), {}, {}, [''])
@@ -150,6 +151,7 @@ class Command(BaseCommand):
                                 self.stdout.write(self.style.WARNING(f'INFO: can not find model in the viewset for '
                                                                      f'{route.name}; skipping unittest generation'))
                                 continue
+                            v.related_data_actions = {i.get_accessor_name(): i for i in v.model._meta.related_objects}
                             if not hasattr(route, 'app_name'):
                                 route.app_name = path.app_name
                             if v in test_dict:
@@ -163,11 +165,15 @@ class Command(BaseCommand):
                                     route_name_list.append(route.name)
 
             data = dict(data=test_dict)
+            base_template_path = os.path.join(os.path.dirname(os.path.realpath(__file__))) + '/unittest_templates'
             with open(template_file) as f:
-                template = Template(f.read())
+                template_str = f.read()
+            template = Environment(loader=FileSystemLoader(base_template_path)).from_string(template_str)
+
             file_text = template.render(data)
             with open(output_path, 'w') as f:
                 f.write(file_text)
+
             return output_path
 
         except Exception as err:
