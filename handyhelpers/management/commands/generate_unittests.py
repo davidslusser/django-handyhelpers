@@ -110,7 +110,7 @@ class Command(BaseCommand):
             if model in auditlog_models:
                 model_dict[model]['auditlog'] = True
 
-        data = dict(model_dict=model_dict)
+        data = dict(settings_module=settings.SETTINGS_MODULE, model_dict=model_dict)
 
         with open(template_file) as f:
             template = Template(f.read())
@@ -178,7 +178,6 @@ class Command(BaseCommand):
 
         except Exception as err:
             self.stdout.write(self.style.ERROR(f'error generating viewset unittests: {err}'))
-
 
     def build_view_unittests(self, output_path=None, output_file=None, template_file=None):
         """ build unittest file for views """
