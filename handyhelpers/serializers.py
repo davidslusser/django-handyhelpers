@@ -10,8 +10,8 @@ class FkReadWriteField(serializers.RelatedField):
         my_fk_field = FkReadWriteField(required=False, queryset=MyModel.objects.all(), lookup_field='fk_field_name')
     """
     def __init__(self, **kwargs):
-        self.model = kwargs['queryset'].model
-        self.lookup_field = kwargs.pop('lookup_field', None)
+        self.model = kwargs["queryset"].model
+        self.lookup_field = kwargs.pop("lookup_field", None)
         if not self.lookup_field:
             self.lookup_field = self.model._meta.pk.name
         super().__init__(**kwargs)
@@ -24,4 +24,6 @@ class FkReadWriteField(serializers.RelatedField):
         try:
             return self.model.objects.get(**{self.lookup_field: data})
         except self.model.DoesNotExist:
-            raise serializers.ValidationError(f"{self.model._meta.model_name} {data} not found")
+            raise serializers.ValidationError(f"{self.model._meta.model_name} with {self.lookup_field} '{data}' not found")
+        except self.model.MultipleObjectsReturned:
+            raise serializers.ValidationError(f"multiple objects returned; lookup_field must be unique")
