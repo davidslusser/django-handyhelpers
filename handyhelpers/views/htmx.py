@@ -1,3 +1,4 @@
+import datetime
 import psutil
 from django.shortcuts import render
 from django.views.generic import (View)
@@ -11,6 +12,16 @@ class GetHostProcesses(View):
         context = dict()
         process_list = list(psutil.process_iter())
         filter_form = HostProcessFilterForm(request.GET or None)
+
+        counts = dict(
+            running=len([i for i in process_list if i.status() == 'running']),
+            sleeping=len([i for i in process_list if i.status() == 'sleeping']),
+            idle=len([i for i in process_list if i.status() == 'idle']),
+            stopped=len([i for i in process_list if i.status() == 'stopped']),
+            zombie=len([i for i in process_list if i.status() == 'zombie']),
+            dead=len([i for i in process_list if i.status() == 'dead']),
+        )
+        context['counts'] = counts
 
         # check for form clearing
         if request.GET.dict().get('clear', None):
@@ -48,6 +59,9 @@ class GetHostProcesses(View):
                             continue
                     process_list = filtered_process_list
         context['process_list'] = process_list
+        context['title'] = 'Host Processes'
+        context['now'] = datetime.datetime.now()
+        context['subtitle'] = psutil.os.uname()[1]
         filter_form = dict()
         filter_form['form'] = HostProcessFilterForm(request.GET or None)
         filter_form['modal_name'] = 'filter_processes'
@@ -59,4 +73,4 @@ class GetHostProcesses(View):
         filter_form['method'] = 'GET'
         filter_form['action'] = 'Filter'
         context['filter_form'] = filter_form
-        return render(request, template_name='handyhelpers/snippets/host_process_card.htm', context=context)
+        return render(request, template_name='handyhelpers/snippets/host_process_card_swap.htm', context=context)

@@ -34,7 +34,9 @@ class MethodGroupPermissionBase(object):
                                      messages.ERROR,
                                      f'User {request.user} is not authorized to perform this operation',
                                      extra_tags='alert-danger', )
-                return redirect(request.META.get('HTTP_REFERER'))
+                if request.META.get('HTTP_REFERER'):
+                    return redirect(request.META.get('HTTP_REFERER'))
+                return redirect('/')
 
             elif settings.LOGIN_URL and REDIRECT_FIELD_NAME:
                 return redirect_to_login(request.get_full_path(),
