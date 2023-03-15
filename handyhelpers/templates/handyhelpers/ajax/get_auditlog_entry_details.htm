@@ -46,10 +46,12 @@
                 <td>{{ object.additional_data }}</td>
             </tr>
             {% endif %}
+            {% if object.remote_addr %}
             <tr>
                 <td><b>Remote Address</b></td>
                 <td>{{ object.remote_addr }}</td>
             </tr>
+            {% endif %}
             <tr>
                 <td><b>Timestamp</b></td>
                 <td>{{ object.timestamp }}</td>

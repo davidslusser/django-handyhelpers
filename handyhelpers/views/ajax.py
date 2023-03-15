@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from django.template import loader
 from django.views.decorators.http import require_GET, require_POST
 
+from auditlog.models import LogEntry
+
 
 @require_GET
 def get_host_network_stats(request):
@@ -106,6 +108,53 @@ def get_host_cpu_stats(request):
                 data = None
             template = loader.get_template('handyhelpers/ajax/host_cpu_stats.htm')
             return HttpResponse(json.dumps({'server_response': template.render({'data': data})}),
+                                content_type='application/javascript')
+        else:
+            return HttpResponse('Invalid request inputs', status=400)
+    else:
+        return HttpResponse('Invalid request', status=400)
+
+
+@require_GET
+def get_auditlog(request, *args, **kwargs):
+    """
+    Description:
+        Get AuditLog entries for a given model and instance.
+    Args:
+        request: AJAX request object.
+    Returns:
+        HttpResponse: JSON formatted response.
+    """
+    if (request.is_ajax()) and (request.method == 'GET'):
+        if 'client_response' in request.GET:
+            queryset = LogEntry.objects.filter(content_type__model=kwargs['model_name'],
+                                               object_pk=kwargs['pk'])
+            template = loader.get_template('handyhelpers/ajax/get_auditlog.htm')
+            return HttpResponse(json.dumps({'server_response': template.render({'queryset': queryset})}),
+                                content_type='application/javascript')
+        else:
+            return HttpResponse('Invalid request inputs', status=400)
+    else:
+        return HttpResponse('Invalid request', status=400)
+
+
+
+@require_GET
+def get_auditlog_entry(request, *args, **kwargs):
+    """
+    Description:
+        Get details for a LogEntry of auditlog.
+    Args:
+        request: AJAX request object.
+    Returns:
+        HttpResponse: JSON formatted response.
+    """
+    if (request.is_ajax()) and (request.method == 'GET'):
+        if 'client_response' in request.GET:
+            queryset = LogEntry.objects.filter(content_type__model=kwargs['model_name'],
+                                               object_pk=kwargs['pk'])
+            template = loader.get_template('handyhelpers/ajax/get_auditlog_entry_details.htm')
+            return HttpResponse(json.dumps({'server_response': template.render({'queryset': queryset})}),
                                 content_type='application/javascript')
         else:
             return HttpResponse('Invalid request inputs', status=400)

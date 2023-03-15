@@ -24,6 +24,8 @@ urlpatterns = [
     path('host_process_details', ajax.get_host_process_details, name='host_process_details'),
     path('host_partition_usage', ajax.get_host_partition_usage, name='host_partition_usage'),
     path('get_host_cpu_stats', ajax.get_host_cpu_stats, name='get_host_cpu_stats'),
+    path('get_auditlog/<str:model_name>/<int:pk>/', ajax.get_auditlog, name='get_auditlog'),
+    path('get_auditlog_entry/<str:model_name>/<int:pk>/', ajax.get_auditlog_entry, name='get_auditlog_entry'),
     path('get_auditlog_entry_details', ajax.get_auditlog_entry_details, name='get_auditlog_entry_details'),
 
     # htmx views
