@@ -1,0 +1,52 @@
+<div hx-swap-oob="true" id="id_title_card_wrapper" class="container-fluid mt-5">
+    <div class="titlecard-container">
+        <div class="card titlecard shadow hvr-grow"
+             hx-get="{% url 'handyhelpers:get_host_processes' %}?source=card&status=running" hx-target='#id_process_list_container'
+             onclick="document.getElementById('form_{{ filter_form.modal_name }}').reset()">
+            <div class="card-body">
+                <div class="stat">{{ counts.running }}</div>
+                <div class="description">Running</div>
+            </div>
+        </div>
+        <div class="card titlecard shadow hvr-grow"
+             hx-get="{% url 'handyhelpers:get_host_processes' %}?source=card&status=idle" hx-target='#id_process_list_container'
+             onclick="document.getElementById('form_{{ filter_form.modal_name }}').reset()">
+            <div class="card-body">
+                <div class="stat">{{ counts.idle }}</div>
+                <div class="description">Idle</div>
+            </div>
+        </div>
+        <div class="card titlecard shadow hvr-grow"
+             hx-get="{% url 'handyhelpers:get_host_processes' %}?source=card&status=sleeping" hx-target='#id_process_list_container'
+             onclick="document.getElementById('form_{{ filter_form.modal_name }}').reset()">
+            <div class="card-body">
+                <div class="stat">{{ counts.sleeping }}</div>
+                <div class="description">Sleeping</div>
+            </div>
+        </div>
+        <div class="card titlecard shadow hvr-grow"
+             hx-get="{% url 'handyhelpers:get_host_processes' %}?source=card&status=stopped" hx-target='#id_process_list_container'
+             onclick="document.getElementById('form_{{ filter_form.modal_name }}').reset()">
+            <div class="card-body">
+                <div class="stat">{{ counts.stopped }}</div>
+                <div class="description">Stopped</div>
+            </div>
+        </div>
+        <div class="card titlecard shadow hvr-grow"
+             hx-get="{% url 'handyhelpers:get_host_processes' %}?source=card&status=zombie" hx-target='#id_process_list_container'
+             onclick="document.getElementById('form_{{ filter_form.modal_name }}').reset()">
+            <div class="card-body">
+                <div class="stat">{{ counts.zombie }}</div>
+                <div class="description">Zombie</div>
+            </div>
+        </div>
+        <div class="card titlecard shadow hvr-grow"
+             hx-get="{% url 'handyhelpers:get_host_processes' %}?source=card&status=dead" hx-target='#id_process_list_container'
+             onclick="document.getElementById('form_{{ filter_form.modal_name }}').reset()">
+            <div class="card-body">
+                <div class="stat">{{ counts.dead }}</div>
+                <div class="description">Dead</div>
+            </div>
+        </div>
+    </div>
+</div>
