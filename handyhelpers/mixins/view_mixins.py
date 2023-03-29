@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.contenttypes.fields import ReverseGenericManyToOneDescriptor
 from django.core.exceptions import FieldError
 
 import handyhelpers.forms
@@ -22,6 +23,7 @@ class FilterByQueryParamsMixin:
     request = None
     queryset = None
     page_description = None
+    distinct = None
 
     def filter_by_query_params(self):
         """
@@ -31,6 +33,12 @@ class FilterByQueryParamsMixin:
         Returns:
             filtered queryset
         """
+        force_distinct = any([
+            'distinct' in self.request.GET.dict(),
+            self.distinct,
+            getattr(settings, 'HH_FILTERBYQUERYPARAM_DISTINCT', False),
+            ])
+
         # pass a description to the view if included as a query parameter
         if not self.page_description and 'page_description' in self.request.GET.dict():
             self.page_description = self.request.GET.dict().get('page_description', None)
@@ -38,24 +46,32 @@ class FilterByQueryParamsMixin:
         # build a dictionary of valid model fields
         filter_dict = {}
         model = self.queryset.model
-        for field, val in self.request.GET.dict().items():
-            if field.split("__")[0] not in [i.name for i in model._meta.fields +
-                                                            model._meta.many_to_many +
-                                                            model._meta.related_objects] + \
-                    getattr(settings, 'HH_QUERY_PARAM_PREFIXES', ['eav']):
-                continue
-            if val is not None:
-                if val == 'None':
-                    val = None
-                elif val in 'TruetrueTRUE':
-                    val = True
-                elif val in 'FalsefalseFALSE':
-                    val = False
-                filter_dict[field] = val
         try:
-            if 'distinct' in self.request.GET.dict():
+            for arg, val in self.request.GET.dict().items():
+                field = arg.split('__')[0]
+                field_is_generic = type(getattr(model, field)) == ReverseGenericManyToOneDescriptor
+                if field_is_generic:
+                    force_distinct = True
+                if field not in [i.name for i in model._meta.fields +
+                                                 model._meta.many_to_many +
+                                                 model._meta.related_objects] + \
+                        getattr(settings, 'HH_QUERY_PARAM_PREFIXES', ['eav']) and not field_is_generic:
+                    continue
+                if val is not None:
+                    if val == 'None':
+                        val = None
+                    elif val in 'TruetrueTRUE':
+                        val = True
+                    elif val in 'FalsefalseFALSE':
+                        val = False
+                    filter_dict[arg] = val
+            if force_distinct:
                 return self.queryset.filter(**filter_dict).distinct()
             return self.queryset.filter(**filter_dict)
+        except AttributeError:
+            if getattr(settings, 'HH_FILTERBYQUERYPARAM_NO_FILTER_ON_FAIL', True):
+                return self.queryset
+            return model.objects.none()
         except FieldError:
             if getattr(settings, 'HH_FILTERBYQUERYPARAM_NO_FILTER_ON_FAIL', False):
                 return self.queryset
