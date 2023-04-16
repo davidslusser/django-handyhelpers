@@ -1,0 +1,47 @@
+<br/>
+<div class="container-fluid">
+    {% if data %}
+    <table class="table table-condensed table-bordered table-striped">
+        <thead>
+        <tr>
+            <th data-field="event" data-sortable="true">Event</th>
+            <th data-field="action" data-sortable="true">Changes</th>
+            <th data-field="user" data-sortable="true">User</th>
+            <th data-field="timestamp" data-sortable="true">Timestamp</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in data %}
+            <tr>
+                <td>
+                    {% if row.action == 0 %}
+                        Created
+                    {% elif row.action == 1 %}
+                        Updated
+                    {% elif row.action == 2 %}
+                        Deleted
+                    {% endif %}
+                </td>
+                <td>
+                    {% if row.action == 1 %}
+                        {% for key, value in row.changes_dict.items %}
+                            <div class="row mb-2">
+                                <small>
+                                    <div class="col-12"><b>{{ key }}:</b> </div>
+                                    <div class="col-12"><span class="mx-2 text-secondary">{% if value.0 %}- </span>{{ value.0 }}{% endif %}</div>
+                                    <div class="col-12"><span class="mx-2 text-secondary">{% if value.1 %}+</span>{{ value.1 }}{% endif %}</div>
+                                </small>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+                <td>{{ row.actor }}</td>
+                <td>{{ row.timestamp|date:'Y-m-d H:i:s' }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-center">No results found</p>
+    {% endif %}
+</div>

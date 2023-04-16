@@ -24,9 +24,8 @@ urlpatterns = [
     path('host_process_details/', ajax.GetHostProcessDetails.as_view(), name='host_process_details'),
     path('host_partition_usage/', ajax.GetHostParitionUsage.as_view(), name='host_partition_usage'),
     path('get_host_cpu_stats/', ajax.GetHostCpuStats.as_view(), name='get_host_cpu_stats'),
-    path('get_auditlog/<str:model_name>/<int:pk>/', ajax.get_auditlog, name='get_auditlog'),
-    path('get_auditlog_entry/<str:model_name>/<int:pk>/', ajax.get_auditlog_entry, name='get_auditlog_entry'),
-    path('get_auditlog_entry_details', ajax.get_auditlog_entry_details, name='get_auditlog_entry_details'),
+    path('get_auditlog_entries/<str:model_name>/<str:pk>/', ajax.GetAuditLogEntries.as_view(), name='get_auditlog_entries'),
+    path('get_auditlog_entry/<int:id>/', ajax.GetAuditLogEntry.as_view(), name='get_auditlog_entry'),
 
     # htmx views
     path('get_host_processes/', htmx.GetHostProcesses.as_view(), name='get_host_processes'),

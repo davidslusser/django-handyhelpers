@@ -28,8 +28,7 @@ class AjaxGetView(View):
                                     content_type='application/javascript')
 
 
-@require_GET
-def get_auditlog(request, *args, **kwargs):
+class GetAuditLogEntries(AjaxGetView):
     """
     Description:
         Get AuditLog entries for a given model and instance.
@@ -38,66 +37,28 @@ def get_auditlog(request, *args, **kwargs):
     Returns:
         HttpResponse: JSON formatted response.
     """
-    if (request.is_ajax()) and (request.method == 'GET'):
-        if 'client_response' in request.GET:
-            queryset = LogEntry.objects.filter(content_type__model=kwargs['model_name'],
-                                               object_pk=kwargs['pk'])
-            template = loader.get_template('handyhelpers/ajax/get_auditlog.htm')
-            return HttpResponse(json.dumps({'server_response': template.render({'queryset': queryset})}),
-                                content_type='application/javascript')
-        else:
-            return HttpResponse('Invalid request inputs', status=400)
-    else:
-        return HttpResponse('Invalid request', status=400)
+    template = loader.get_template('handyhelpers/ajax/get_auditlog_entries.htm')
+    
+    def get(self, request, *args, **kwargs):
+        self.data = LogEntry.objects.filter(content_type__model=kwargs['model_name'], 
+                                       object_pk=kwargs['pk'])
+        return super().get(request, *args, **kwargs)
 
 
-@require_GET
-def get_auditlog_entry(request, *args, **kwargs):
+class GetAuditLogEntry(AjaxGetView):
     """
     Description:
-        Get details for a LogEntry of auditlog.
+        Get details for a LogEntry of auditlog..
     Args:
         request: AJAX request object.
     Returns:
         HttpResponse: JSON formatted response.
     """
-    if (request.is_ajax()) and (request.method == 'GET'):
-        if 'client_response' in request.GET:
-            queryset = LogEntry.objects.filter(content_type__model=kwargs['model_name'],
-                                               object_pk=kwargs['pk'])
-            template = loader.get_template('handyhelpers/ajax/get_auditlog_entry_details.htm')
-            return HttpResponse(json.dumps({'server_response': template.render({'queryset': queryset})}),
-                                content_type='application/javascript')
-        else:
-            return HttpResponse('Invalid request inputs', status=400)
-    else:
-        return HttpResponse('Invalid request', status=400)
-
-
-@require_GET
-def get_auditlog_entry_details(request):
-    """
-    Description:
-        Get details for a LogEntry of auditlog.
-    Args:
-        request: AJAX request object.
-    Returns:
-        HttpResponse: JSON formatted response.
-    """
-    if not apps.is_installed('auditlog'):
-        return HttpResponse('Invalid request', status=400)
-    if (request.is_ajax()) and (request.method == 'GET'):
-        LogEntry = apps.get_model('auditlog', 'LogEntry')
-        if 'client_response' in request.GET:
-            object_id = request.GET['client_response']
-            obj = LogEntry.objects.get(id=object_id)
-            template = loader.get_template('handyhelpers/ajax/get_auditlog_entry_details.htm')
-            return HttpResponse(json.dumps({'server_response': template.render({'object': obj})}),
-                                content_type='application/javascript')
-        else:
-            return HttpResponse('Invalid request inputs', status=400)
-    else:
-        return HttpResponse('Invalid request', status=400)
+    template = loader.get_template('handyhelpers/ajax/get_auditlog_entry.htm')
+    
+    def get(self, request, *args, **kwargs):
+        self.data = LogEntry.objects.filter(id=kwargs['id'])
+        return super().get(request, *args, **kwargs)
 
 
        
