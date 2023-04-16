@@ -5,8 +5,8 @@
         <col width="30%">
         <col width="70%">
         <tbody>
-            {% if object.action == 1 %}
-                {% for key, value in object.changes_dict.items %}
+            {% if data.action == 1 %}
+                {% for key, value in data.changes_dict.items %}
             <tr>
                 <td><b>{{ key }}</b></td>
                 <td class="small">
@@ -38,23 +38,23 @@
         <tbody>
             <tr>
                 <td><b>User</b></td>
-                <td>{{ object.actor }}</td>
+                <td>{{ data.actor }}</td>
             </tr>
-            {% if object.additional_data %}
+            {% if data.additional_data %}
             <tr>
                 <td><b>Additional Data</b></td>
-                <td>{{ object.additional_data }}</td>
+                <td>{{ data.additional_data }}</td>
             </tr>
             {% endif %}
-            {% if object.remote_addr %}
+            {% if data.remote_addr %}
             <tr>
                 <td><b>Remote Address</b></td>
-                <td>{{ object.remote_addr }}</td>
+                <td>{{ data.remote_addr }}</td>
             </tr>
             {% endif %}
             <tr>
                 <td><b>Timestamp</b></td>
-                <td>{{ object.timestamp }}</td>
+                <td>{{ data.timestamp }}</td>
             </tr>
         </tbody>
     </table>

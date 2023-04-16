@@ -10,7 +10,7 @@
 {% endblock local_head %}
 
 {% block content %}
-    <header>
+    <header class="m-5">
         <div class="headline text-center animated fadeIn" style="animation-delay: .15s;">
             <div class="container mb-5">
                 <h1 class="text-primary font-weight-bold">{{ title }}</h1>
@@ -19,11 +19,11 @@
         </div>
     </header>
 
-    <div class="container mt-2 mb-5 animated fadeIn" style="animation-delay: .25s;">
+    <div class="container-fluid mt-2 mb-5 animated fadeIn" style="animation-delay: .25s;">
         {% for data in dataset_list %}
             <div class="row mb-5">
                 <div class="col-sm-12 col-md-3 col-lg-2 col-xl-1 mb-3">
-                    <i class="{{ data.icon }} fa-4x text-primary"></i><br/>
+                    <span class="fa-4x text-primary">{{ data.icon|safe }}</span><br/>
                 </div>
                 <div class="col-sm-12 col-md-9 col-lg-10 col-xl-11 pl-4">
                     <div class="row border-bottom border-secondary">

@@ -2,7 +2,7 @@
 .zoom-icon-card, .zoom-index-card, .zoom-admin-card .zoom-summary-card {
     margin: .75rem;
     padding: .25rem;
-    border: 1px solid var(--secondary);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     background-color: var(--light);
 }
 
@@ -39,7 +39,7 @@
     width: 9.5rem;
     height: 9rem;
     margin: 1rem;
-    border: 1px solid var(--secondary);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     text-align: center;
     background-color: var(--light);
 }
@@ -71,7 +71,7 @@
     width: 10rem;
     height: 10rem;
     margin: 1rem;
-    border: 1px solid var(--secondary);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     text-align: center;
     background-color: var(--light);
 }

@@ -49,7 +49,7 @@ class FilterByQueryParamsMixin:
         try:
             for arg, val in self.request.GET.dict().items():
                 field = arg.split('__')[0]
-                field_is_generic = type(getattr(model, field)) == ReverseGenericManyToOneDescriptor
+                field_is_generic = type(getattr(model, field, None)) == ReverseGenericManyToOneDescriptor
                 if field_is_generic:
                     force_distinct = True
                 if field not in [i.name for i in model._meta.fields +
