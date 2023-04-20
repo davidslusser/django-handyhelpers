@@ -1,8 +1,13 @@
+from django.conf import settings
 from django.urls import path
 from handyhelpers.views import action
 from handyhelpers.views import ajax
 from handyhelpers.views import host
 from handyhelpers.views import htmx
+
+if 'auditlog' in settings.INSTALLED_APPS:
+    from handyhelpers.views import auditlog
+    
 
 app_name = 'handyhelpers'
 
@@ -24,10 +29,16 @@ urlpatterns = [
     path('host_process_details/', ajax.GetHostProcessDetails.as_view(), name='host_process_details'),
     path('host_partition_usage/', ajax.GetHostParitionUsage.as_view(), name='host_partition_usage'),
     path('get_host_cpu_stats/', ajax.GetHostCpuStats.as_view(), name='get_host_cpu_stats'),
-    path('get_auditlog_entries/<str:model_name>/<str:pk>/', ajax.GetAuditLogEntries.as_view(), name='get_auditlog_entries'),
-    path('get_auditlog_entry/<int:id>/', ajax.GetAuditLogEntry.as_view(), name='get_auditlog_entry'),
 
     # htmx views
     path('get_host_processes/', htmx.GetHostProcesses.as_view(), name='get_host_processes'),
 
 ]
+
+if 'auditlog' in settings.INSTALLED_APPS:
+    urlpatterns.extend(
+        [
+            path('get_auditlog_entries/<str:model_name>/<str:pk>/', auditlog.GetAuditLogEntries.as_view(), name='get_auditlog_entries'),
+            path('get_auditlog_entry/<int:id>/', auditlog.GetAuditLogEntry.as_view(), name='get_auditlog_entry'),
+        ]
+    )
