@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.urls import path
 from handyhelpers.views import action
-from handyhelpers.views import ajax
 from handyhelpers.views import host
 from handyhelpers.views import htmx
 
@@ -25,10 +24,10 @@ urlpatterns = [
     path('show_all_list_view', action.ShowAllListView.as_view(), name='show_all_list_view'),
 
     # ajax views
-    path('host_interface_stats/', ajax.GetHostNetworkStats.as_view(), name='host_interface_stats'),
-    path('host_process_details/', ajax.GetHostProcessDetails.as_view(), name='host_process_details'),
-    path('host_partition_usage/', ajax.GetHostParitionUsage.as_view(), name='host_partition_usage'),
-    path('get_host_cpu_stats/', ajax.GetHostCpuStats.as_view(), name='get_host_cpu_stats'),
+    path('host_interface_stats/', host.GetHostNetworkStats.as_view(), name='host_interface_stats'),
+    path('host_process_details/', host.GetHostProcessDetails.as_view(), name='host_process_details'),
+    path('host_partition_usage/', host.GetHostParitionUsage.as_view(), name='host_partition_usage'),
+    path('get_host_cpu_stats/', host.GetHostCpuStats.as_view(), name='get_host_cpu_stats'),
 
     # htmx views
     path('get_host_processes/', htmx.GetHostProcesses.as_view(), name='get_host_processes'),
