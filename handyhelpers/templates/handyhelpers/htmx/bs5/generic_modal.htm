@@ -1,0 +1,8 @@
+<div id="modal_wrapper" hx-on="htmx:afterSettle: open_modal()"></div>
+
+<script language="Javascript" id="open_modal_wrapper">
+    function open_modal() {
+        const _modal = new bootstrap.Modal(document.getElementById("generic_modal"))
+        _modal.show()
+    }
+</script>
