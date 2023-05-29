@@ -63,10 +63,10 @@ hover.css@^2.3.2:
   resolved "https://registry.yarnpkg.com/hover.css/-/hover.css-2.3.2.tgz#f07193d9c7409d4e395134d3b2215b99eb55e0d3"
   integrity sha512-eXch700vfcoSSAcEcU154lTHBYQy2cjGT+yJZtkKWxASBBiPVkqYOdMAa0sz4cYj2YIrl1FRE2s5O4EgOaIpig==
 
-htmx.org@^1.8.4:
-  version "1.8.4"
-  resolved "https://registry.yarnpkg.com/htmx.org/-/htmx.org-1.8.4.tgz#d8f480d8a2010969a3f336696e1162ef58ec0b70"
-  integrity sha512-T+1Z9RAZpJ1Ia6cvpV67lstvJ5UQkNpUAulpyfxUCHYbzYcaUVQC/PrcIdPNRU9e1ii6Ec7EEw7GnenavOZB6g==
+htmx.org@^1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/htmx.org/-/htmx.org-1.9.2.tgz#8850ed8895108eee46c2b4c2f70beb524fe54f3b"
+  integrity sha512-ZGbucKcalQyXdGUl+4Zt3xdRDPmNy70yNhMyDG1eDYUm/ImxmSo2rhIBDa53XitrAVhA+/CGgry+wJ1SO77wrA==
 
 jquery@^3.6.1:
   version "3.6.1"

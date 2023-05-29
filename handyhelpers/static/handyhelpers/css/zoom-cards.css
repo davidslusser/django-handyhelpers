@@ -71,7 +71,6 @@
     margin: 1rem;
     border: 1px solid var(--secondary);
     text-align: center;
-    background-color: var(--light);
 }
 
 .zoom-admin-card .icon {
@@ -99,7 +98,6 @@
     margin: 1rem;
     border: 1px solid var(--secondary);
     text-align: center;
-    background-color: var(--light);
 }
 
 .zoom-summary-card .title {

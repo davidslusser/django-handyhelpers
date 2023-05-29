@@ -1,0 +1,21 @@
+<div class="modal fade" id="generic_modal" tabindex="-1" aria-labelledby="generic_modal_label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable {{ modal_size }} ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="generic_modal_label">{% if modal_header %}{{ modal_header|safe }}{% endif %}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                {{ modal_body|safe }}
+            </div>
+            <div class="modal-footer">
+                {% if modal_button_close %}
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ modal_button_close }}</button>
+                {% endif %}
+                {% if modal_button_submit %}
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ modal_button_submit }}</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div> 
