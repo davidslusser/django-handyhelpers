@@ -17,18 +17,18 @@
     margin: .25rem .5rem .25rem .5rem;
     font-size: 2.75rem;
     /*font-weight: bold;*/
-    color: var(--primary);
+    color: var(--bs-primary);
 }
 
 .zoom-index-card .title {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--primary);
+    color: var(--bs-primary);
     margin-bottom: 1rem;
 }
 
 .zoom-index-card .description {
-    color: var(--secondary);
+    color: var(--bs-secondary);
 }
 
 
@@ -46,12 +46,12 @@
     margin: .25rem .5rem .25rem .5rem;
     padding: .25rem;
     font-size: 2.5rem;
-    color: var(--primary);
+    color: var(--bs-primary);
 }
 
 .zoom-admin-card .title {
     display: table-cell;
-    color: var(--secondary);
+    color: var(--bs-secondary);
     height: 4rem;
     width: 9.5rem;
     vertical-align: middle;
@@ -78,12 +78,12 @@
     padding: .25rem;
     font-size: 3.75rem;
     font-weight: bold;
-    color: var(--primary);
+    color: var(--bs-primary);
 }
 
 .zoom-summary-card .description {
     display: table-cell;
-    color: var(--secondary);
+    color: var(--bs-secondary);
     font-size: 1.25rem;
     font-weight: bold;
     height: 3rem;
@@ -108,5 +108,5 @@
     margin: .25rem .5rem .25rem .5rem;
     padding: .25rem;
     font-size: 2rem;
-    color: var(--primary);
+    color: var(--bs-primary);
 }
