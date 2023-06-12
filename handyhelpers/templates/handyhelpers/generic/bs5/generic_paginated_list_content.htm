@@ -3,7 +3,7 @@
 <div class="container-fluid animated fadeIn mb-5">
     <h1><span class="text-primary"><b>{{ title }}:</b></span> {% if subtitle %}<span class="text-secondary"><small><small>{{ subtitle }}</small></small></span>{% endif %}</h1>
 
-    <div class="text-right">
+    <div class="text-end">
         {# To include a create form, exposed via modal, include create_form (dict) in the context of your view. The create_from must include modal_name and link_title fields #}
         {% if create_form %}
         {% if allow_create_groups and request.user|in_any_group:allow_create_groups %}
@@ -16,12 +16,12 @@
 
         {# To include a filter form, exposed via modal, include filter_form (dict) in the context of your view. The filter_from must include modal_name and link_title fields #}
         {% if filter_form %}
-        <a href="#" data-bs-toggle="modal" data-bs-target="#modal_{{ filter_form.modal_name }}" title="{{ filter_form.tool_tip|default_if_none:'filter' }}" class="ml-2">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#modal_{{ filter_form.modal_name }}" title="{{ filter_form.tool_tip|default_if_none:'filter' }}" class="ms-2">
             <i class="fas fa-filter"></i>
             {% if filter_form.link_title %} {{ filter_form.link_title }} {% endif %}
         </a>
             {% if filter_form.undo and request.META.QUERY_STRING %}
-            <a href="{% url 'handyhelpers:show_all_list_view' %}" title="clear filters" class="ml-2">
+            <a href="{% url 'handyhelpers:show_all_list_view' %}" title="clear filters" class="ms-2">
                 <i class="fas fa-undo-alt"></i>
             </a>
             {% endif %}
@@ -32,7 +32,7 @@
 </div>
 
 {% if page_obj.has_other_pages %}
-<ul class="pagination justify-content-end mr-3">
+<ul class="pagination justify-content-end me-3">
     {% if page_obj.has_previous %}
     <li class="page-item"><a href="?page={{ 1|get_filtered_pagination_link:request.META.QUERY_STRING  }}" class="page-link"><i class="fas fa-fast-backward"></i></a></li>
     <li class="page-item"><a href="?page={{ page_obj.previous_page_number|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link"><i class="fas fa-step-backward"></i></a></li>
@@ -62,7 +62,7 @@
     {% endif %}
 </ul>
 {% if include_total %}
-<div class="small text-secondary font-italic text-right mr-4">{{ page_obj.paginator.count }} total objects</div>
+<div class="small text-secondary font-italic text-end me-4">{{ page_obj.paginator.count }} total objects</div>
 {% endif %}
 {% endif %}
 
