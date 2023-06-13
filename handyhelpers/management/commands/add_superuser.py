@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.db.utils import IntegrityError
 
 
@@ -15,12 +15,14 @@ class Command(BaseCommand):
         parser.add_argument('--username', type=str, help='name for new superuser')
         parser.add_argument('--password', type=str, help='password for new superuser')
         parser.add_argument('--email', type=str, default=None, help='email address for new superuser')
+        parser.add_argument('--group', type=str, default=None, help='group this superuser account will be a member of')
         parser.add_argument('--override', action='store_true', required=False,
                             help='if superuser already exists, delete and create new superuser')
 
     def handle(self, *args, **options):
         """ command entry point """
         self.opts = options
+        new_user = None
 
         # username is provided, but password was not
         if self.opts['username'] and not self.opts['password']:
@@ -63,3 +65,11 @@ class Command(BaseCommand):
                 print(f'New superuser `{new_user}` created!')
             except IntegrityError:
                 print(f'''A superuser with the username `{self.opts['username']}` already exists''')
+
+        # add and join group
+        if self.opts['group']:
+            group, is_group_new = Group.objects.get_or_create(name=self.opts['group'])
+            if current_user:
+                group.user_set.add(current_user)
+            elif new_user:
+                group.user_set.add(new_user)
