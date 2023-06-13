@@ -26,7 +26,7 @@
 
             <!-- unprotected items -->
             {% for item in item_list %}
-                <a href="{{ item.url }}" class="zoom-card zoom-index-card">
+                <a href="{{ item.url }}" class="card zoom-card zoom-index-card">
                     <div class="icon"><i class="{{ item.icon }}"></i></div>
                     <div class="title">{{ item.title }}</div>
                     <div class="description">{{ item.description }}</div>
@@ -36,7 +36,7 @@
             <!-- protected items -->
             {% if request.user|has_group:protected_group_name %}
                 {% for item in protected_item_list %}
-                    <a href="{{ item.url }}" class="zoom-card zoom-index-card">
+                    <a href="{{ item.url }}" class="card zoom-card zoom-index-card">
                         <div class="icon"><i class="{{ item.icon }}"></i></div>
                         <div class="title">{{ item.title }}</div>
                         <div class="description">{{ item.description }}</div>
