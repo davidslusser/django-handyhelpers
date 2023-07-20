@@ -11,7 +11,7 @@ $.fn.bootstrapTable.locales['es-ES'] = $.fn.bootstrapTable.locales['es'] = {
     return 'Imprimir'
   },
   formatLoadingMessage () {
-    return 'Por favor espere'
+    return 'Cargando, por favor espere'
   },
   formatRecordsPerPage (pageNumber) {
     return `${pageNumber} resultados por página`
@@ -100,4 +100,4 @@ $.fn.bootstrapTable.locales['es-ES'] = $.fn.bootstrapTable.locales['es'] = {
   }
 }
 
-$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['es-ES'])
+Object.assign($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['es-ES'])

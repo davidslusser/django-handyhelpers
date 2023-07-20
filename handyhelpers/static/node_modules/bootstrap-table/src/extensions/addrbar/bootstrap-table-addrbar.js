@@ -86,7 +86,7 @@ function _updateHistoryState (table, _prefix) {
   window.history.pushState({}, '', _buildUrl(params))
 }
 
-$.extend($.fn.bootstrapTable.defaults, {
+Object.assign($.fn.bootstrapTable.defaults, {
   addrbar: false,
   addrPrefix: ''
 })
@@ -130,6 +130,11 @@ $.BootstrapTable = class extends $.BootstrapTable {
       }
     }
     super.init(...args)
+  }
+
+  resetSearch (text) {
+    super.resetSearch(text)
+    this.options.searchText = text || ''
   }
 
   /*

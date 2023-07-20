@@ -63,6 +63,7 @@ export interface BootstrapTableColumn {
   checkbox?: boolean;
   halign?: any;
   switchable?: boolean;
+  switchableLabel?: string;
   class?: any;
   escape?: boolean;
   events?: BootstrapTableEvents;
@@ -162,6 +163,7 @@ export interface BootstrapTableOptions {
   pageSize?: number;
   footerField?: string;
   showFullscreen?: boolean;
+  sortResetPage?: boolean;
   sortStable?: boolean;
   searchAlign?: string;
   ajax?: (params: BootstrapAjaxParams) => any;
@@ -188,7 +190,7 @@ export interface BootstrapTableOptions {
   cache?: boolean;
   method?: string;
   onColumnSwitch?: (field: string, checked: boolean) => boolean | void;
-  searchSelector?: boolean;
+  searchSelector?: boolean | string;
   strictSearch?: boolean;
   multipleSelectRow?: boolean;
   onLoadError?: (status: string, jqXHR: JQuery.jqXHR) => boolean | void;

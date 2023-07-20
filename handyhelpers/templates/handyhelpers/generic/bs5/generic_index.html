@@ -1,0 +1,50 @@
+{% extends base_template|default:"handyhelpers/handyhelpers_base.htm" %}
+{% load static %}
+{% load handyhelper_tags %}
+
+{% block local_head %}
+    <link href="{% static 'handyhelpers/css/handyhelper-cards.css' %}" rel="stylesheet">
+    <link href="{% static 'handyhelpers/css/zoom-groups.css' %}" rel="stylesheet">
+{% endblock local_head %}
+
+{% block content %}
+    <!-- Page header -->
+    <section class="animated fadeIn">
+        <header class="m-5">
+            <div class="headline text-center">
+                <div class="container">
+                    <div class="h1 text-primary fw-bold mb-3">{{ title|safe }}</div>
+                    <div class="h5 text-secondary">{{ subtitle|safe }}</div>
+                </div>
+            </div>
+        </header>
+    </section>
+
+    <!-- Page Content -->
+    <section class="animated fadeIn" style="animation-delay: .25s;">
+        <div class="zoom-group-flex-container">
+
+            <!-- unprotected items -->
+            {% for item in item_list %}
+                <a href="{{ item.url }}" class="card zoom-card zoom-index-card">
+                    <div class="icon"><i class="{{ item.icon }}"></i></div>
+                    <div class="title">{{ item.title }}</div>
+                    <div class="description">{{ item.description }}</div>
+                </a>
+            {% endfor %}
+
+            <!-- protected items -->
+            {% if request.user|has_group:protected_group_name %}
+                {% for item in protected_item_list %}
+                    <a href="{{ item.url }}" class="card zoom-card zoom-index-card">
+                        <div class="icon"><i class="{{ item.icon }}"></i></div>
+                        <div class="title">{{ item.title }}</div>
+                        <div class="description">{{ item.description }}</div>
+                    </a>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+    </section>
+
+{% endblock %}

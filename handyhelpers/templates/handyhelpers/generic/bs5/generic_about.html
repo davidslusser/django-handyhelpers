@@ -1,0 +1,80 @@
+{% extends base_template|default:"userextensions/userextensions_base.htm" %}
+{% load static %}
+
+{% block content %}
+    <div class="container-fluid mb-4 animated fadeIn">
+        <h1><span class="text-primary"><b>{{ title }}: </b></span><span class="text-secondary"><small>{{ subtitle }}</small></span></h1><br/>
+    </div><br/>
+
+    <div class="container mb-4 animated fadeIn" style="animation-delay: .25s;">
+        <div class="row">
+            <div class="col-sm-2"><i class="far fa-address-card fa-5x text-primary"></i></div>
+            <div class="col-sm-10">
+
+                {% if version %}
+                <!-- version -->
+                <div class="row border-bottom border-light p-2">
+                    <div class="col-sm-4">
+                        <span class="text-primary"><b>Version:</b></span>
+                    </div>
+                    <div class="col-sm-8">
+                        {{ version }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if details %}
+                    <!-- details -->
+                    <div class="row border-bottom border-light p-2">
+                        <div class="col-sm-4">
+                            <span class="text-primary"><b>Details:</b></span>
+                        </div>
+                        <div class="col-sm-8">
+                            {{ details }}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if source %}
+                    <!-- source -->
+                    <div class="row border-bottom border-light p-2">
+                        <div class="col-sm-4">
+                            <span class="text-primary"><b>Source Code:</b></span>
+                        </div>
+                        <div class="col-sm-8">
+                            {{ source }}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if contact %}
+                    <!-- contact -->
+                    <div class="row border-bottom border-light p-2">
+                        <div class="col-sm-4">
+                            <span class="text-primary"><b>Contact Info:</b></span>
+                        </div>
+                        <div class="col-sm-8">
+                            {{ contact }}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if links %}
+                    <!-- links -->
+                    <div class="row border-bottom border-light p-2">
+                        <div class="col-sm-4">
+                            <span class="text-primary"><b>Links:</b></span>
+                        </div>
+                        <div class="col-sm-8">
+                            {% for link in links %}
+                            <a href="{{ link.value }}" target="_blank">{{ link.key }}</a><br/>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
