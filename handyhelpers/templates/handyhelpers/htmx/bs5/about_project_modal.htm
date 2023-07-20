@@ -1,0 +1,55 @@
+<div class="modal fade" id="generic_modal" tabindex="-1" aria-labelledby="generic_modal_label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable {{ modal_size }} ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="generic_modal_label">About {% if project_name %}{{ project_name }}{% endif %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% if data.version %}
+                <div class="row m-2">
+                    <div class="col-4 col-md-3 col-lg-2 fw-bold">Version:</div>
+                    <div class="col-8 col-md-9 col-lg-10">{{ data.version }}</div>
+                </div>
+                {% endif %}
+                {% if data.details %}
+                <div class="row m-2">
+                    <div class="col-4 col-md-3 col-lg-2 fw-bold">Details:</div>
+                    <div class="col-8 col-md-9 col-lg-10">{{ data.details }}</div>
+                </div>
+                {% endif %}
+                {% if data.source %}
+                <div class="row m-2">
+                    <div class="col-4 col-md-3 col-lg-2 fw-bold">Source:</div>
+                    <div class="col-8 col-md-9 col-lg-10"><a href="{{ data.source }}" target="_blank">{{ data.source }}</a></div>
+                </div>
+                {% endif %}
+                {% if data.contact %}
+                <div class="row m-2">
+                    <div class="col-4 col-md-3 col-lg-2 fw-bold">Contact:</div>
+                    <div class="col-8 col-md-9 col-lg-10">{{ data.contact }}</div>
+                </div>
+                {% endif %}
+                {% if data.links %}
+                <div class="row m-2">
+                    <div class="col-4 col-md-3 col-lg-2 fw-bold">Links:</div>
+                    <div class="col-8 col-md-9 col-lg-10">
+                        {% for link in data.links %}
+                        <a href="{{ link }}" target="_blank">{{ link }}</a><br/>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                {% for key, value in extra_data.items %}
+                <div class="row m-2">
+                    <div class="col-4 col-md-3 col-lg-2 fw-bold">{{ key }}:</div>
+                    <div class="col-8 col-md-9 col-lg-10">{{ value|safe }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -8,14 +8,14 @@ from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin
 
 class HandyHelperGenericBaseView(View):
     """ Generic view used to set the base_template variable. This extends django.view.generic.View and will use the base
-     template defined in the BASE_TEMPLATE settings variable or use handyhelpers/handyhelpers_base.htm if not provided.
+     template defined in the BASE_TEMPLATE settings variable or use handyhelpers/handyhelpers_base_bs5.htm if not provided.
 
     class parameters:
         base_template - base template used for rendering page; defaults to: handyhelpers_base.htm
         args          - additional args to pass into the template
         kwargs        - additional kwargs to pass into the template
     """
-    base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
+    base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base_bs5.htm')
     args = None
     kwargs = None
 
@@ -43,7 +43,7 @@ class HandyHelperGenericBaseItemizedView(HandyHelperGenericBaseView):
 class HandyHelperGenericBaseListView(FilterByQueryParamsMixin, ListView):
     """ Generic list view used to set the base_template, template, title, table, and modal variables. This extends
     django.view.generic.ListView and will use the base template defined in the BASE_TEMPLATE settings variable or use
-    handyhelpers/handyhelpers_base.htm if not provided. This view also includes the
+    handyhelpers/handyhelpers_base_bs5.htm if not provided. This view also includes the
     handyhelpers.mixins.view_mixins.FilterByQueryParamsMixin mixin to allow filtering by query parameters.
 
     class parameters:
@@ -55,7 +55,7 @@ class HandyHelperGenericBaseListView(FilterByQueryParamsMixin, ListView):
         add_static    - additional static file to include on the template
         add_template  - additional template to include on the template
     """
-    base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
+    base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base_bs5.htm')
     template_name = 'handyhelpers/generic/bs5/generic_list.html'
     title = None
     table = None
@@ -79,7 +79,7 @@ class HandyHelperIndexView(HandyHelperGenericBaseItemizedView):
         protected_item_list  - list of items/action only visible to members of protected_group_name
         protected_group_name - name of group to show protected_item_list items to
     """
-    template_name = 'handyhelpers/generic/generic_index.html'
+    template_name = 'handyhelpers/generic/bs5/generic_index.html'
 
     def get(self, request):
         context = dict(base_template=self.base_template, title=self.title, subtitle=self.subtitle,
@@ -96,7 +96,7 @@ class HandyHelperActionView(HandyHelperGenericBaseItemizedView):
         base_template        - base template used for rendering page; defaults to: handyhelpers_base.htm
         args                 - additional args to pass into the template
         kwargs               - additional kwargs to pass into the template
-        template_name        - template used when rendering page; defaults to: handyhelpers/generic/generic_action.html
+        template_name        - template used when rendering page; defaults to: handyhelpers/generic/bs5/generic_action.html
         title                - page title to use; will display in a H1 element
         subtitle             - subtitle to use; will display in a H5 element (None if not provided)
         item_list            - list of items/actions to display (one per card)
@@ -104,7 +104,7 @@ class HandyHelperActionView(HandyHelperGenericBaseItemizedView):
         protected_group_name - name of group to show protected_item_list items to
         form_list            - list of django forms used in page
     """
-    template_name = 'handyhelpers/generic/generic_action.html'
+    template_name = 'handyhelpers/generic/bs5/generic_action.html'
     form_list = None
 
     def get(self, request):
@@ -131,7 +131,7 @@ class HandyHelperAboutView(HandyHelperGenericBaseView):
         contact       - any desired contact information (None if not provided)
         links         - list of dictionary containing links; ex. [{'some reference': 'www.somewebsite.com}, ...]
     """
-    template_name = 'handyhelpers/generic/generic_about.html'
+    template_name = 'handyhelpers/generic/bs5/generic_about.html'
     title = 'About'
     subtitle = None
     version = None

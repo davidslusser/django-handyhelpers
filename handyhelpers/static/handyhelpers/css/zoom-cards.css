@@ -32,7 +32,7 @@
 .zoom-icon-card, .zoom-index-card, .zoom-admin-card .zoom-summary-card {
     margin: .75rem;
     padding: .25rem;
-    background-color: var(--light);
+    background-color: var(--bs-light);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
@@ -48,18 +48,18 @@
     margin: .25rem .5rem .25rem .5rem;
     font-size: 2.75rem;
     font-weight: bold;
-    color: var(--primary);
+    color: var(--bs-primary);
 }
 
 .zoom-index-card .title {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--primary);
+    color: var(--bs-primary);
     margin-bottom: 1rem;
 }
 
 .zoom-index-card .description {
-    color: var(--secondary);
+    color: var(--bs-secondary);
 }
 
 
@@ -69,7 +69,7 @@
     width: 9.5rem;
     height: 9rem;
     margin: 1rem;
-    border: 1px solid var(--secondary);
+    border: 1px solid var(--bs-secondary);
     text-align: center;
 }
 
@@ -77,12 +77,12 @@
     margin: .25rem .5rem .25rem .5rem;
     padding: .25rem;
     font-size: 2.5rem;
-    color: var(--primary);
+    color: var(--bs-primary);
 }
 
 .zoom-admin-card .title {
     display: table-cell;
-    color: var(--secondary);
+    color: var(--bs-secondary);
     height: 4rem;
     width: 9.5rem;
     vertical-align: middle;
@@ -96,7 +96,7 @@
     width: 10rem;
     height: 10rem;
     margin: 1rem;
-    border: 1px solid var(--secondary);
+    border: 1px solid var(--bs-secondary);
     text-align: center;
 }
 
@@ -105,12 +105,12 @@
     padding: .25rem;
     font-size: 3.75rem;
     font-weight: bold;
-    color: var(--primary);
+    color: var(--bs-primary);
 }
 
 .zoom-summary-card .description {
     display: table-cell;
-    color: var(--secondary);
+    color: var(--bs-secondary);
     font-size: 1.25rem;
     font-weight: bold;
     height: 3rem;
@@ -135,7 +135,7 @@
     margin: .25rem .5rem .25rem .5rem;
     padding: .25rem;
     font-size: 2rem;
-    color: var(--primary);
+    color: var(--bs-primary);
 }
 
 
