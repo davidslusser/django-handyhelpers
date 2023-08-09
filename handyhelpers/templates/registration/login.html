@@ -1,33 +1,36 @@
-{% extends base_template|default:"handyhelpers/handyhelpers_base.htm" %}
+{% extends BASE_TEMPLATE|default:"handyhelpers/handyhelpers_base.htm" %}
+{% load static %}
 
-{% block local_head %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" integrity="sha256-HtCCUh9Hkh//8U1OwcbD8epVEUdBvuI8wj1KtqMhNkI=" crossorigin="anonymous" />
-{% endblock %}
 
 {% block content %}
-    <div class="container animated fadeIn mb-5">
-        <h1 class="text-center"><b>Welcome!</b></h1>
-        <h5 class="text-secondary text-center">Please sign in to continue.</h5>
-        <br/>
+    <div class="container animated fadeIn my-5">
+        <div class="h1 text-center text-primary fw-bold mb-3">
+            {% if PROJECT_NAME %}
+            Welcome to {{ PROJECT_NAME|title }}!
+            {% else %}
+            Welcome !
+            {% endif %}
+        </div>
+        <div class="h5 text-secondary text-center mb-4">Please sign in to continue.</div>
         <div class="row align-items-center justify-content-center">
-            <div class="col-center-block col-sm-6" align="center">
+            <div class="col-center-block col-sm-6">
                 {% if form.errors %}
-                    <div class="alert alert-danger">
-                        <button type="button" class="close" data-dismiss="alert">×</button>
-                        <p>Your username and password didn't match or invalid username provided. Please try again.</p>
-                    </div>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error: </strong>Your username and password didn't match or invalid username provided. Please try again.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>                    
                 {% endif %}
 
                 {% if next %}
                     {% if user.is_authenticated %}
                         <div class="alert alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <button type="button" class="close" data-bs-dismiss="alert">x</button>
                             <p>Your account doesn't have access to this page. To proceed,
                                 please login with an account that has access.</p>
                         </div>
                     {% else %}
                         <div class="alert alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <button type="button" class="close" data-bs-dismiss="alert">x</button>
                             <p>Please login to see this page.</p>
                         </div>
                     {% endif %}
@@ -38,29 +41,22 @@
                     <input type="hidden" name="next" value="{{ request.GET.next }}" />
                     <br>
 
-                    <div class="form-group input-group">
+                    <div class="form-group input-group mb-3">
+                        <span class="input-group-text text-primary"><i class="fa fa-user"></i></span>
+                        <input id="id_username" maxlength="254" name="username" type="text" class="form-control" style="border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;" placeholder="User Name" required autofocus>
                         <label for="inputUser" class="sr-only">User</label>
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"> <i class="fa fa-user"></i> </span>
-                        </div>
-                        <input id="id_username" maxlength="254" name="username" type="text" class="form-control" placeholder="User Name" required autofocus>
                     </div>
-                    <div class="form-group input-group">
+                    <div class="form-group input-group mb-3">
+                        <span class="input-group-text text-primary"><i class="fa fa-lock"></i></span>
+                        <input id="id_password" name="password" type="password" class="form-control" style="border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;" placeholder="Password" required>
                         <label for="inputPassword" class="sr-only">Password</label>
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-                        </div>
-                        <input id="id_password" name="password" type="password" class="form-control" placeholder="Password" required>
                     </div>
                     <br>
-                    <button class="btn btn-lg btn-info btn-block" type="submit">Login</button>
+                    <div class=" text-end">
+                        <button class="w-100 btn btn-lg btn-primary" type="submit">Log in</button>
+                    </div>
                 </form>
             </div>
-        </div>
-    </div>
-    <div class="container animated fadeIn">
-        <div class="row align-items-center justify-content-center">
-            <a href="{% url 'register' %}">Register new user</a>
         </div>
     </div>
 
