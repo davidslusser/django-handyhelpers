@@ -71,10 +71,6 @@ class AboutProjectModalView(BuildBootstrapModalView):
         PROJECT_VERSION = "1.2.3"
         PROJECT_SOURCE = "https://github.com/myproject"
     """
-    PROJECT_DESCRIPTION = getattr(settings, "PROJECT_DESCRIPTION", None)
-    PROJECT_NAME = getattr(settings, "PROJECT_NAME", None)
-    PROJECT_SOURCE = getattr(settings, "PROJECT_SOURCE", None)
-    PROJECT_VERSION = getattr(settings, "PROJECT_VERSION", None)
     data = {
         "project_description": getattr(settings, "PROJECT_DESCRIPTION", None), 
         "project_name": getattr(settings, "PROJECT_NAME", None), 
