@@ -1,8 +1,8 @@
-
 from django.conf import settings
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render
+from django.utils import timezone
 from django.views.generic import View
 
 
@@ -63,17 +63,23 @@ class BuildBootstrapModalView(GenericHtmxView):
 
 
 class AboutProjectModalView(BuildBootstrapModalView):
-    hh_about = getattr(settings, "HH_ABOUT", None)
-    if hh_about:
-        data = {
-            "project_name": hh_about.get("project_name", None), 
-            "version": hh_about.get("version", None), 
-            "details": hh_about.get("details", None), 
-            "source": hh_about.get("source", None), 
-            "contact": hh_about.get("contact", None), 
-            "links": hh_about.get("links", None), 
-            }
-    extra_data = {}
-    modal_size = "modal-lg"
+    """A htmx view used to show a Bootstrap 5 modal showing project specific informaiton such as version. Data is pulled from the settings.py file. 
+    Example settings:
+    
+        PROJECT_NAME = "MyProject"
+        PROJECT_DESCRIPTION = "A very informative description of my project"
+        PROJECT_VERSION = "1.2.3"
+        PROJECT_SOURCE = "https://github.com/myproject"
+    """
+    data = {
+        "project_description": getattr(settings, "PROJECT_DESCRIPTION", None), 
+        "project_name": getattr(settings, "PROJECT_NAME", None), 
+        "project_source": getattr(settings, "PROJECT_SOURCE", None), 
+        "project_version": getattr(settings, "PROJECT_VERSION", None), 
+        }
     template_name = "handyhelpers/htmx/bs5/about_project_modal.htm"
-    modal_title = None
+
+    def get(self, request, *args, **kwargs):
+        if getattr(settings, "HH_STARTTIME", None):
+            self.data["uptime"] = f"{timezone.now() - settings.HH_STARTTIME}"
+        return super().get(request, *args, **kwargs)
