@@ -1,8 +1,8 @@
-
 from django.conf import settings
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render
+from django.utils import timezone
 from django.views.generic import View
 
 
@@ -82,3 +82,8 @@ class AboutProjectModalView(BuildBootstrapModalView):
         "project_version": getattr(settings, "PROJECT_VERSION", None), 
         }
     template_name = "handyhelpers/htmx/bs5/about_project_modal.htm"
+
+    def get(self, request, *args, **kwargs):
+        if getattr(settings, "HH_STARTTIME", None):
+            self.data["uptime"] = f"{timezone.now() - settings.HH_STARTTIME}"
+        return super().get(request, *args, **kwargs)

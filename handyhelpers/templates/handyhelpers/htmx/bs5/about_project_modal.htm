@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-scrollable {{ modal_size }}">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="generic_modal_label">About {% if data.project_name %}{{ data.project_name }}{% endif %}</h5>
+                <h5 class="modal-title fw-bold" id="generic_modal_label">About {% if data.project_name %}{{ data.project_name }}{% endif %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -12,6 +12,11 @@
                         {{ data.project_description|safe }}
                     </div>
                     {% endif %}
+                    {% if data.uptime %}
+                    <div class="mb-4">
+                        <span class="fw-bold">service up-time:</span><br/> {{ data.uptime }}
+                    </div>
+                    {% endif %}             
                     {% if data.project_version %}
                     <div class="mb-4">
                         <span class="fw-bold">version:</span><br/> {{ data.project_version }}
