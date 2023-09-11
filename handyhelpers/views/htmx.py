@@ -63,7 +63,7 @@ class BuildBootstrapModalView(GenericHtmxView):
 
 
 class AboutProjectModalView(BuildBootstrapModalView):
-    """A htmx view used to show a Bootstrap 5 modal showing project specific informaiton such as version. Data is pulled from the settings.py file. 
+    """A htmx view used to show a Bootstrap 5 modal showing project specific information such as version. Data is pulled from the settings.py file.
     Example settings:
     
         PROJECT_NAME = "MyProject"
