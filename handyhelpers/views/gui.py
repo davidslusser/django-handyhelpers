@@ -69,6 +69,7 @@ class HandyHelperGenericBaseListView(FilterByQueryParamsMixin, ListView):
     modals = None
     add_static = None
     add_template = None
+    extra_controls = {}
     args = None
     kwargs = None
 
@@ -692,6 +693,7 @@ class HandyHelperListView(HandyHelperGenericBaseListView):
             add_static=self.add_static,
             add_template=self.add_template,
             allow_create_groups=self.allow_create_groups,
+            extra_controls=self.extra_controls,
             args=self.args,
             kwargs=self.kwargs,
         )
