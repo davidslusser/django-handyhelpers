@@ -1,0 +1,36 @@
+{% load handyhelper_tags %}
+
+{% if page_obj.has_other_pages %}
+<ul class="pagination justify-content-end my-2">
+    {% if page_obj.has_previous %}
+    <li class="page-item"><a href="?page={{ 1|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link"><i class="fas fa-fast-backward"></i></a></li>
+    <li class="page-item"><a href="?page={{ page_obj.previous_page_number|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link"><i class="fas fa-step-backward"></i></a></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link"><i class="fas fa-fast-backward"></i></span></li>
+    <li class="page-item disabled"><span class="page-link"><i class="fas fa-step-backward"></i></span></li>
+    {% endif %}
+
+    {% for page_number in page_obj.adjusted_elided_pages %}
+        {% if page_number == page_obj.paginator.ELLIPSIS %}
+    <li class="page-item disabled"><span class="page-link">{{ page_obj.paginator.ELLIPSIS }}</span></li>
+        {% else %}
+            {% if page_obj.number == page_number %}
+    <li class="page-item disabled"><a href="?page={{ page_number|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link">{{ page_number }}</a></li>
+            {% else %}
+    <li class="page-item"><a href="?page={{ page_number|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link">{{ page_number }}</a></li>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <li class="page-item" ><a href="?page={{ page_obj.next_page_number|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link"><i class="fas fa-step-forward"></i></a></li>
+    <li class="page-item"><a href="?page={{ page_obj.paginator.num_pages|get_filtered_pagination_link:request.META.QUERY_STRING }}" class="page-link"><i class="fas fa-fast-forward"></i></a></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link"><i class="fas fa-step-forward"></i></span></li>
+    <li class="page-item disabled"><span class="page-link"><i class="fas fa-fast-forward"></i></span></li>
+    {% endif %}
+</ul>
+{% if include_total %}
+<div class="small text-secondary font-italic text-end">{{ page_obj.paginator.count }} total</div>
+{% endif %}
+{% endif %}

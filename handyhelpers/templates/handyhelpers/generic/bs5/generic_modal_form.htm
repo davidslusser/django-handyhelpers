@@ -3,7 +3,7 @@
     <div class="modal-dialog {% if form_data.modal_scrollable %}modal-dialog-scrollable{% endif %} {% if form_data.modal_size %}{{ form_data.modal_size }}{% endif %}" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modal_{{ form_data.modal_name }}_label">{{ form_data.title|safe }}</h4>
+                <h4 class="modal-title text-primary" id="modal_{{ form_data.modal_name }}_label">{{ form_data.title|safe }}</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="id_modal_{{ form_data.modal_name }}_form_body">
@@ -13,10 +13,9 @@
                     {% with form_data.form as form %}
                         {% include 'handyhelpers/generic/bs5/generic_form.htm' %}
                     {% endwith %}
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                    <!-- Submit Button-->
-                    <button type="submit" class="btn btn-primary" id="id_{{ form_data.modal_name }}_submit">{{ form_data.action }}</button>
+                <div class="text-end mt-4 mx-2 my-3">
+                    <button type="button" class="me-1 btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="ms-1 btn btn-primary" id="id_{{ form_data.modal_name }}_submit">{{ form_data.action }}</button>
                 </div>
                 </form>
             </div>

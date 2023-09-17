@@ -8,8 +8,8 @@
     </div>
 {% endif %}
 {% for field in form.visible_fields %}
-    <div class="form-group">
-        <div class="col-sm-12">
+    <div class="form-group mx-2 mt-2 mb-3">
+        <div class="col-sm-12 fw-bold text-primary">
             <span id="id_{{ field.name }}_required" class="text-danger">{% if field.field.required %}*{% endif %}</span>{{ field.label_tag }}
         </div>
         <div class="col-sm-12">
