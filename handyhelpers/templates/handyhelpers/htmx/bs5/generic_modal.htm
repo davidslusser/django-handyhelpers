@@ -1,8 +1,4 @@
-<div id="modal_wrapper" hx-on="htmx:afterSettle: open_modal()"></div>
-
-<script language="Javascript" id="open_modal_wrapper">
-    function open_modal() {
-        const _modal = new bootstrap.Modal(document.getElementById("generic_modal"))
-        _modal.show()
-    }
-</script>
+<div id="modal_wrapper" class="modal fade" style="display: none" aria-hidden="false" tabindex="-1">
+    <div class="modal-dialog modal-lg" role="document">
+    </div>
+</div>

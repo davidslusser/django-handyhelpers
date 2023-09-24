@@ -1,0 +1,27 @@
+            <div class="text-center">
+                {% if data.project_description %}
+                <div class="mb-4">
+                    {{ data.project_description|safe }}
+                </div>
+                {% endif %}
+                {% if data.uptime %}
+                <div class="mb-4">
+                    <span class="fw-bold">service up-time:</span><br/> {{ data.uptime }}
+                </div>
+                {% endif %}             
+                {% if data.project_version %}
+                <div class="mb-4">
+                    <span class="fw-bold">version:</span><br/> {{ data.project_version }}
+                </div>
+                {% endif %}
+                {% if data.project_source %}
+                <div class="mb-4">
+                    <span class="fw-bold">source:</span><br/> <a href="{{ data.project_source }}" target="_blank" class="hvr-grow">{{ data.project_source }}</a>
+                </div>
+                {% endif %}
+                {% for key, value in extra_data.items %}
+                <div class="mb-4">
+                    <span class="fw-bold">{{ key }}</span><br/> {{ value|safe }}
+                </div>
+                {% endfor %}
+            </div>

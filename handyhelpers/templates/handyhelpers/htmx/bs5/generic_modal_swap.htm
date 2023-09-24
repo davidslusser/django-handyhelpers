@@ -1,21 +1,50 @@
-<div class="modal fade" id="generic_modal" tabindex="-1" aria-labelledby="generic_modal_label" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable {{ modal_size }} ">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="generic_modal_label">{% if modal_header %}{{ modal_header|safe }}{% endif %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                {{ modal_body|safe }}
-            </div>
-            <div class="modal-footer">
-                {% if modal_button_close %}
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ modal_button_close }}</button>
+<div class="modal-dialog modal-dialog-scrollable {{ modal_size }} ">
+    {% if form %}
+    {{ csrf_token }}
+    <form hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
+          class="modal-content">
+    {% else %}
+    <div class="modal-content">
+    {% endif %}
+        <div class="modal-header">
+            <div class="modal-title" id="generic_modal_label">
+                {% if modal_title %}
+                <span class="h5 text-primary fw-bold">
+                {{ modal_title|safe }}:
+                </span>
+                {% if modal_subtitle %}
+                <span class="h6 text-secondary fst-italic ms-2">
+                    {{ modal_subtitle|safe }}
+                </span>
                 {% endif %}
-                {% if modal_button_submit %}
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ modal_button_submit }}</button>
                 {% endif %}
             </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+        {% if form %}
+            {% if form_template %}
+                {% include form_template %}
+            {% else %}
+                {{ form.as_p }}
+            {% endif %}
+        {% else %}
+            {% if modal_body %}{{ modal_body|safe }}{% endif %}
+        {% endif %}                
+        </div>
+        <div class="modal-footer">
+            {% if modal_button_close %}
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ modal_button_close }}</button>
+            {% endif %}
+            {% if modal_button_submit %}
+            <button hx-post="{% if hx_post %}{{ hx_post }}{% else %}{{ request.path }}{% endif %}" 
+           
+            type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ modal_button_submit }}</button>
+            {% endif %}
+        </div>
+    {% if form %}
+    </form>
+    {% else %}
     </div>
-</div> 
+    {% endif %}
+</div>

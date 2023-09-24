@@ -32,8 +32,7 @@
     filter: blur(2px);
 }
 
-.zoom-group-flex-container:hover > *,
-.zoom-group-flex-container:focus-within > * {
+.zoom-group-flex-container:hover > * {
     opacity: 0.3;
     transform: scale(0.8);
     filter: blur(2px);
@@ -47,8 +46,7 @@
     filter: blur(0px);
 }
 
-.zoom-group-flex-container:hover > :hover,
-.zoom-group-flex-container:focus-within > :focus {
+.zoom-group-flex-container:hover > :hover {
     transform: scale(1.2);
     opacity: 1;
     outline: none;
