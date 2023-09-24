@@ -40,8 +40,8 @@ a {
 .zoom-admin-card {
     /* this card is intended to show an action and contains a centered icon (fontawesome or similar)
     and a short title */
-    width: 9.5rem;
-    height: 9rem;
+    /* width: 9.5rem;
+    height: 9rem; */
     margin: 1rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     text-align: center;
@@ -49,19 +49,19 @@ a {
 }
 
 .zoom-admin-card .icon {
-    margin: .25rem .5rem .25rem .5rem;
+    margin: .5rem .5rem .25rem .25rem;
     padding: .25rem;
-    font-size: 2.5rem;
+    font-size: 3rem;
     color: var(--bs-primary);
 }
 
 .zoom-admin-card .title {
     display: table-cell;
     color: var(--bs-secondary);
-    height: 4rem;
-    width: 9.5rem;
+    height: 3rem;
+    width: 11rem;
     vertical-align: middle;
-    padding: .25rem;
+    margin: .25rem;
 }
 
 .zoom-admin-card:hover, .zoom-admin-card:active {
