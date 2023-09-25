@@ -9,8 +9,8 @@
         <div class="modal-header">
             <div class="modal-title" id="generic_modal_label">
                 {% if modal_title %}
-                <span class="h5 text-primary fw-bold">
-                {{ modal_title|safe }}:
+                <span class="h4 text-primary fw-bold">
+                {{ modal_title|safe }}{% if modal_subtitle %}:{% endif %}
                 </span>
                 {% if modal_subtitle %}
                 <span class="h6 text-secondary fst-italic ms-2">
@@ -37,8 +37,7 @@
             <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ modal_button_close }}</button>
             {% endif %}
             {% if modal_button_submit %}
-            <button hx-post="{% if hx_post %}{{ hx_post }}{% else %}{{ request.path }}{% endif %}" 
-           
+            <button hx-post="{% if hx_post %}{{ hx_post }}{% else %}{{ request.path }}{% endif %}" {% if show_messages %}hx-target="#message-container" hx-swap="afterend"{% endif %}
             type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ modal_button_submit }}</button>
             {% endif %}
         </div>

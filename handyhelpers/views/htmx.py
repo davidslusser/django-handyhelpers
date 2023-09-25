@@ -1,6 +1,7 @@
 from django.conf import settings
-from django.http import HttpResponse
+from django.contrib import messages
 from django.template import loader
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.generic import View
@@ -36,12 +37,14 @@ class BuildBootstrapModalView(GenericHtmxView):
     """
 
     template_name = "handyhelpers/htmx/bs5/generic_modal_swap.htm"
+    form_class = None
     modal_size = "modal-md"
     modal_title = None
     modal_subtitle = None
     modal_body = None
     modal_button_close = "Close"
     modal_button_submit = "Submit"
+    show_messages = True
     data = {}
     extra_data = {}
 
@@ -57,8 +60,34 @@ class BuildBootstrapModalView(GenericHtmxView):
             "modal_button_submit": self.modal_button_submit,
             "data": self.data,
             "extra_data": self.extra_data,
+            "show_messages": self.show_messages,
         }
+        if self.form_class:
+            self.context['form'] = self.form_class(request.POST or None)
         return super().get(request, *args, **kwargs)
+
+
+class BoostrapModalFormCreateView(BuildBootstrapModalView):
+
+    def post(self, request):
+        """create a Brand"""
+        context = {}
+        context["messages"] = []
+        if not request.META.get("HTTP_HX_REQUEST"):
+            return HttpResponse("Invalid request", status=400)
+        form = self.form_class(self.request.POST or None)
+        if form.is_valid():
+            new = form.save()
+            context["messages"].append(
+                {"message_type": messages.INFO, "message": f"{self.form_class.Meta.model._meta.model_name} {new} created!", "extra_tags": "alert-success"}
+            )
+            return render(request, "handyhelpers/component/bs5/show_messages.htm", context=context)
+        else:
+            for error in form.errors:
+                context["messages"].append(
+                    {"message_type": messages.ERROR, "message": f"Input error: {error}", "extra_tags": "alert-danger"}
+                )
+            return render(request, "handyhelpers/component/bs5/show_messages.htm", context=context)
 
 
 class AboutProjectModalView(BuildBootstrapModalView):
