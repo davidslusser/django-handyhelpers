@@ -2,3 +2,13 @@
     <div class="modal-dialog modal-lg" role="document">
     </div>
 </div>
+
+<script language="Javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        var myModal = document.getElementById("modal_wrapper");
+        myModal.addEventListener("hidden.bs.modal", function () {
+            const element = document.getElementById("modal_wrapper");
+            element.innerHTML = "";
+        });
+      });
+</script>
