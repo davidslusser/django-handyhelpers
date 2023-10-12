@@ -26,7 +26,24 @@
             {% if form_template %}
                 {% include form_template %}
             {% else %}
-                {{ form.as_p }}
+
+                {% for field in form.visible_fields %}
+                    <div class="form-group mx-2 mt-2 mb-3">
+                        <div class="col-sm-12 fw-bold text-primary">
+                            <span id="id_{{ field.name }}_required" class="text-secondary">{% if field.field.required %}* {% endif %}</span>{{ field.label_tag }}
+                        </div>
+                        <div class="col-sm-12">
+                            {{ field }}
+                            {% comment %} <div class="valid-feedback" id="id_{{field.name}}_valid"></div> {% endcomment %}
+                            {% comment %} <div class="invalid-feedback" id="id_{{field.name}}_invalid">this is a test</div> {% endcomment %}
+                            <div id="id_{{field.name}}_invalid" class="small text-danger">{{field.errors}}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for field in form.hidden_fields %}
+                    {{ field }}
+                {% endfor %}
+
             {% endif %}
         {% else %}
             {% if modal_body %}{{ modal_body|safe }}{% endif %}

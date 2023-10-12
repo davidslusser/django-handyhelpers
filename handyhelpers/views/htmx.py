@@ -49,8 +49,6 @@ class BuildBootstrapModalView(GenericHtmxView):
     extra_data = {}
 
     def get(self, request, *args, **kwargs):
-        if not self.request.headers.get("Hx-Request", None):
-            return HttpResponse("Invalid request", status=400)
         self.context = {
             "modal_title": self.modal_title,
             "modal_subtitle": self.modal_subtitle,
@@ -63,31 +61,55 @@ class BuildBootstrapModalView(GenericHtmxView):
             "show_messages": self.show_messages,
         }
         if self.form_class:
-            self.context['form'] = self.form_class(request.POST or None)
+            pre_fill_data = request.session.get(f"{self.form_class.__name__}", None)
+            if pre_fill_data:
+                form = self.form_class(initial=pre_fill_data["data"])
+                form.cleaned_data = {}
+                for k, v in pre_fill_data["errors"].items():
+                    form.add_error(field=k, error=v)
+                self.context["form"] = form
+            else:
+                self.context["form"] = self.form_class
         return super().get(request, *args, **kwargs)
 
 
 class BoostrapModalFormCreateView(BuildBootstrapModalView):
-
-    def post(self, request):
-        """create a Brand"""
+    def post(self, request, *args, **kwargs):
         context = {}
         context["messages"] = []
         if not request.META.get("HTTP_HX_REQUEST"):
             return HttpResponse("Invalid request", status=400)
         form = self.form_class(self.request.POST or None)
         if form.is_valid():
-            new = form.save()
+            new = form.save(commit=False)
+            new.save()
+            form.save_m2m()
+            request.session[f"{form.__class__.__name__}"] = None
             context["messages"].append(
-                {"message_type": messages.INFO, "message": f"{self.form_class.Meta.model._meta.model_name} {new} created!", "extra_tags": "alert-success"}
+                {
+                    "message_type": messages.INFO,
+                    "message": f"{self.form_class.Meta.model._meta.model_name} {new} created!",
+                    "extra_tags": "alert-success",
+                }
             )
-            return render(request, "handyhelpers/component/bs5/show_messages.htm", context=context)
+            return render(
+                request, "handyhelpers/component/bs5/show_messages.htm", context=context
+            )
         else:
-            for error in form.errors:
-                context["messages"].append(
-                    {"message_type": messages.ERROR, "message": f"Input error: {error}", "extra_tags": "alert-danger"}
-                )
-            return render(request, "handyhelpers/component/bs5/show_messages.htm", context=context)
+            request.session[f"{form.__class__.__name__}"] = {
+                "errors": form.errors,
+                "data": form.data,
+            }
+            context["messages"].append(
+                {
+                    "message_type": messages.ERROR,
+                    "message": f"Failed to create {self.form_class.Meta.model._meta.model_name}",
+                    "extra_tags": "alert-danger",
+                }
+            )
+            return render(
+                request, "handyhelpers/component/bs5/show_messages.htm", context=context
+            )
 
 
 class AboutProjectModalView(BuildBootstrapModalView):
