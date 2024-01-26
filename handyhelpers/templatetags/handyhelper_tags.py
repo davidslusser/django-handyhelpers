@@ -10,7 +10,7 @@ from django.utils.safestring import mark_safe
 register = template.Library()
 
 
-@register.filter(name='has_group')
+@register.filter(name="has_group")
 def has_group(user, group_name):
     """
     {% if request.user|has_group:"mygroup" %}
@@ -26,7 +26,7 @@ def has_group(user, group_name):
         return None
 
 
-@register.filter(name='in')
+@register.filter(name="in")
 def inside(value, arg):
     try:
         return value in arg
@@ -53,7 +53,7 @@ def index(indexable, i):
 
 @register.filter()
 def nbsp(value):
-    return mark_safe("&nbsp;".join(value.split(' ')))
+    return mark_safe("&nbsp;".join(value.split(" ")))
 
 
 @register.filter
@@ -71,9 +71,10 @@ def usd(value):
     else:
         return 0
 
+
 @register.filter
 def or_blank(value):
-    """ return an empty string if value is None """
+    """return an empty string if value is None"""
     if value:
         return value
     else:
@@ -82,35 +83,35 @@ def or_blank(value):
 
 @register.filter
 def or_zero(value):
-    """ return a zero if value is None """
+    """return a zero if value is None"""
     if value:
         return value
     else:
         return 0
 
 
-@register.filter(name='percentage')
+@register.filter(name="percentage")
 def percentage(value):
     if not value:
         return ""
     try:
-        return "{:4.2f}%".format(float(value)*100)
+        return "{:4.2f}%".format(float(value) * 100)
     except:
         return ""
 
 
-@register.filter(name='title_underscore')
+@register.filter(name="title_underscore")
 def field_name_to_label(value):
-    value = value.replace('_', ' ')
+    value = value.replace("_", " ")
     return value.title()
 
 
-@register.filter(name='host_ip_address')
+@register.filter(name="host_ip_address")
 def host_ip_address(value):
-    return value.split(':')[0]
+    return value.split(":")[0]
 
 
-@register.filter(name='inlist')
+@register.filter(name="inlist")
 def inlist(value, value_list):
     """
     return True if value is in a 'list' of values
@@ -128,7 +129,7 @@ def inlist(value, value_list):
     return True if value in value_list else False
 
 
-@register.filter(name='in_any_group')
+@register.filter(name="in_any_group")
 def in_any_group(user, group_list):
     """
     return True if user is in at least one group defined in 'list'
@@ -143,10 +144,12 @@ def in_any_group(user, group_list):
     Returns:
         True if user is in at least one group defined in 'group_list' otherwise False
     """
-    return any(group in [i.name for i in user.groups.all()] for group in group_list.split(','))
+    return any(
+        group in [i.name for i in user.groups.all()] for group in group_list.split(",")
+    )
 
 
-@register.filter(name='in_all_group')
+@register.filter(name="in_all_group")
 def in_all_groups(user, group_list):
     """
     return True if user is in all groups defined in 'list'
@@ -161,10 +164,10 @@ def in_all_groups(user, group_list):
     Returns:
         True if user is in all groups defined in 'group_list' otherwise False
     """
-    return set(group_list.split(',')).issubset([i.name for i in user.groups.all()])
+    return set(group_list.split(",")).issubset([i.name for i in user.groups.all()])
 
 
-@register.filter(name='get_filtered_pagination_link')
+@register.filter(name="get_filtered_pagination_link")
 def get_filtered_pagination_link(page, query_params):
     """
     return the paginated link with (filter) query parameters included
@@ -176,18 +179,18 @@ def get_filtered_pagination_link(page, query_params):
         query_params: request query string
     """
     query_params = str(query_params)
-    match = re.search('^page=\d+(.*)$', query_params)
+    match = re.search("^page=\d+(.*)$", query_params)
     if match:
         filter_string = match.groups()[0]
         if not filter_string:
             return page
-        return f'{page}{filter_string}'
+        return f"{page}{filter_string}"
     else:
-        return f'{page}&{query_params}'
+        return f"{page}&{query_params}"
     return page
 
 
-@register.filter(name='get_groups')
+@register.filter(name="get_groups")
 def get_groups(user):
     """
     Args:
@@ -202,7 +205,7 @@ def get_groups(user):
         return []
 
 
-@register.filter(name='in_any')
+@register.filter(name="in_any")
 def in_any(l1, l2):
     """
     checks if there is any intersection of two lists
@@ -213,10 +216,10 @@ def in_any(l1, l2):
     Returns:
         True if there is at least one intersection; otherwise False
     """
-    return True if set(l1).intersection(l2.split(',')) else False
+    return True if set(l1).intersection(l2.split(",")) else False
 
 
-@register.filter(name='next')
+@register.filter(name="next")
 def dj_iter(gen):
     """
     return the next value as yielded from a generator
@@ -232,7 +235,7 @@ def dj_iter(gen):
         return None
 
 
-@register.filter(name='byte_size')
+@register.filter(name="byte_size")
 def byte_size(value):
     try:
         return size(value)
@@ -240,7 +243,7 @@ def byte_size(value):
         return None
 
 
-@register.filter(name='to_datetime')
+@register.filter(name="to_datetime")
 def to_datetime(value):
     try:
         return datetime.datetime.fromtimestamp(value)
@@ -254,3 +257,31 @@ def model_label(value):
         return value._meta.label_lower
     else:
         return 0
+
+
+@register.filter(name="datetime_to_date")
+def datetime_to_date(value):
+    if not isinstance(value, datetime.datetime):
+        return value
+    return datetime.date
+
+
+@register.filter(name="date_to_datetime")
+def date_to_datetime(value):
+    if not isinstance(value, datetime.date):
+        return value
+    return datetime.combine(value, datetime.time.min)
+
+
+@register.filter(name="is_date")
+def is_date(value):
+    if not isinstance(value, datetime.date):
+        return True
+    return False
+
+
+@register.filter(name="is_datetime")
+def is_date(value):
+    if not isinstance(value, datetime.datetime):
+        return True
+    return False

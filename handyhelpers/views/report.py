@@ -5,6 +5,7 @@ from django.conf import settings
 import datetime
 import calendar
 from dateutil.rrule import rrule, MONTHLY
+from django.db.models.fields import DateField
 
 
 def get_color_list():
@@ -274,20 +275,26 @@ class AnnualStatView(View):
                 dataset.get('queryset'),
                 dataset.get('dt_field') + '__gte',
             )
-
+            dt_field=dataset.get('dt_field')
+            queryset = dataset.get('queryset')
+            if isinstance(getattr(queryset.model, dt_field), DateField):
+                ts_format = "%Y-%m-%d"
+            else:
+                ts_format = "%Y-%m-%d %H:%M:%S"
             context['dataset_list'].append(
                 dict(title=dataset.get('title'),
                      icon=dataset.get('icon'),
                      url=dataset.get('list_view'),
-                     total=dataset.get('queryset').count(),
+                     dt_field=dt_field,
+                     total=queryset.count(),
                      day_count=data_day.count(),
-                     day_date=last_day,
                      week_count=data_week.count(),
-                     week_date=last_week,
                      month_count=data_month.count(),
-                     month_date=last_month,
                      year_count=data_year.count(),
-                     year_date=last_year,
+                     day_filter=f"{dt_field}__gte={last_day.strftime(ts_format)}",
+                     week_filter=f"{dt_field}__gte={last_week.strftime(ts_format)}",
+                     month_filter=f"{dt_field}__gte={last_month.strftime(ts_format)}",
+                     year_filter=f"{dt_field}__gte={last_year.strftime(ts_format)}",
                      ),
             )
         return render(request, self.template_name, context)
