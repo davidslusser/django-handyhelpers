@@ -5,19 +5,37 @@ from django.conf import settings
 import datetime
 import calendar
 from dateutil.rrule import rrule, MONTHLY
-from django.db.models.fields import DateField
 
 
 def get_color_list():
-    """ return a list of color variables, based on bootstrap theme definitions, to use in report templates """
-    return ['theme.primary', 'theme.success', 'theme.secondary', 'theme.info', 'theme.warning',
-            'theme.danger', 'theme.dark', 'theme.light', 'theme.blue', 'theme.green', 'theme.red', 'theme.orange',
-            'theme.yellow', 'theme.purple', 'theme.teal', 'theme.cyan', 'theme.indigo', 'theme.pink', 'theme.white',
-            'theme.gray', 'theme.gray-dark']
+    """return a list of color variables, based on bootstrap theme definitions, to use in report templates"""
+    return [
+        "theme.primary",
+        "theme.success",
+        "theme.secondary",
+        "theme.info",
+        "theme.warning",
+        "theme.danger",
+        "theme.dark",
+        "theme.light",
+        "theme.blue",
+        "theme.green",
+        "theme.red",
+        "theme.orange",
+        "theme.yellow",
+        "theme.purple",
+        "theme.teal",
+        "theme.cyan",
+        "theme.indigo",
+        "theme.pink",
+        "theme.white",
+        "theme.gray",
+        "theme.gray-dark",
+    ]
 
 
 def get_colors(count):
-    """ return a list of `count` colors """
+    """return a list of `count` colors"""
     color_list = get_color_list()
     return_list = list()
     color = 0
@@ -49,8 +67,10 @@ def get_annual_timestamps(start=None, end=None, reverse=False):
     if reverse:
         data = [d.replace(day=1) for d in rrule(MONTHLY, dtstart=start, until=end)]
     else:
-        data = [d.replace(day=calendar.monthrange(d.year, d.month)[1])
-                for d in rrule(MONTHLY, dtstart=start, until=end)]
+        data = [
+            d.replace(day=calendar.monthrange(d.year, d.month)[1])
+            for d in rrule(MONTHLY, dtstart=start, until=end)
+        ]
     if reverse:
         data.reverse()
     return data
@@ -116,23 +136,26 @@ def build_annual_progress_chart(dataset_list):
     return_dataset_list = list()
     color_list = get_color_list()
     annual_timestamp_list = get_annual_timestamps()
-    month_labels = [ts.strftime('%B') for ts in annual_timestamp_list]
+    month_labels = [ts.strftime("%B") for ts in annual_timestamp_list]
 
     color = 0
     for dataset in dataset_list:
-        queryset_field_lte = dataset.get('dt_field') + '__lte'
-        annual_monthly_counts = [dataset.get('queryset').filter(**{queryset_field_lte: ts}).count()
-                                 for ts in annual_timestamp_list]
+        queryset_field_lte = dataset.get("dt_field") + "__lte"
+        annual_monthly_counts = [
+            dataset.get("queryset").filter(**{queryset_field_lte: ts}).count()
+            for ts in annual_timestamp_list
+        ]
 
         return_dataset_list.append(
-            dict(title=dataset.get('title'),
-                 url=dataset.get('list_view'),
-                 dt_field=dataset.get('dt_field'),
-                 data=annual_monthly_counts,
-                 color=color_list[color],
-                 list_view=dataset.get('list_view'),
-                 icon=dataset.get('icon'),
-                 )
+            dict(
+                title=dataset.get("title"),
+                url=dataset.get("list_view"),
+                dt_field=dataset.get("dt_field"),
+                data=annual_monthly_counts,
+                color=color_list[color],
+                list_view=dataset.get("list_view"),
+                icon=dataset.get("icon"),
+            )
         )
 
         if color >= len(color_list) - 1:
@@ -163,25 +186,37 @@ def build_annual_trend_chart(dataset_list):
     return_dataset_list = list()
     color_list = get_color_list()
     annual_timestamp_list = get_annual_timestamps(reverse=True)
-    month_labels = [ts.strftime('%B') for ts in annual_timestamp_list]
+    month_labels = [ts.strftime("%B") for ts in annual_timestamp_list]
 
     color = 0
     for dataset in dataset_list:
-        data_year = dataset.get('queryset').filter(**{dataset.get('dt_field') + '__gte':
-                                                          timezone.now() - datetime.timedelta(days=365.2425)})
+        data_year = dataset.get("queryset").filter(
+            **{
+                dataset.get("dt_field")
+                + "__gte": timezone.now()
+                - datetime.timedelta(days=365.2425)
+            }
+        )
         annual_monthly_counts = [
-            len([i for i in data_year if getattr(i, dataset.get('dt_field')).month == ts.month and
-                 getattr(i, dataset.get('dt_field')).year == ts.year])
+            len(
+                [
+                    i
+                    for i in data_year
+                    if getattr(i, dataset.get("dt_field")).month == ts.month
+                    and getattr(i, dataset.get("dt_field")).year == ts.year
+                ]
+            )
             for ts in annual_timestamp_list
         ]
 
         return_dataset_list.append(
-            dict(title=dataset.get('title'),
-                 list_view=dataset.get('list_view'),
-                 dt_field=dataset.get('dt_field'),
-                 color=color_list[color],
-                 annual=annual_monthly_counts,
-                 )
+            dict(
+                title=dataset.get("title"),
+                list_view=dataset.get("list_view"),
+                dt_field=dataset.get("dt_field"),
+                color=color_list[color],
+                annual=annual_monthly_counts,
+            )
         )
 
         if color >= len(color_list) - 1:
@@ -214,20 +249,27 @@ def build_day_week_month_year_charts(dataset_list):
     color = 0
     for dataset in dataset_list:
         data_day, data_week, data_month, data_year = get_dated_data(
-            dataset.get('queryset'),
-            dataset.get('dt_field') + '__gte',
+            dataset.get("queryset"),
+            dataset.get("dt_field") + "__gte",
         )
-
+        dt_field = dataset.get("dt_field")
+        ts_format = dataset.get("ts_format", "%Y-%m-%d %H:%M:%S")
+        last_day, last_week, last_month, last_year = get_timestamps()
         return_dataset_list.append(
-            dict(title=dataset.get('title'),
-                 list_view=dataset.get('list_view'),
-                 dt_field=dataset.get('dt_field'),
-                 color=color_list[color],
-                 day=data_day.count(),
-                 week=data_week.count(),
-                 month=data_month.count(),
-                 year=data_year.count(),
-                 ),
+            dict(
+                title=dataset.get("title"),
+                list_view=dataset.get("list_view"),
+                dt_field=dataset.get("dt_field"),
+                color=color_list[color],
+                day=data_day.count(),
+                week=data_week.count(),
+                month=data_month.count(),
+                year=data_year.count(),
+                day_filter=f"{dt_field}__gte={last_day.strftime(ts_format)}",
+                week_filter=f"{dt_field}__gte={last_week.strftime(ts_format)}",
+                month_filter=f"{dt_field}__gte={last_month.strftime(ts_format)}",
+                year_filter=f"{dt_field}__gte={last_year.strftime(ts_format)}",
+            ),
         )
         color += 1
         if color > len(color_list):
@@ -256,46 +298,47 @@ class AnnualStatView(View):
                             [{title='Owners', queryset=Owner.objects.all(), dt_field='created_at',
                               icon='fas fa-users', list_view='/hostmgr/list_owners'), }, ...]
     """
-    base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
-    title = 'Annual Statistics Report'
+
+    base_template = getattr(
+        settings, "BASE_TEMPLATE", "handyhelpers/handyhelpers_base.htm"
+    )
+    title = "Annual Statistics Report"
     sub_title = None
-    template_name = 'handyhelpers/report/chartjs/annual_stats.html'
+    template_name = "handyhelpers/report/chartjs/annual_stats.html"
     dataset_list = list()
 
     def get(self, request):
         context = dict()
-        context['base_template'] = self.base_template
-        context['title'] = self.title
-        context['sub_title'] = self.sub_title
-        context['dataset_list'] = []
+        context["base_template"] = self.base_template
+        context["title"] = self.title
+        context["sub_title"] = self.sub_title
+        context["dataset_list"] = []
         last_day, last_week, last_month, last_year = get_timestamps()
 
         for dataset in self.dataset_list:
             data_day, data_week, data_month, data_year = get_dated_data(
-                dataset.get('queryset'),
-                dataset.get('dt_field') + '__gte',
+                dataset.get("queryset"),
+                dataset.get("dt_field") + "__gte",
             )
-            dt_field=dataset.get('dt_field')
-            queryset = dataset.get('queryset')
-            if isinstance(getattr(queryset.model, dt_field), DateField):
-                ts_format = "%Y-%m-%d"
-            else:
-                ts_format = "%Y-%m-%d %H:%M:%S"
-            context['dataset_list'].append(
-                dict(title=dataset.get('title'),
-                     icon=dataset.get('icon'),
-                     url=dataset.get('list_view'),
-                     dt_field=dt_field,
-                     total=queryset.count(),
-                     day_count=data_day.count(),
-                     week_count=data_week.count(),
-                     month_count=data_month.count(),
-                     year_count=data_year.count(),
-                     day_filter=f"{dt_field}__gte={last_day.strftime(ts_format)}",
-                     week_filter=f"{dt_field}__gte={last_week.strftime(ts_format)}",
-                     month_filter=f"{dt_field}__gte={last_month.strftime(ts_format)}",
-                     year_filter=f"{dt_field}__gte={last_year.strftime(ts_format)}",
-                     ),
+            dt_field = dataset.get("dt_field")
+            queryset = dataset.get("queryset")
+            ts_format = dataset.get("ts_format", "%Y-%m-%d %H:%M:%S")
+            context["dataset_list"].append(
+                dict(
+                    title=dataset.get("title"),
+                    icon=dataset.get("icon"),
+                    url=dataset.get("list_view"),
+                    dt_field=dt_field,
+                    total=queryset.count(),
+                    day_count=data_day.count(),
+                    week_count=data_week.count(),
+                    month_count=data_month.count(),
+                    year_count=data_year.count(),
+                    day_filter=f"{dt_field}__gte={last_day.strftime(ts_format)}",
+                    week_filter=f"{dt_field}__gte={last_week.strftime(ts_format)}",
+                    month_filter=f"{dt_field}__gte={last_month.strftime(ts_format)}",
+                    year_filter=f"{dt_field}__gte={last_year.strftime(ts_format)}",
+                ),
             )
         return render(request, self.template_name, context)
 
@@ -318,26 +361,37 @@ class AnnualTrendView(View):
                         example:
                             [{title='Owners', queryset=Owner.objects.all(), dt_field='created_at'}, ...]
     """
-    base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
-    title = 'Annual Trend Report'
-    sub_title = 'data added over the past year'
-    template_name = 'handyhelpers/report/chartjs/annual_trends.html'
+
+    base_template = getattr(
+        settings, "BASE_TEMPLATE", "handyhelpers/handyhelpers_base.htm"
+    )
+    title = "Annual Trend Report"
+    sub_title = "data added over the past year"
+    template_name = "handyhelpers/report/chartjs/annual_trends.html"
     chart_display_title = True
     chart_display_legend = False
     dataset_list = list()
 
     def get(self, request):
         context = dict()
-        context['base_template'] = self.base_template
-        context['title'] = self.title
-        context['sub_title'] = self.sub_title
-        context['dataset_list'] = list()
-        context['last_day'], context['last_week'], context['last_month'], context['last_year'] = get_timestamps()
-        context['month_labels'], context['month_timestamps'], context['annual_trend_dataset_list'] =  \
-            build_annual_trend_chart(self.dataset_list)
-        context['dataset_list'] = build_day_week_month_year_charts(self.dataset_list)
-        context['chart_display_title'] = self.chart_display_title
-        context['chart_display_legend'] = self.chart_display_legend
+        context["base_template"] = self.base_template
+        context["title"] = self.title
+        context["sub_title"] = self.sub_title
+        context["dataset_list"] = list()
+        (
+            context["last_day"],
+            context["last_week"],
+            context["last_month"],
+            context["last_year"],
+        ) = get_timestamps()
+        (
+            context["month_labels"],
+            context["month_timestamps"],
+            context["annual_trend_dataset_list"],
+        ) = build_annual_trend_chart(self.dataset_list)
+        context["dataset_list"] = build_day_week_month_year_charts(self.dataset_list)
+        context["chart_display_title"] = self.chart_display_title
+        context["chart_display_legend"] = self.chart_display_legend
         return render(request, self.template_name, context)
 
 
@@ -359,17 +413,23 @@ class AnnualProgressView(View):
                         example:
                             [{title='Owners', queryset=Owner.objects.all(), dt_field='created_at'}, ...]
     """
-    base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
-    title = 'Annual Progress Report'
-    sub_title = 'cumulative data added over the past year'
-    template_name = 'handyhelpers/report/chartjs/annual_progress.html'
+
+    base_template = getattr(
+        settings, "BASE_TEMPLATE", "handyhelpers/handyhelpers_base.htm"
+    )
+    title = "Annual Progress Report"
+    sub_title = "cumulative data added over the past year"
+    template_name = "handyhelpers/report/chartjs/annual_progress.html"
     dataset_list = list()
 
     def get(self, request):
         context = dict()
-        context['base_template'] = self.base_template
-        context['title'] = self.title
-        context['sub_title'] = self.sub_title
-        context['month_labels'], context['month_timestamps'], context['annual_progress_dataset_list'] = \
-            build_annual_progress_chart(self.dataset_list)
+        context["base_template"] = self.base_template
+        context["title"] = self.title
+        context["sub_title"] = self.sub_title
+        (
+            context["month_labels"],
+            context["month_timestamps"],
+            context["annual_progress_dataset_list"],
+        ) = build_annual_progress_chart(self.dataset_list)
         return render(request, self.template_name, context=context)
