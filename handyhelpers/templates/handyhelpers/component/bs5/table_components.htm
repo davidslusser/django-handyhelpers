@@ -2,8 +2,6 @@
 <!-- bootstrap table -->
 <script type="text/javascript" src="{% static 'node_modules/bootstrap-table/dist/bootstrap-table.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'node_modules/bootstrap-table/dist/locale/bootstrap-table-en-US.min.js' %}"></script>
-<link href="{% static 'node_modules/bootstrap-table/dist/bootstrap-table.min.css' %}" rel="stylesheet">
-<link href="{% static 'node_modules/bootstrap-icons/font/bootstrap-icons.css' %}" rel="stylesheet">
 
 <script language="JavaScript">
     function dataValueInt(a, b) {
@@ -18,7 +16,7 @@
     }
 
     function dataValueFloat(a, b) {
-        /* sort based on integer value in data-value attribute */
+        /* sort based on float value in data-value attribute */
         var a_myRegexp = /(?:^|\s)data-value=\"(.*?)\"/g;
         var b_myRegexp = /(?:^|\s)data-value=\"(.*?)\"/g;
         var a = parseFloat(a_myRegexp.exec(a)[1]);
