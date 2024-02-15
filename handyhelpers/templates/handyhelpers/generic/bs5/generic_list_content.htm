@@ -42,6 +42,27 @@
 
 </div>
 
+{# include classic modals if create or filter form is included #}
+{# TODO: move this to htmx soon #}
+{% if create_form or filter_form %}
+    {% include 'handyhelpers/component/bs5/modals.htm' %}
+{% endif %}
+
+{# include generic modal form for the create object form if passed from the view #}
+{% with create_form as form_data %}
+    {% include 'handyhelpers/generic/bs5/generic_modal_form.htm' %}
+{% endwith %}
+
+{# include generic modal form for the filter object form if passed from the view #}
+{% with filter_form as form_data %}
+    {% include 'handyhelpers/generic/bs5/generic_modal_form.htm' %}
+{% endwith %}
+
+{# include custom modal html/js template if passed in from the view #}
+{% if modals %}
+    {% include modals %}
+{% endif %}
+
 {# block for additional static content #}
 {% block additional_static %}
 {% if add_static %}
