@@ -14,12 +14,14 @@ class GenericHtmxView(View):
     """
 
     template_name = None
-    context = {}
+    queryset = None
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, context={}, *args, **kwargs):
         if not self.request.headers.get("Hx-Request", None):
             return HttpResponse("Invalid request", status=400)
-        return render(request, self.template_name, self.context)
+        if self.queryset:
+            context["queryset"] = self.queryset
+        return render(request, self.template_name, context)
 
 
 class BuildBootstrapModalView(GenericHtmxView):
@@ -45,10 +47,10 @@ class BuildBootstrapModalView(GenericHtmxView):
     data = {}
     extra_data = {}
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, context={}, *args, **kwargs):
         if not self.request.headers.get("Hx-Request", None):
             return HttpResponse("Invalid request", status=400)
-        self.context = {
+        context = {
             "modal_title": self.modal_title,
             "modal_subtitle": self.modal_subtitle,
             "modal_body": self.modal_body,
@@ -58,7 +60,7 @@ class BuildBootstrapModalView(GenericHtmxView):
             "data": self.data,
             "extra_data": self.extra_data,
         }
-        return super().get(request, *args, **kwargs)
+        return super().get(request, context, *args, **kwargs)
 
 
 class AboutProjectModalView(BuildBootstrapModalView):
