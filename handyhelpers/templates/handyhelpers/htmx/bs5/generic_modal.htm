@@ -1,19 +1,24 @@
-<div id="modal_wrapper" class="modal fade" style="display: none" aria-hidden="false" tabindex="-1">
-    <div class="modal-dialog modal-lg" role="document">
-    </div>
+<div
+  id="modal_wrapper"
+  class="modal fade"
+  style="display: none"
+  aria-hidden="false"
+  tabindex="-1"
+>
+  <div class="modal-dialog modal-lg" role="document"></div>
 </div>
 
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        var modalWrapper = document.getElementById('modal_wrapper');
-    
-        // Add event listener to all modals
-        var modals = document.querySelectorAll('.modal');
-        modals.forEach(function (modal) {
-        modal.addEventListener('hidden.bs.modal', function () {
-            // Remove inner HTML of modal_wrapper element
-            modalWrapper.innerHTML = '';
-        });
-        });
+  document.addEventListener("DOMContentLoaded", function () {
+    var modalWrapper = document.getElementById("modal_wrapper");
+
+    // Add event listener to all modals
+    var modals = document.querySelectorAll(".modal");
+    modals.forEach(function (modal) {
+      modal.addEventListener("hidden.bs.modal", function () {
+        // Remove inner HTML of modal_wrapper element
+        modalWrapper.innerHTML = "";
+      });
     });
+  });
 </script>

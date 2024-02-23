@@ -16,6 +16,9 @@ class GenericHtmxView(View):
     template_name = None
     queryset = None
 
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+
     def get(self, request, context={}, *args, **kwargs):
         if not self.request.headers.get("Hx-Request", None):
             return HttpResponse("Invalid request", status=400)

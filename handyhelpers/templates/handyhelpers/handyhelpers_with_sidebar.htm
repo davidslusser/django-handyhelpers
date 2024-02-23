@@ -40,19 +40,21 @@
             {% block sidebar %}
             {% endblock sidebar %}
 
-            <div class="main">
+            <div class="main" id="main">
                 {% block mainnavbar %}{% endblock mainnavbar %}
                 {# block to display django messages #}
                 {% block messages %}
                     {% include 'handyhelpers/component/bs5/show_messages.htm' %}
                 {% endblock messages %}
 
-                <main class="content px-3 py-2">
+                <main class="content px-3 py-2" id="main_content">
                     {% block content %}Default Content - Local page should overwrite this{% endblock content %}
                 </main>
 
                 {% block modals %}
+                {% if not disable_modals_in_base %}
                 {% include 'handyhelpers/htmx/bs5/generic_modal.htm' %}
+                {% endif %}
                 {% endblock modals %}
                 {% block mainfooter %}{% endblock mainfooter%}
             </div>
