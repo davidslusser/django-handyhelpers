@@ -4,31 +4,11 @@ from django.template import loader
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.generic import View
+from handyhelpers.mixins.view_mixins import HtmxViewMixin
 
 
-class GenericHtmxView(View):
-    """Generic view for handling HTMX requests; intended to be used with snippets/partials.
-
-    context       - context dictionary containing data to be rendered in template
-    template_name - template used when rendering page; defaults to: handyhelpers/generic/generic_list.html
-    """
-
-    template_name = None
-    queryset = None
-
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
-
-    def get(self, request, context={}, *args, **kwargs):
-        if not self.request.headers.get("Hx-Request", None):
-            return HttpResponse("Invalid request", status=400)
-        if self.queryset:
-            context["queryset"] = self.queryset
-        return render(request, self.template_name, context)
-
-
-class BuildBootstrapModalView(GenericHtmxView):
-    """Generic view used to build a Boostrap 5 modal via HTMX.
+class BuildBootstrapModalView(HtmxViewMixin, View):
+    """Generic view used to build a Boostrap 5 modal via htmx.
 
     class parameters:
         template_name       - template used to render modal; defaults to "handyhelpers/htmx/bs5/modal_swap.htm"
@@ -50,8 +30,8 @@ class BuildBootstrapModalView(GenericHtmxView):
     data = {}
     extra_data = {}
 
-    def get(self, request, context={}, *args, **kwargs):
-        if not self.request.headers.get("Hx-Request", None):
+    def get(self, request):
+        if not self.is_htmx():
             return HttpResponse("Invalid request", status=400)
         context = {
             "modal_title": self.modal_title,
@@ -63,7 +43,7 @@ class BuildBootstrapModalView(GenericHtmxView):
             "data": self.data,
             "extra_data": self.extra_data,
         }
-        return super().get(request, context, *args, **kwargs)
+        return render(request, self.template_name, context)
 
 
 class AboutProjectModalView(BuildBootstrapModalView):
@@ -94,3 +74,30 @@ class AboutProjectModalView(BuildBootstrapModalView):
                 "handyhelpers/htmx/bs5/about_project_modal_body.htm", context=context
             )
         return super().get(request, *args, **kwargs)
+
+
+class HtmxSidebarItems(HtmxViewMixin, View):
+    """View to process a htmx request and render a partial template intended to be used on a sidebar navigation.
+
+    template_name - template used when rendering partial; defaults to: handyhelpers/htmx/bs5/sidebar_items.htm
+    queryset      - queryset containing data to be rendered on the partial
+
+    Usage Example:
+        class GetSomeData(HtmxSidebarItems):
+            queryset = MyModel.objects.all()
+    """
+
+    template_name = "handyhelpers/htmx/bs5/sidebar_items.htm"
+    queryset = None
+
+    def get(self, request, *args, **kwargs):
+        if not self.is_htmx():
+            return HttpResponse("Invalid request", status=400)
+        if self.queryset is not None:
+            self.queryset._result_cache = None
+        self.context = dict(
+            queryset=self.queryset,
+            args=self.args,
+            kwargs=self.kwargs,
+        )
+        return render(request, self.template_name, self.context)
