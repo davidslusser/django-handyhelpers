@@ -1,0 +1,5 @@
+{% for row in queryset %}
+<li class="sidebar-link">
+    <a href="{{ row.get_absolute_url }}" class="sidebar-link ms-4">{{ row }}</a>
+</li>
+{% endfor %}
