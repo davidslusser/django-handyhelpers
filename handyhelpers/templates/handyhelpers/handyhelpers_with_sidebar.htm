@@ -36,18 +36,18 @@
 
     {% block body %}
     <body>
-        <div class="wrapper">
-            {% block sidebar %}
-            {% endblock sidebar %}
+        <div class="body_inner_wrapper">
+            {% block sidebar %}{% endblock sidebar %}
 
-            <div class="main" id="main">
+            <div class="body_content_wrapper" id="body_content_wrapper">
                 {% block mainnavbar %}{% endblock mainnavbar %}
+
                 {# block to display django messages #}
                 {% block messages %}
                     {% include 'handyhelpers/component/bs5/show_messages.htm' %}
                 {% endblock messages %}
 
-                <main class="content px-3 py-2" id="main_content">
+                <main class="content px-3 py-2" id="body_main">
                     {% block content %}Default Content - Local page should overwrite this{% endblock content %}
                 </main>
 
@@ -56,6 +56,7 @@
                 {% include 'handyhelpers/htmx/bs5/generic_modal.htm' %}
                 {% endif %}
                 {% endblock modals %}
+
                 {% block mainfooter %}{% endblock mainfooter%}
             </div>
         </div>

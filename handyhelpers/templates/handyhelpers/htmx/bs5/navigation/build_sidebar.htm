@@ -1,0 +1,28 @@
+{% comment %}
+Build dropdown navigations in a sidebar. This is intented to be used with the handyhelpers_with_sidebar.htm base template or similar.
+{% endcomment %}
+<ul class="sidebar-nav">
+    {% for item in menu_item_list %}
+    <li class="sidebar-item">
+        <a class="sidebar-link collapsed" data-bs-target="#{{ item.target_id }}" data-bs-toggle="collapse"
+            aria-expanded="false"><span class="pe-2">{{ item.icon|safe }}</span>
+            {{ item.model_name|title }}
+        </a>
+        <ul id="{{ item.target_id }}" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+            {% for row in item.queryset %}
+            <li class="sidebar-link">
+                {% if item.link %}
+                    {% if item.htmx_link is False %}
+                    <a href="{{ row.get_absolute_url }}" class="sidebar-link ms-4">{{ row }}</a>
+                    {% else %}
+                    <a hx-get="{{ row.get_absolute_url }}" hx-target="#{{ item.htmx_target }}" class="sidebar-link ms-4">{{ row }}</a>
+                    {% endif %}
+                {% else %}
+                <span class="sidebar-link ms-4">{{ row }}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>

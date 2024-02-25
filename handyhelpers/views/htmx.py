@@ -87,7 +87,7 @@ class HtmxSidebarItems(HtmxViewMixin, View):
             queryset = MyModel.objects.all()
     """
 
-    template_name = "handyhelpers/htmx/bs5/sidebar_items.htm"
+    template_name = "handyhelpers/htmx/bs5/sidebar_menu_sub_items.htm"
     queryset = None
 
     def get(self, request, *args, **kwargs):
@@ -99,5 +99,52 @@ class HtmxSidebarItems(HtmxViewMixin, View):
             queryset=self.queryset,
             args=self.args,
             kwargs=self.kwargs,
+        )
+        return render(request, self.template_name, self.context)
+
+
+
+class BuildModelSidebarNav(HtmxViewMixin, View):
+    """Dynamically build a sidebar navigation menu where items included are sourced from application models.
+    This is intended handyhelpers_with_sidebar.htm or similar template.
+
+    Class Parameters:
+        template_name  - template used when rendering page; defaults to:
+                         handyhelpers/htmx/bs5/navigation/build_sidebar.htm
+        menu_item_list - list of dictionaries containing querysets (required) and icons (optional) to use in side menu
+
+    Usage Example:
+
+        class BuildSidebar(BuildSidebarNav):
+            menu_item_list = [
+                {"queryset": MyModelOne.objects.filter(date_time__gte=timezone.now()),
+                "icon": '<i class="fa-solid fa-calendar-day"></i>',
+                },
+                {"queryset": MyModelOne.objects.filter(enabled=True),
+                "icon": '<i class="fa-solid fa-people-group"></i>',
+                "htmx_link": False,
+                },
+            ]
+    """
+
+    template_name = "handyhelpers/htmx/bs5/navigation/build_sidebar.htm"
+    menu_item_list = []
+
+    def get(self, request):
+        if not self.is_htmx():
+            return HttpResponse("Invalid request", status=400)
+        for item in self.menu_item_list:
+            queryset = item["queryset"]
+            if queryset is not None:
+                queryset._result_cache = None
+            item["model_name"] = queryset.model._meta.verbose_name_plural
+            item["target_id"] = queryset.model._meta.verbose_name_plural.replace(
+                " ", "_"
+            )
+            item["link"] = hasattr(queryset.model, "get_absolute_url")
+            if item.get("htmx_link", True) and not item.get("htmx_target", None):
+                item["htmx_target"] = "body_main"
+        self.context = dict(
+            menu_item_list=self.menu_item_list,
         )
         return render(request, self.template_name, self.context)
