@@ -22,7 +22,7 @@ from django.shortcuts import redirect
 
 class MethodGroupPermissionBase(object):
     """ Base class for method group permissions
-    This now includes a check for a settings variable, MESSAGE_ON_PERMISSION_DENY. When MESSAGE_ON_PERMISSION_DENY is
+    This includes a check for a settings variable, MESSAGE_ON_PERMISSION_DENY. When MESSAGE_ON_PERMISSION_DENY is
     set to True, an alert will be sent via messages and redirect will be to the HTTP_REFERER instead of redirecting to
     the LOGIN_URL. This was added to avoid a login redirect loop that can occur when certain auth packages, that deviate
     from the standard login url, are used.
@@ -30,9 +30,13 @@ class MethodGroupPermissionBase(object):
     def dispatch(self, request, *args, **kwargs):
         if not self.has_permission(request, *args, **kwargs):
             if getattr(settings, 'MESSAGE_ON_PERMISSION_DENY', False):
+                if hasattr(request, "user"):
+                    message = f'User {request.user} is not authorized to perform this operation'
+                else:
+                    message = 'you are not authorized to perform this operation'
                 messages.add_message(request,
                                      messages.ERROR,
-                                     f'User {request.user} is not authorized to perform this operation',
+                                     message,
                                      extra_tags='alert-danger', )
                 if request.META.get('HTTP_REFERER'):
                     return redirect(request.META.get('HTTP_REFERER'))
@@ -66,6 +70,10 @@ class InAllGroups(MethodGroupPermissionBase):
 
     """
     def has_permission(self, request, *args, **kwargs):
+        if not hasattr(request, "user"):
+            return False
+        if request.user.is_anonymous:
+            return False
         if not hasattr(self, 'permission_dict'):
             return False
         if request.user.is_superuser:
@@ -101,6 +109,10 @@ class InAnyGroup(MethodGroupPermissionBase):
                               }
     """
     def has_permission(self, request, *args, **kwargs):
+        if not hasattr(request, "user"):
+            return False
+        if request.user.is_anonymous:
+            return False
         if not hasattr(self, 'permission_dict'):
             return False
         if request.user.is_superuser:
