@@ -30,7 +30,7 @@ class BuildBootstrapModalView(HtmxViewMixin, View):
     data = {}
     extra_data = {}
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         if not self.is_htmx():
             return HttpResponse("Invalid request", status=400)
         context = {
