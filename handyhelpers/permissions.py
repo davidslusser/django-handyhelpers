@@ -70,23 +70,27 @@ class InAllGroups(MethodGroupPermissionBase):
 
     """
     def has_permission(self, request, *args, **kwargs):
-        if not hasattr(request, "user"):
-            return False
-        if request.user.is_anonymous:
-            return False
-        if not hasattr(self, 'permission_dict'):
-            return False
-        if request.user.is_superuser:
-            return True
         permission_dict_mapping = getattr(self, 'permission_dict', {})
-        permission_group_list = permission_dict_mapping.get(request.method, [])
+        permission_group_list = permission_dict_mapping.get(request.method, None)
+
+        # if method is specified, but the group list is empty, allow operation
+        if permission_group_list == []:
+            return True
 
         # if method is not provided, deny operation
         if permission_group_list is None:
             return False
 
-        # if method is specified, but the group list is empty, allow operation
-        if permission_group_list == []:
+        # if there is no user object in the request, deny operation
+        if not hasattr(request, "user"):
+            return False
+
+        # if user is anonymous, deny operation
+        if request.user.is_anonymous:
+            return False
+
+        # if user is superuser, allow operation
+        if request.user.is_superuser:
             return True
 
         return set(permission_group_list).issubset([i.name for i in request.user.groups.all()])
@@ -109,23 +113,27 @@ class InAnyGroup(MethodGroupPermissionBase):
                               }
     """
     def has_permission(self, request, *args, **kwargs):
-        if not hasattr(request, "user"):
-            return False
-        if request.user.is_anonymous:
-            return False
-        if not hasattr(self, 'permission_dict'):
-            return False
-        if request.user.is_superuser:
-            return True
         permission_dict_mapping = getattr(self, 'permission_dict', {})
         permission_group_list = permission_dict_mapping.get(request.method, None)
+
+        # if method is specified, but the group list is empty, allow operation
+        if permission_group_list == []:
+            return True
 
         # if method is not provided, deny operation
         if permission_group_list is None:
             return False
 
-        # if method is specified, but the group list is empty, allow operation
-        if permission_group_list == []:
+        # if there is no user object in the request, deny operation
+        if not hasattr(request, "user"):
+            return False
+
+        # if user is anonymous, deny operation
+        if request.user.is_anonymous:
+            return False
+
+        # if user is superuser, allow operation
+        if request.user.is_superuser:
             return True
 
         return any(group in [i.name for i in request.user.groups.all()] for group in permission_group_list)
