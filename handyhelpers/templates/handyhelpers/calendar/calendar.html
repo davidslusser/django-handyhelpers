@@ -1,0 +1,57 @@
+{% extends base_template|default:"handyhelpers/bs5/handyhelpers_base.htm" %}
+{% load static %}
+
+    {% block page_head %}
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.2.0/main.min.css'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.3.0/main.min.css'>
+    <link href="{% static 'calendar/css/style.css' %}" rel="stylesheet">
+    {% endblock page_head %}
+
+    {% block content %}
+    <header>
+        <h1>Event Calendar</h1>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row my-5">
+            <div class="col-12 col-sm-4">
+                <div class="row my-5">
+                    <div class="h4 text-primary fw-bold">Calendar Filters</div>
+                    <div class="mx-2">
+                        {% for group in group_list %}
+                        <div class="form-check form-switch m-2">
+                            <input class="form-check-input" type="checkbox" id="switch_group_{{ group.pk }}" checked>
+                            <label class="form-check-label mx-2" for="switch_group_{{ group.pk }}">{{ group.name }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-8">
+                <div id='calendar'></div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock content %}
+
+    {% block page_javascript %}  
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.2.0/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.2.0/main.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@4.2.0/main.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
+    <script type="text/javascript" src="{% static 'calendar/js/script.js' %}"></script>
+
+    <script>
+        const myEvents = JSON.parse(localStorage.getItem('events')) || [
+            {% for row in queryset %}{
+                id: '{{ row.pk }}',
+                title: '{{ row.name }}', 
+                start: '{{ row.date_time|date:'Y-m-d' }}',
+                color: 'green',
+                link: '{% url "web:get_event_details" pk=row.pk %}',
+            },
+            {% endfor %}
+            ];
+    </script>
+    {% endblock page_javascript %}

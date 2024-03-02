@@ -103,7 +103,6 @@ class HtmxSidebarItems(HtmxViewMixin, View):
         return render(request, self.template_name, self.context)
 
 
-
 class BuildModelSidebarNav(HtmxViewMixin, View):
     """Dynamically build a sidebar navigation menu where items included are sourced from application models.
     This is intended handyhelpers_with_sidebar.htm or similar template.
@@ -122,7 +121,7 @@ class BuildModelSidebarNav(HtmxViewMixin, View):
                 },
                 {"queryset": MyModelOne.objects.filter(enabled=True),
                 "icon": '<i class="fa-solid fa-people-group"></i>',
-                "htmx_link": False,
+                "get_item_is_htmx": False,
                 },
             ]
     """
@@ -134,15 +133,15 @@ class BuildModelSidebarNav(HtmxViewMixin, View):
         if not self.is_htmx():
             return HttpResponse("Invalid request", status=400)
         for item in self.menu_item_list:
-            queryset = item["queryset"]
+            queryset = item["queryset"]               
             if queryset is not None:
                 queryset._result_cache = None
             item["model_name"] = queryset.model._meta.verbose_name_plural
             item["target_id"] = queryset.model._meta.verbose_name_plural.replace(
                 " ", "_"
             )
-            item["link"] = hasattr(queryset.model, "get_absolute_url")
-            if item.get("htmx_link", True) and not item.get("htmx_target", None):
+            item["get_item_url"] = hasattr(queryset.model, "get_absolute_url")
+            if item.get("get_item_is_htmx", True) and not item.get("htmx_target", None):
                 item["htmx_target"] = "body_main"
         self.context = dict(
             menu_item_list=self.menu_item_list,

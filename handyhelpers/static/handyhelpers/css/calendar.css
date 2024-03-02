@@ -1,0 +1,132 @@
+
+#calendar {
+    /* max-width: 90%;
+    max-height: 90%; */
+    margin: 2rem auto;
+    /* background: #fff; */
+    padding: 1rem;
+
+}
+
+.fc-left h2 {
+    font-weight: bold;
+    color: var(--bs-primary);
+}
+
+.fc-event {
+    border: 1px solid #eee !important;
+}
+
+.fc-content {
+    padding: 3px !important;
+}
+
+.fc-content .fc-title {
+    display: block !important;
+    overflow: hidden;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.fc-customButton-button {
+    font-size: 13px !important;
+    position: absolute;
+    top:  0px;
+    left: 50%;
+    transform: translateY(-50%);
+}
+
+
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group>label {
+    margin-bottom: 10px;
+}
+
+#delete-modal .modal-footer > .btn {
+
+    border-radius: 3px !important; 
+    padding: 0px 8px !important;
+    font-size: 15px;
+
+ }
+
+
+
+
+.fc-scroller {
+    overflow-y: hidden !important;
+}
+
+.context-menu {
+    position: absolute;
+    z-index: 1000;
+    background-color: --var(bs-light-subtle);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    padding: 5px;
+}
+
+/* .context-menu.show {
+    display: block;
+  } */
+
+.context-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+}
+
+.context-menu ul>li {
+    display: block;
+    ;
+    padding: 5px 15px;
+    list-style-type: none;
+    color: #333;
+    display: block;
+    cursor: pointer;
+    margin: 0 auto;
+    transition: 0.10s;
+    font-size: 13px;
+
+
+}
+
+.context-menu ul>li:hover {
+    color: #fff;
+    background-color: --var(bs-primary);
+    border-radius: 2px;
+
+}
+
+.fa,
+.fas {
+    font-size: 13px;
+    margin-right: 4px;
+}
+
+.fc-button-primary {
+    color: #fff;
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+.fc-button-primary:disabled {
+    color: #fff;
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.fc-unthemed td.fc-today {
+    background: var(--bs-primary-bg-subtle);
+}
+
+a {
+    text-decoration: none !important;
+}

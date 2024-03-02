@@ -9,10 +9,19 @@ Build dropdown navigations in a sidebar. This is intented to be used with the ha
             {{ item.model_name|title }}
         </a>
         <ul id="{{ item.target_id }}" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+            {% if item.list_all_url %}
+            <li class="sidebar-link">
+                {% if item.list_all_url_use_htmx is False %}
+                <a href="{{ item.list_all_url }}" class="sidebar-link ms-4">All {{ item.model_name|title }}</a>
+                {% else %}
+                <a hx-get="{{ item.list_all_url }}" hx-target="#{{ item.htmx_target }}" class="sidebar-link ms-4">All {{ item.model_name|title }}</a>
+                {% endif %}
+            </li>
+            {% endif %}
             {% for row in item.queryset %}
             <li class="sidebar-link">
-                {% if item.link %}
-                    {% if item.htmx_link is False %}
+                {% if item.get_item_url %}
+                    {% if item.get_item_is_htmx is False %}
                     <a href="{{ row.get_absolute_url }}" class="sidebar-link ms-4">{{ row }}</a>
                     {% else %}
                     <a hx-get="{{ row.get_absolute_url }}" hx-target="#{{ item.htmx_target }}" class="sidebar-link ms-4">{{ row }}</a>
