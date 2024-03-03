@@ -1,0 +1,126 @@
+    
+    <style>
+        /* Add custom styles if needed */
+        /* Customize the calendar container */
+        .calendar-container {
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-left: 3rem;
+            padding-right: 3rem;
+        }
+        /* Customize the navigation links */
+        .nav-links {
+            margin-bottom: 10px;
+        }
+        /* Customize the calendar table */
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .calendar-table th {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: center;
+            height: 1rem; /* Set fixed height for header row cells */
+        }
+        .calendar-table td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: center;
+            width: 80px; /* Set fixed width for all cells except header row */
+            height: 80px; /* Set fixed height for all cells except header row */
+        }
+        /* Highlight today's date with a different background color */
+        .today {
+            background-color: var(--bg-light-subtle) !important; /* Change to your desired background color */
+        }
+        /* Styling for events */
+        .event {
+            background-color: #007bff; /* Bootstrap primary color */
+            color: #fff; /* White text color */
+            padding: 4px;
+            border-radius: 4px;
+            margin-top: 2px;
+            font-size: .75rem;
+            margin-left: .75rem;
+            margin-right: .75rem;
+            {% comment %} cursor: pointer; {% endcomment %}
+        }
+        .cursor-pointer{
+            cursor: pointer;
+          }
+    </style>
+    
+    <div class="container-fluid calendar-container">
+        <div class="h2 mt-5 text-primary text-center fw-bold">{{ title }}</div>
+        <div class="h4 mb-3 text-secondary text-center">{{ month }}/{{ year }}</div>
+        <div class="text-end nav-links">
+            <a 
+            {% if use_htmx %}
+            hx-get="{{ today_url }}" hx-target="#body_main"
+            {% else %}
+            href="{{ today_url }}" 
+            {% endif %}
+            class="me-3" style="text-decoration: none">
+                today
+            </a>
+            <a 
+            {% if use_htmx %}
+            hx-get="{{ prev_month_url }}" hx-target="#body_main"
+            {% else %}
+            href="{{ prev_month_url }}"
+            {% endif %}
+            class="me-2" title="previous month">
+                <i class="fa-solid fa-angle-left"></i>
+            </a>
+            <a 
+            {% if use_htmx %}
+            hx-get="{{ next_month_url }}" hx-target="#body_main"
+            {% else %}
+            href="{{ next_month_url }}"
+            {% endif %}
+            class="ms-2" title="next month">
+                <i class="fa-solid fa-angle-right"></i>
+            </a>
+        </div>
+        <table class="table table-bordered calendar-table shadow">
+            <thead>
+                <tr>
+                    <th class="bg-light-subtle" scope="col">Mon</th>
+                    <th class="bg-light-subtle" scope="col">Tue</th>
+                    <th class="bg-light-subtle" scope="col">Wed</th>
+                    <th class="bg-light-subtle" scope="col">Thu</th>
+                    <th class="bg-light-subtle" scope="col">Fri</th>
+                    <th class="bg-light-subtle" scope="col">Sat</th>
+                    <th class="bg-light-subtle" scope="col">Sun</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for week in cal_data %}
+                    <tr>
+                    {% for day in week %}
+                        <td {% if day == today.day and month == today.month and year == today.year %}class="today"{% endif %}>
+                            {% if day %}
+                            <div class="text-end {% if day == today.day and month == today.month and year == today.year %}fw-bold{% endif %}">{{ day }}</div>
+                            {%endif%}
+                            {% for event in event_list %}
+                                {% if event.date_time.day == day and event.date_time.month == month and event.date_time.year == year %}   
+                                    {% if event_detail_url %}
+                                <div class="event hvr-grow d-block cursor-pointer"
+                                hx-get="{% url event_detail_url event.pk %}"
+                                hx-target="#modal_wrapper"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal_wrapper">{{ event }}
+                                </div>
+                                    {% else %}
+                                    <div class="event">{{ event }}</div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
