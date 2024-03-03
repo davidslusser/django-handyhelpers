@@ -23,7 +23,7 @@ class CalendarView(View):
             event_model_date_field = "date"
             event_detail_url = "myapp_:get_event_details"   
     """
-
+    title = "Calendar"
     event_model = None
     event_model_date_field = None
     event_detail_url = None
@@ -89,6 +89,7 @@ class CalendarView(View):
 
         context = {
             "cal_data": cal_data,
+            "title": self.title,
             "year": year,
             "month": month,
             "today": today,
@@ -100,5 +101,3 @@ class CalendarView(View):
             "next_month_url": next_month_url,
         }
         return render(request, self.template_name, context)
-
-

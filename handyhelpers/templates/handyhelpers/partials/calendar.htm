@@ -51,13 +51,13 @@
           }
     </style>
     
-
     <div class="container-fluid calendar-container">
-        <div class="m-5 h2 text-primary text-center fw-bold">Calendar: <span class="h4 text-secondary mx-3">{{ month }}/{{ year }}</span></div>
+        <div class="h2 mt-5 text-primary text-center fw-bold">{{ title }}</div>
+        <div class="h4 mb-3 text-secondary text-center">{{ month }}/{{ year }}</div>
         <div class="text-end nav-links">
             <a 
             {% if use_htmx %}
-            hx-get="{{ today_url }}" hx-target="#body_main" hx-push-url="true"
+            hx-get="{{ today_url }}" hx-target="#body_main"
             {% else %}
             href="{{ today_url }}" 
             {% endif %}
@@ -66,7 +66,7 @@
             </a>
             <a 
             {% if use_htmx %}
-            hx-get="{{ prev_month_url }}" hx-target="#body_main" hx-push-url="true"
+            hx-get="{{ prev_month_url }}" hx-target="#body_main"
             {% else %}
             href="{{ prev_month_url }}"
             {% endif %}
@@ -75,7 +75,7 @@
             </a>
             <a 
             {% if use_htmx %}
-            hx-get="{{ next_month_url }}" hx-target="#body_main" hx-push-url="true"
+            hx-get="{{ next_month_url }}" hx-target="#body_main"
             {% else %}
             href="{{ next_month_url }}"
             {% endif %}
@@ -123,3 +123,4 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
