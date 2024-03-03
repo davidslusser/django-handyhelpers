@@ -123,6 +123,7 @@ class BuildModelSidebarNav(HtmxViewMixin, View):
                 {"queryset": MyModelOne.objects.filter(enabled=True),
                 "icon": '<i class="fa-solid fa-people-group"></i>',
                 "htmx_link": False,
+                "list_all_url": "list_mymodelones",
                 },
             ]
     """
@@ -144,7 +145,7 @@ class BuildModelSidebarNav(HtmxViewMixin, View):
             item["link"] = hasattr(queryset.model, "get_absolute_url")
             if item.get("htmx_link", True) and not item.get("htmx_target", None):
                 item["htmx_target"] = "body_main"
-        self.context = dict(
+        context = dict(
             menu_item_list=self.menu_item_list,
         )
-        return render(request, self.template_name, self.context)
+        return render(request, self.template_name, context)
