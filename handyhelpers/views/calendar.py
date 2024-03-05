@@ -92,6 +92,7 @@ class CalendarView(View):
             "title": self.title,
             "year": year,
             "month": month,
+            "month_name": calendar.month_name[month],
             "today": today,
             "event_list": queryset,
             "use_htmx": self.use_htmx,
