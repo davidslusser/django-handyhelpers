@@ -162,6 +162,5 @@ class ModelDetailBootstrapModalView(BuildBootstrapModalView):
             self.modal_title = f"{self.model._meta.object_name} Details"
         if self.modal_subtitle == None:
             self.modal_subtitle = context["object"]
-        self.modal_subtitle = context["object"]
         self.modal_body = loader.render_to_string(self.modal_template, context=context)
         return super().get(request, *args, **kwargs)
