@@ -103,7 +103,6 @@ class HtmxSidebarItems(HtmxViewMixin, View):
         return render(request, self.template_name, self.context)
 
 
-
 class BuildModelSidebarNav(HtmxViewMixin, View):
     """Dynamically build a sidebar navigation menu where items included are sourced from application models.
     This is intended handyhelpers_with_sidebar.htm or similar template.
@@ -149,3 +148,20 @@ class BuildModelSidebarNav(HtmxViewMixin, View):
             menu_item_list=self.menu_item_list,
         )
         return render(request, self.template_name, context)
+
+
+class ModelDetailBootstrapModalView(BuildBootstrapModalView):
+    modal_button_submit = None
+    modal_template = None
+    model = None
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+        context["object"] = self.model.objects.get(pk=kwargs["pk"])
+        if self.modal_title == None:
+            self.modal_title = f"{self.model._meta.object_name} Details"
+        if self.modal_subtitle == None:
+            self.modal_subtitle = context["object"]
+        self.modal_subtitle = context["object"]
+        self.modal_body = loader.render_to_string(self.modal_template, context=context)
+        return super().get(request, *args, **kwargs)
