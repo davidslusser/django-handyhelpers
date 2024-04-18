@@ -21,10 +21,10 @@
         <link href="{% static 'handyhelpers/css/sidebar.css' %}" rel="stylesheet">
         {% endblock project_head %}
 
-        {# block for project level branding content #}
-        {% block project_branding %}
+        {# block for project level theme(s) #}
+        {% block project_theme %}
         <link href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-        {% endblock project_branding %}
+        {% endblock project_theme %}
 
         {# block for additional project level content #}
         {% block project_head_extra %}{% endblock project_head_extra %}

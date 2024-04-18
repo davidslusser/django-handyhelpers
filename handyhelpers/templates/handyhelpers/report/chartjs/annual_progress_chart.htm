@@ -8,7 +8,7 @@
                 labels: {{ month_labels|safe }},
                 year:[{% for ts in month_timestamps %} "{{ ts.year }}", {% endfor %}],
                 month:[{% for ts in month_timestamps %} "{{ ts.month }}", {% endfor %}],
-                ts:[{% for ts in month_timestamps %} "{{ ts|date:'Y-m-d H:00:00' }}", {% endfor %}],
+                ts:[{% for ts in month_timestamps %} "{{ ts|date:'Y-m-d' }}", {% endfor %}],
                 datasets: [
                     {% for data in annual_progress_dataset_list %}
                     {
