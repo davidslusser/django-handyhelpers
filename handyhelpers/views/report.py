@@ -5,6 +5,7 @@ from django.conf import settings
 import datetime
 import calendar
 from dateutil.rrule import rrule, MONTHLY
+from handyhelpers.mixins.view_mixins import HtmxViewMixin
 
 
 def get_color_list():
@@ -44,7 +45,7 @@ def get_annual_timestamps(start=None, end=None, reverse=False):
     if not end:
         end = timezone.now()
     if not start:
-        start = end - datetime.timedelta(365)
+        start = end - datetime.timedelta(366)
     if reverse:
         data = [d.replace(day=1) for d in rrule(MONTHLY, dtstart=start, until=end)]
     else:
@@ -234,7 +235,7 @@ def build_day_week_month_year_charts(dataset_list):
     return return_dataset_list
 
 
-class AnnualStatView(View):
+class AnnualStatView(HtmxViewMixin, View):
     """
     Description:
         Tallies the number of entries added over the past year. Included are counts of entries sectioned by
@@ -258,10 +259,12 @@ class AnnualStatView(View):
     base_template = getattr(settings, 'BASE_TEMPLATE', 'handyhelpers/handyhelpers_base.htm')
     title = 'Annual Statistics Report'
     sub_title = None
-    template_name = 'handyhelpers/report/chartjs/annual_stats.html'
+    template_name = 'handyhelpers/report/annual_stats.html'
     dataset_list = list()
 
     def get(self, request):
+        if self.is_htmx():
+            self.template_name = 'handyhelpers/report/annual_stats_content.htm'
         context = dict()
         context['base_template'] = self.base_template
         context['title'] = self.title
@@ -293,7 +296,7 @@ class AnnualStatView(View):
         return render(request, self.template_name, context)
 
 
-class AnnualTrendView(View):
+class AnnualTrendView(HtmxViewMixin, View):
     """
     Description:
         Tallies the number of elements processed over the past year. Included are counts of elements processed in the
@@ -320,6 +323,8 @@ class AnnualTrendView(View):
     dataset_list = list()
 
     def get(self, request):
+        if self.is_htmx():
+            self.template_name = 'handyhelpers/report/chartjs/annual_trends_content.htm'
         context = dict()
         context['base_template'] = self.base_template
         context['title'] = self.title
@@ -334,7 +339,7 @@ class AnnualTrendView(View):
         return render(request, self.template_name, context)
 
 
-class AnnualProgressView(View):
+class AnnualProgressView(HtmxViewMixin, View):
     """
     Description:
         Show the current number of elements per dataset and chart showing counts of data added per month over the
@@ -359,6 +364,8 @@ class AnnualProgressView(View):
     dataset_list = list()
 
     def get(self, request):
+        if self.is_htmx():
+            self.template_name = 'handyhelpers/report/chartjs/annual_progress_content.htm'
         context = dict()
         context['base_template'] = self.base_template
         context['title'] = self.title

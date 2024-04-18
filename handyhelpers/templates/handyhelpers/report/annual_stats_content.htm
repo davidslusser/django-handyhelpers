@@ -1,0 +1,43 @@
+<header class="mx-5 my-3">
+    <div class="headline text-center animated fadeIn" style="animation-delay: .15s;">
+        <div class="container mb-5">
+            <h1 class="text-primary fw-bold">{{ title }}</h1>
+            <h3 class="text-secondary">{% if sub_title %}{{ sub_title }}{% endif %} &nbsp; </h3>
+        </div>
+    </div>
+</header>
+
+<div class="container-fluid mt-2 mb-5 animated fadeIn" style="animation-delay: .25s;">
+    {% for data in dataset_list %}
+        <div class="row m-4">
+            <div class="row border-bottom border-secondary ps-0">
+                <div class="h3 text-primary fw-bold ps-0">
+                    <span class="text-primary me-3">{{ data.icon|safe }}</span>{{ data.title }}
+                </div>
+            </div>
+            <div class="row">
+                <table>
+                    <thead class="h6">
+                    <tr>
+                        <th class="bg-transparent text-secondary">Total</th>
+                        <th class="bg-transparent text-secondary">past day</th>
+                        <th class="bg-transparent text-secondary">past week</th>
+                        <th class="bg-transparent text-secondary">past month</th>
+                        <th class="bg-transparent text-secondary">past year</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-primary h6">
+                            <td><span class="ms-2"><a href="{{data.url}}">{{ data.total }}</a></span></td>
+                            <td><span class="ms-2"><a href="{{data.url}}?page_description=added in past day&created_at__gte={{data.day_date|date:'Y-m-d H:i:s' }}">{{ data.day_count }}</a></span></td>
+                            <td><span class="ms-2"><a href="{{data.url}}?page_description=added in past week&created_at__gte={{data.week_date|date:'Y-m-d H:i:s' }}">{{ data.week_count }}</a></span></td>
+                            <td><span class="ms-2"><a href="{{data.url}}?page_description=added in past month&created_at__gte={{data.month_date|date:'Y-m-d H:i:s' }}">{{ data.month_count }}</a></span></td>
+                            <td><span class="ms-2"><a href="{{data.url}}?page_description=added in past year&created_at__gte={{data.year_date|date:'Y-m-d H:i:s' }}">{{ data.year_count }}</a></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mb-1">&nbsp;</div>
+    {% endfor %}
+</div>

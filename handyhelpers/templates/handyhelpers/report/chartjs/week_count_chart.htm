@@ -43,7 +43,7 @@
         switch (label) {
             {% for data in dataset_list %}
             case '{{ data.title }}':
-                location.href = "{{ data.list_view }}?{{ data.dt_field }}__gte={{ last_week|date:'Y-m-d H:i:s' }}&page_description=added in the past week";
+                location.href = "{{ data.list_view }}?{{ data.dt_field }}__gte={{ last_week|date:'Y-m-d' }}&page_description=added in the past week";
                 break;
             {% endfor %}
         }
