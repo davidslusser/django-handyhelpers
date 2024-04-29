@@ -1,0 +1,25 @@
+<div id="contact-request-form">
+    <form
+    {% if form.hx_post %}hx-post="{{ form.hx_post }}"{% endif %}
+    {% if form.hx_target %}hx-target="#{{ form.hx_target }}"{% endif %}
+    {% if form.hx_trigger %}hx-trigger="{{ form.hx_trigger }}"{% endif %}
+    {% if form.hx_swap %}hx-swap="{{ form.hx_swap }}"{% endif %}
+    >
+    {% csrf_token %}
+        <div>{{ form.as_bs5 }}</div>
+        {% if form.align %}
+        <div class="d-flex justify-content-{{ form.align }}">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        {% else %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+        {% endif %}
+    </form>
+    {% if form.align %}
+    <div class="d-flex justify-content-{{ form.align }}">
+        {% if success and form.success_message %}<div class="fs-5 fw-bold text-warning">{{ form.success_message }}</div>{% endif %}
+    </div>
+    {% else %}
+    {% if success and form.success_message %}<div class="my-2 fs-5 fw-bold text-warning">{{ form.success_message }}</div>{% endif %}
+    {% endif %}
+</div>

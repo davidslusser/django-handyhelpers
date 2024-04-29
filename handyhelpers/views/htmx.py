@@ -164,3 +164,22 @@ class ModelDetailBootstrapModalView(BuildBootstrapModalView):
             self.modal_subtitle = context["object"]
         self.modal_body = loader.render_to_string(self.modal_template, context=context)
         return super().get(request, *args, **kwargs)
+
+
+class HtmxPostForm(HtmxViewMixin, View):
+    form = None
+    template_name = 'handyhelpers/htmx/bs5/form/form_wrapper.htm'
+    
+    def post(self, request, *args, **kwargs):
+
+        if not self.is_htmx():
+            return HttpResponse("Invalid request", status=400)
+        context = {}
+        form = self.form(request.POST)
+        if form.is_valid():
+            form.save()
+            context["success"] = True
+            context["form"] = self.form()
+        else:
+            context["form"] = form
+        return render(request, self.template_name, context)

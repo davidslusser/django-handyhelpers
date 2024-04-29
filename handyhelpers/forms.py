@@ -1,6 +1,6 @@
 from django import forms
 
-from .mixins.form_mixins import SetRequiredMixin
+from .mixins.form_mixins import SetRequiredMixin, HtmxFormMixin
 
 
 class SetRequiredModelForm(SetRequiredMixin, forms.ModelForm):
@@ -35,3 +35,7 @@ class TimestampFilter(forms.Form):
                                       required=False, label='Updated After')
     updated_at__lte = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
                                       required=False, label='Updated Before')
+
+
+class HtmxModelForm(HtmxFormMixin, forms.ModelForm):
+    """ ModelForm class with the HtmxFormMixin included """
