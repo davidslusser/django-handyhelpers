@@ -1,0 +1,109 @@
+{% load form_tags %}
+
+{% for field in form %}
+{% if field.widget_type in "text" %}
+<div class="form-floating mb-3">
+    {% with form|get_form_errors:field.name as errors %}
+        {% with form|get_field_value:field.name as value %}
+            <input name="{{ field.name }}"
+            type="text" 
+            class="form-control {% if errors %}is-invalid{% endif %}" 
+            {% if value %}value="{{ value }}"{% endif %} 
+            id="id_{{ field.name }}"
+            placeholder="" disabled>
+            <label for="id_{{ field.name }}">{{ field.label }}</label>
+            {% if errors %}
+                <div class="invalid-feedback">{{ errors }}</div>
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+</div>
+
+{% elif field.widget_type in "email" %}
+<div class="form-floating mb-3">
+    {% with form|get_form_errors:field.name as errors %}
+        {% with form|get_field_value:field.name as value %}
+            <input name="{{ field.name }}"
+            type="email" 
+            class="form-control {% if errors %}is-invalid{% endif %}" 
+            {% if value %}value="{{ value }}"{% endif %} 
+            id="id_{{ field.name }}"
+            placeholder="" disabled>
+            <label for="id_{{ field.name }}">{{ field.label }}</label>
+            {% if errors %}
+                <div class="invalid-feedback">{{ errors }}</div>
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+</div>
+
+{% elif field.widget_type in "password" %}
+<div class="form-floating mb-3">
+    {% with form|get_form_errors:field.name as errors %}
+        {% with form|get_field_value:field.name as value %}
+            <input name="{{ field.name }}"
+            type="password" 
+            class="form-control {% if errors %}is-invalid{% endif %}" 
+            {% if value %}value="{{ value }}"{% endif %} 
+            id="id_{{ field.name }}"
+            placeholder="" disabled>
+            <label for="id_{{ field.name }}">{{ field.label }}</label>
+            {% if errors %}
+                <div class="invalid-feedback">{{ errors }}</div>
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+</div>
+
+{% elif field.widget_type in "date" %}
+<div class="form-floating mb-3">
+    {% with form|get_form_errors:field.name as errors %}
+        {% with form|get_field_value:field.name as value %}
+            <input name="{{ field.name }}"
+            type="date" 
+            class="form-control {% if errors %}is-invalid{% endif %}" 
+            {% if value %}value="{{ value }}"{% endif %} 
+            id="id_{{ field.name }}"
+            placeholder="" disabled>
+            <label for="id_{{ field.name }}">{{ field.label }}</label>
+            {% if errors %}
+                <div class="invalid-feedback">{{ errors }}</div>
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+</div>
+
+{% elif field.widget_type in "textarea" %}
+<div class="form-floating mb-3">
+    {% with form|get_form_errors:field.name as errors %}
+        {% with form|get_field_value:field.name as value %}
+            <textarea name="{{ field.name }}" class="form-control {% if errors %}is-invalid{% endif %}" 
+            id="id_{{ field.name }}" placeholder="" disabled>{% if value %}{{ value }}{% endif %}</textarea>
+            <label for="id_{{ field.name }}">{{ field.label }}</label>
+            {% if errors %}
+                <div class="invalid-feedback">{{ errors }}</div>
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+</div>
+
+{% elif field.widget_type in "checkbox" %}
+<div class="form-floating mb-3">
+    {% with form|get_form_errors:field.name as errors %}
+        {% with form|get_field_value:field.name as value %}
+            <input name="{{ field.name }}"
+            type="checkbox" 
+            class="form-check-input {% if errors %}is-invalid{% endif %}" 
+            {% if value %}value="{{ value }}"{% endif %} 
+            id="id_{{ field.name }}"
+            placeholder="" disabled>
+            <label class="form-check-label" for="id_{{ field.name }}">{{ field.label }}</label>
+            {% if errors %}
+                <div class="invalid-feedback">{{ errors }}</div>
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+</div>
+
+{% endif %}
+{% endfor %}
