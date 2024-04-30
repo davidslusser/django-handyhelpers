@@ -8,7 +8,7 @@ def get_form_errors(form, field_name):
     """Get errors on a form field
 
     Args:
-        form (_type_): django form object
+        form (Form): django form object
         field_name (str): name of form field
 
     Returns:
@@ -31,7 +31,7 @@ def get_field_value(form, field_name):
     """Get the value of a form field
 
     Args:
-        form (_type_): django form object
+        form (Form): django form object
         field_name (str): name of form field
 
     Returns:

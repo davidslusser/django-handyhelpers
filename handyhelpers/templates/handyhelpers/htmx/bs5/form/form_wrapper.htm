@@ -6,18 +6,18 @@
     {% if form.hx_swap %}hx-swap="{{ form.hx_swap }}"{% endif %}
     >
     {% csrf_token %}
-        <div>{{ form.as_bs5 }}</div>
+        <div>{% if success and form.disable_on_success %}{{ form.as_bs5_disabled }}{% else %}{{ form.as_bs5 }}{% endif %}</div>
         {% if form.align %}
         <div class="d-flex justify-content-{{ form.align }}">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" {% if success and form.disable_on_success %}disabled{% endif %}>Submit</button>
         </div>
         {% else %}
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary" {% if success and form.disable_on_success %}disabled{% endif %}>Submit</button>
         {% endif %}
     </form>
     {% if form.align %}
     <div class="d-flex justify-content-{{ form.align }}">
-        {% if success and form.success_message %}<div class="fs-5 fw-bold text-warning">{{ form.success_message }}</div>{% endif %}
+        {% if success and form.success_message %}<div class="my-2 fs-5 fw-bold text-warning">{{ form.success_message }}</div>{% endif %}
     </div>
     {% else %}
     {% if success and form.success_message %}<div class="my-2 fs-5 fw-bold text-warning">{{ form.success_message }}</div>{% endif %}
