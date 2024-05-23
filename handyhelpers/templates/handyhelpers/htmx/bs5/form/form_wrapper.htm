@@ -1,5 +1,5 @@
-<div id="contact-request-form">
-    <form
+<div id="{{ form.hx_target }}">
+    <form enctype="multipart/form-data" 
     {% if form.hx_post %}hx-post="{{ form.hx_post }}"{% endif %}
     {% if form.hx_target %}hx-target="#{{ form.hx_target }}"{% endif %}
     {% if form.hx_trigger %}hx-trigger="{{ form.hx_trigger }}"{% endif %}
@@ -9,17 +9,35 @@
         <div>{% if success and form.disable_on_success %}{{ form.as_bs5_disabled }}{% else %}{{ form.as_bs5 }}{% endif %}</div>
         {% if form.align %}
         <div class="d-flex justify-content-{{ form.align }}">
-            <button type="submit" class="btn btn-primary" {% if success and form.disable_on_success %}disabled{% endif %}>Submit</button>
+            <button type="submit" class="btn btn-primary" {% if success and form.disable_on_success %}disabled{% endif %}>{{ form.submit_button_text }}</button>
         </div>
         {% else %}
-        <button type="submit" class="btn btn-primary" {% if success and form.disable_on_success %}disabled{% endif %}>Submit</button>
+        <button type="submit" class="btn btn-primary" {% if success and form.disable_on_success %}disabled{% endif %}>{{ form.submit_button_text }}</button>
         {% endif %}
     </form>
     {% if form.align %}
-    <div class="d-flex justify-content-{{ form.align }}">
-        {% if success and form.success_message %}<div class="my-2 fs-5 fw-bold text-warning">{{ form.success_message }}</div>{% endif %}
+    <div class="my-2 d-flex justify-content-{{ form.align }}">
+        {% if success and form.success_message %}
+        {% if form.use_alert_for_success_message %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <span class="my-2 fw-bold">{{ form.success_message }} 1</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% else %}
+        <div class="my-2 fw-bold text-success">{{ form.success_message }}</div>
+        {% endif %}
+        {% endif %}
     </div>
     {% else %}
-    {% if success and form.success_message %}<div class="my-2 fs-5 fw-bold text-warning">{{ form.success_message }}</div>{% endif %}
+    {% if success and form.success_message %}
+    {% if form.use_alert_for_success_message %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <span class="my-2 fw-bold">{{ form.success_message }}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% else %}
+    <div class="my-2 fw-bold text-success">{{ form.success_message }}</div>
+    {% endif %}
+    {% endif %}
     {% endif %}
 </div>

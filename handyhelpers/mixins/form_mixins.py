@@ -59,6 +59,7 @@ class HtmxFormMixin:
     hx_trigger = "submit"
     hx_swap = "innerHTML"
     success_message = None
+    use_alert_for_success_message = False
     template_name = "handyhelpers/htmx/bs5/form/inline_form.htm"
     template_disabled_name = "handyhelpers/htmx/bs5/form/inline_form_disabled.htm"
     align = "start" # can be 'start', 'end', 'center'
