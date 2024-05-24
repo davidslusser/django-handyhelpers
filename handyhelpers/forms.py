@@ -39,3 +39,7 @@ class TimestampFilter(forms.Form):
 
 class HtmxModelForm(HtmxFormMixin, forms.ModelForm):
     """ ModelForm class with the HtmxFormMixin included """
+
+
+class HtmxForm(HtmxFormMixin, forms.Form):
+    """ Form class with the HtmxFormMixin included """

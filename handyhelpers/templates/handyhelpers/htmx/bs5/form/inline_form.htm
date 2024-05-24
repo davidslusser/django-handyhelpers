@@ -105,5 +105,22 @@
     {% endwith %}
 </div>
 
+{% elif field.widget_type in "clearablefile" %}
+<div class="mb-3">
+    {% with form|get_form_errors:field.name as errors %}
+        {% with form|get_field_value:field.name as value %}
+            <input name="{{ field.name }}"
+            type="file" 
+            class="form-control {% if errors %}is-invalid{% endif %}" 
+            {% if value %}value="{{ value }}"{% endif %} 
+            id="id_{{ field.name }}"
+            >
+            {% if errors %}
+                <div class="invalid-feedback">{{ errors }}</div>
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+</div>
+
 {% endif %}
 {% endfor %}
