@@ -18,26 +18,31 @@
     {% if form.align %}
     <div class="my-2 d-flex justify-content-{{ form.align }}">
         {% if success and form.success_message %}
-        {% if form.use_alert_for_success_message %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <span class="my-2 fw-bold">{{ form.success_message }} 1</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% else %}
-        <div class="my-2 fw-bold text-success">{{ form.success_message }}</div>
-        {% endif %}
+            {% if form.use_alert_for_success_message %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <span class="my-2 fw-bold">{{ form.success_message }}</span>
+                {% if results %}<span>{{ results }}</span>{% endif %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% else %}
+            <div class="my-2 fw-bold text-success">{{ form.success_message }}</div>
+            {% endif %}
         {% endif %}
     </div>
     {% else %}
-    {% if success and form.success_message %}
-    {% if form.use_alert_for_success_message %}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <span class="my-2 fw-bold">{{ form.success_message }}</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% else %}
-    <div class="my-2 fw-bold text-success">{{ form.success_message }}</div>
-    {% endif %}
-    {% endif %}
+        {% if success and form.success_message %}
+            {% if form.use_alert_for_success_message %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <span class="my-2 fw-bold">{{ form.success_message }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% else %}
+            <div class="my-2 fw-bold text-success">{{ form.success_message }}</div>
+            {% endif %}
+        {% endif %}
+        {% if results %}
+        <div hx-swap-oob="true" id="{{ form.hx_target }}-results" class="me-3 text-primary my-2 d-flex justify-content-{{ form.align }}">{{ results|safe }}</div>
+        {% endif %}
     {% endif %}
 </div>
+
