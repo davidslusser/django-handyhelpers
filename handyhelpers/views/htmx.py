@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render
 from django.utils import timezone
-from django.views.generic import View
+from django.views.generic import DetailView, View
 from handyhelpers.mixins.view_mixins import HtmxViewMixin
 
 
@@ -167,6 +167,7 @@ class ModelDetailBootstrapModalView(BuildBootstrapModalView):
 
 
 class HtmxPostForm(HtmxViewMixin, View):
+
     form = None
     template_name = 'handyhelpers/htmx/bs5/form/form_wrapper.htm'
     
@@ -183,3 +184,72 @@ class HtmxPostForm(HtmxViewMixin, View):
         else:
             context["form"] = form
         return render(request, self.template_name, context)
+
+
+class HtmxOptionView(HtmxViewMixin, View):
+    template_name = None
+    htmx_template_name = None
+    context = {}
+
+    def get(self, request):
+        if self.is_htmx() and self.template_name:
+            template_name = self.htmx_template_name
+        else:
+            template_name = self.template_name
+        return render(request, template_name, self.context)
+
+
+class HtmxOptionDetailView(HtmxViewMixin, DetailView):
+    template_name = None
+    htmx_template_name = None
+
+    def get(self, request, *args, **kwargs):
+        if self.is_htmx() and self.htmx_template_name:
+            self.template_name = self.htmx_template_name
+        return super().get(request, *args, **kwargs)
+
+
+class HtmxOptionMultiView(HtmxViewMixin, View):
+    template_name = None
+    htmx_template_name = None
+    htmx_card_template_name = None
+    htmx_custom_template_name = None
+    htmx_index_template_name = None
+    htmx_list_template_name = None
+    htmx_minimal_template_name = None
+    htmx_table_template_name = None
+    context = {}
+    queryset = None
+
+    def get(self, request, **kwargs):
+        if self.queryset is not None:
+            self.queryset._result_cache = None
+        if self.is_htmx():
+            display = kwargs.get("display", None)
+            if display:
+                if display == "card" and self.htmx_card_template_name:
+                    template_name = self.htmx_card_template_name
+                elif display == "custom" and self.htmx_custom_template_name:
+                    template_name = self.htmx_custom_template_name
+                elif display == "index" and self.htmx_index_template_name:
+                    template_name = self.htmx_index_template_name
+                elif display == "list" and self.htmx_list_template_name:
+                    template_name = self.htmx_list_template_name
+                elif display == "minimal" and self.htmx_minimal_template_name:
+                    template_name = self.htmx_minimal_template_name
+                elif display == "table" and self.htmx_table_template_name:
+                    template_name = self.htmx_table_template_name
+                elif self.htmx_template_name:
+                    template_name = self.htmx_template_name          
+            else:
+                template_name = self.template_name
+        else:
+            template_name = self.template_name
+        self.context["queryset"] = self.queryset
+        return render(request, template_name, self.context)
+
+
+class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxOptionMultiView):
+    def get(self, request, *args, **kwargs):
+        self.queryset = self.filter_by_query_params()
+        return super().get(request, *args, **kwargs)
