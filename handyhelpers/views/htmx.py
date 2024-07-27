@@ -4,7 +4,7 @@ from django.template import loader
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.generic import DetailView, View
-from handyhelpers.mixins.view_mixins import HtmxViewMixin
+from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin, HtmxViewMixin
 
 
 class BuildBootstrapModalView(HtmxViewMixin, View):
@@ -210,6 +210,9 @@ class HtmxOptionDetailView(HtmxViewMixin, DetailView):
 
 
 class HtmxOptionMultiView(HtmxViewMixin, View):
+    title = None
+    subtitle = None
+    model = None
     template_name = None
     htmx_template_name = None
     htmx_card_template_name = None
@@ -218,10 +221,12 @@ class HtmxOptionMultiView(HtmxViewMixin, View):
     htmx_list_template_name = None
     htmx_minimal_template_name = None
     htmx_table_template_name = None
+    htmx_table_wrapper_template_name = "handyhelpers/htmx/bs5/table_wrapper.htm"
     context = {}
     queryset = None
 
     def get(self, request, **kwargs):
+        template_name = None
         if self.queryset is not None:
             self.queryset._result_cache = None
         if self.is_htmx():
@@ -237,15 +242,26 @@ class HtmxOptionMultiView(HtmxViewMixin, View):
                     template_name = self.htmx_list_template_name
                 elif display == "minimal" and self.htmx_minimal_template_name:
                     template_name = self.htmx_minimal_template_name
-                elif display == "table" and self.htmx_table_template_name:
-                    template_name = self.htmx_table_template_name
+                elif display == "table" and self.htmx_table_wrapper_template_name:
+                    template_name = self.htmx_table_wrapper_template_name
+                    self.context["table"] = self.htmx_table_template_name
                 elif self.htmx_template_name:
                     template_name = self.htmx_template_name          
             else:
                 template_name = self.template_name
         else:
             template_name = self.template_name
-        self.context["queryset"] = self.queryset
+        if self.queryset:
+            self.context["queryset"] = self.queryset
+        elif self.model:
+            self.context["queryset"] = self.model.objects.all()
+
+        if self.title:
+            self.context["title"] = self.title
+        elif self.model:
+            self.context["title"] = self.model._meta.verbose_name_plural.title()
+        
+        self.context["subtitle"] = self.subtitle
         return render(request, template_name, self.context)
 
 

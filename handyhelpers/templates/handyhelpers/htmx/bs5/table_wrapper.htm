@@ -1,0 +1,23 @@
+<section class="animated fadeIn" style="animation-delay: .15s;">
+    <div class="container-fluid px-5 py-2">
+        {% if title %}
+        <div class="h2 text-primary fw-bold my-3">{{ title }}: 
+            <span class="h4 text-secondary mx-2">{% if subtitle %}{{ subtitle }}{% endif %}</span>
+        </div>
+        {% endif %}
+        
+        <div class="sortable-table-wrapper" data-pagination-size="15">
+            <div class="d-flex justify-content-end mb-3">
+                {% if queryset %}<i class="ms-1 pagination-toggle fs-5 fa-solid fa-square-caret-down"></i>{% endif %}
+            </div>
+
+            {% if table %}{% include table %}{% endif %}
+
+            {% if queryset %}
+            <nav class="sortable-table-nav">
+                <ul class="pagination justify-content-end">{% comment %}Pagination will be inserted here by JavaScript{% endcomment %}</ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</section>
