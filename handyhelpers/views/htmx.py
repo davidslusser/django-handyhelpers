@@ -248,7 +248,7 @@ class HtmxOptionMultiView(HtmxViewMixin, View):
                 elif self.htmx_template_name:
                     template_name = self.htmx_template_name          
             else:
-                template_name = self.template_name
+                return HttpResponse("", content_type="text/plain")
         else:
             template_name = self.template_name
         if self.queryset:
@@ -265,7 +265,81 @@ class HtmxOptionMultiView(HtmxViewMixin, View):
         return render(request, template_name, self.context)
 
 
-class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxOptionMultiView):
+class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
+    title = None
+    subtitle = None
+    model = None
+    template_name = None
+    htmx_template_name = None
+    htmx_card_template_name = None
+    htmx_custom_template_name = None
+    htmx_index_template_name = None
+    htmx_list_template_name = None
+    htmx_minimal_template_name = None
+    htmx_table_template_name = None
+    htmx_table_wrapper_template_name = None
+    context = {}
+    queryset = None
+    controls = {
+        "card": None,
+        "custom": None,
+        "index": None,
+        "list": None,
+        "minimal": None,
+        "table": None,
+    }
+
     def get(self, request, *args, **kwargs):
+        template_name = None
+        if self.queryset is not None:
+            self.queryset._result_cache = None
+        if self.is_htmx():
+            display = kwargs.get("display", None)
+            if display:
+                if display == "card" and self.htmx_card_template_name:
+                    template_name = self.htmx_card_template_name
+                elif display == "custom" and self.htmx_custom_template_name:
+                    template_name = self.htmx_custom_template_name
+                elif display == "index" and self.htmx_index_template_name:
+                    template_name = self.htmx_index_template_name
+                elif display == "list" and self.htmx_list_template_name:
+                    template_name = self.htmx_list_template_name
+                elif display == "minimal" and self.htmx_minimal_template_name:
+                    template_name = self.htmx_minimal_template_name
+                elif display == "table" and self.htmx_table_wrapper_template_name:
+                    template_name = self.htmx_table_wrapper_template_name
+                    self.context["table"] = self.htmx_table_template_name
+                elif self.htmx_template_name:
+                    template_name = self.htmx_template_name
+                
+                if self.htmx_card_template_name:
+                    self.controls["card"] = True
+                if self.htmx_custom_template_name:
+                    self.controls["custom"] = True
+                if self.htmx_list_template_name:
+                    self.controls["list"] = True
+                if self.htmx_index_template_name:
+                    self.controls["index"] = True
+                if self.htmx_minimal_template_name:
+                    self.controls["minimal"] = True
+                if self.htmx_table_template_name:
+                    self.controls["table"] = True
+            else:
+                return HttpResponse("", content_type="text/plain")
+        else:
+            template_name = self.template_name
+
+        if self.queryset == None and self.model:
+            self.queryset = self.model.objects.all()
         self.queryset = self.filter_by_query_params()
-        return super().get(request, *args, **kwargs)
+        self.context["queryset"] = self.queryset
+
+        if self.title:
+            self.context["title"] = self.title
+        elif self.model:
+            self.context["title"] = self.model._meta.verbose_name_plural.title()
+        
+        self.context["subtitle"] = self.subtitle
+        self.context["controls"] = self.controls
+        self.context["htmx_template_name"] = template_name
+        return render(request, template_name, self.context)
