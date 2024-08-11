@@ -265,7 +265,10 @@ class HtmxOptionMultiView(HtmxViewMixin, View):
         return render(request, template_name, self.context)
 
 
+
 class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
+    context = {}
+    control_list = []
     title = None
     subtitle = None
     model = None
@@ -277,31 +280,29 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
     htmx_list_template_name = None
     htmx_minimal_template_name = None
     htmx_table_template_name = None
-    htmx_table_wrapper_template_name = None
-    context = {}
+    htmx_table_wrapper_template_name = "handyhelpers/htmx/bs5/table_wrapper.htm"
     queryset = None
-    controls = {
-        "card": None,
-        "custom": None,
-        "index": None,
-        "list": None,
-        "minimal": None,
-        "table": None,
-    }
 
     def get(self, request, *args, **kwargs):
+        control_list = []
+        display = kwargs.get("display", None)
+        root_url = reverse(f"{request.resolver_match.app_name}:{request.resolver_match.url_name}").replace("//", "/")
+        query_params = request.GET
         template_name = None
+
+        # Convert query parameters to a URL-encoded string without the extra list notation
+        query_string = "&".join([f"{key}={value}" for key, value in query_params.items()]) if query_params else ""
+
         if self.queryset is not None:
             self.queryset._result_cache = None
         if self.is_htmx():
-            display = kwargs.get("display", None)
             if display:
                 if display == "card" and self.htmx_card_template_name:
                     template_name = self.htmx_card_template_name
-                elif display == "custom" and self.htmx_custom_template_name:
-                    template_name = self.htmx_custom_template_name
-                elif display == "index" and self.htmx_index_template_name:
-                    template_name = self.htmx_index_template_name
+                # elif display == "custom" and self.htmx_custom_template_name:
+                #     template_name = self.htmx_custom_template_name
+                # elif display == "index" and self.htmx_index_template_name:
+                    # template_name = self.htmx_index_template_name
                 elif display == "list" and self.htmx_list_template_name:
                     template_name = self.htmx_list_template_name
                 elif display == "minimal" and self.htmx_minimal_template_name:
@@ -311,23 +312,48 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
                     self.context["table"] = self.htmx_table_template_name
                 elif self.htmx_template_name:
                     template_name = self.htmx_template_name
-                
-                if self.htmx_card_template_name:
-                    self.controls["card"] = True
-                if self.htmx_custom_template_name:
-                    self.controls["custom"] = True
-                if self.htmx_list_template_name:
-                    self.controls["list"] = True
-                if self.htmx_index_template_name:
-                    self.controls["index"] = True
-                if self.htmx_minimal_template_name:
-                    self.controls["minimal"] = True
-                if self.htmx_table_template_name:
-                    self.controls["table"] = True
             else:
                 return HttpResponse("", content_type="text/plain")
         else:
             template_name = self.template_name
+
+        # add display controls
+        if self.htmx_card_template_name:
+            control_list.append(
+                {
+                    "name": "card",
+                    "icon": """<i class="fa-regular fa-square"></i>""",
+                    "url": f"{root_url}card?{query_string}"
+                }
+            )
+        # if self.htmx_custom_template_name:
+        #     pass
+        if self.htmx_list_template_name:
+            control_list.append(
+                {
+                    "name": "list",
+                    "icon": """<i class="fa-solid fa-list-ul"></i>""",
+                    "url": f"{root_url}list?{query_string}"
+                }
+            )
+        # if self.htmx_index_template_name:
+        #     pass
+        if self.htmx_minimal_template_name:
+            control_list.append(
+                {
+                    "name": "minimal",
+                    "icon": """<i class="fa-solid fa-compress"></i>""",
+                    "url": f"{root_url}minimal?{query_params}"
+                }
+            )
+        if self.htmx_table_template_name:
+            control_list.append(
+                {
+                    "name": "table",
+                    "icon": """<i class="fa-solid fa-table"></i>""",
+                    "url": f"{root_url}table?{query_params}"
+                }
+            )
 
         if self.queryset == None and self.model:
             self.queryset = self.model.objects.all()
@@ -340,6 +366,7 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
             self.context["title"] = self.model._meta.verbose_name_plural.title()
         
         self.context["subtitle"] = self.subtitle
-        self.context["controls"] = self.controls
+        self.context["control_list"] = control_list
+        self.context["display"] = display
         self.context["htmx_template_name"] = template_name
         return render(request, template_name, self.context)

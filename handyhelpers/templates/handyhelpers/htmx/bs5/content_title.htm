@@ -1,0 +1,18 @@
+<div class="container-fluid px-5 py-2 animated fadeIn" style="animation-delay: .1s;">
+    <div class="row">
+        <div class="col-10">
+            <span class="h2 text-primary fw-bold my-3">{% if title %}{{ title }}: {% endif %}</span>
+            <span class="h4 text-secondary mx-2">{% if subtitle %}{{ subtitle }}{% endif %}</span>
+        </div>
+        <div class="col-2 d-flex align-items-end justify-content-end pe-2">
+            {% for control in control_list %}
+            <span class="mx-1">
+                <a href="#" {% if control.name == display %}class="text-secondary"{% endif %}
+                    hx-get="{{ control.url }}"
+                    hx-target="#body_main"
+                >{{ control.icon|safe }}</a>
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+</div>
