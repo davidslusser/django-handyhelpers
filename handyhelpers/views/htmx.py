@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.http import HttpResponse
 from django.template import loader
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from django.utils import timezone
 from django.views.generic import DetailView, View
 from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin, HtmxViewMixin
@@ -265,10 +265,8 @@ class HtmxOptionMultiView(HtmxViewMixin, View):
         return render(request, template_name, self.context)
 
 
-
 class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
     context = {}
-    control_list = []
     title = None
     subtitle = None
     model = None
