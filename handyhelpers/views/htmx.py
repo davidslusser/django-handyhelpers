@@ -5,6 +5,8 @@ from django.shortcuts import render, reverse
 from django.utils import timezone
 from django.views.generic import DetailView, View
 from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin, HtmxViewMixin
+from handyhelpers.views.gui import HandyHelperIndexView
+
 
 
 class BuildBootstrapModalView(HtmxViewMixin, View):
@@ -368,3 +370,13 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
         self.context["display"] = display
         self.context["htmx_template_name"] = template_name
         return render(request, template_name, self.context)
+
+
+class HtmxItemizedView(HtmxViewMixin, HandyHelperIndexView):
+    template_name = "handyhelpers/generic/bs5/generic_index.html"
+    htmx_template_name = "handyhelpers/htmx/bs5/index.htm"
+
+    def get(self, request, *args, **kwargs):
+        if self.is_htmx() and self.htmx_template_name:
+            self.template_name = self.htmx_template_name
+        return super().get(request, *args, **kwargs)

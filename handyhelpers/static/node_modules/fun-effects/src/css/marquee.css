@@ -1,0 +1,45 @@
+
+.marquee-wrapper {
+  margin: 2rem;
+  padding: 2rem;
+  width: 95%;
+  max-width: 95%;
+  margin-inline: auto;
+  min-height: calc(var(--marquee-item-height, 100px) + 4rem);
+  position: relative;
+  overflow-x: hidden;
+  mask-image: linear-gradient(to right,rgba(0, 0, 0, 0),rgba(0, 0, 0, 1) 20%,rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0));
+  display: flex;
+}
+
+
+
+@keyframes scrollLeft {
+  to {
+    left: calc(var(--marquee-item-width, 200px) * -1);
+  }
+}
+
+@keyframes scrollRight {
+  to {
+    right: calc(var(--marquee-item-width, 200px) * -1);
+  }
+}
+
+.itemLeft,
+.itemRight {
+  position: absolute;
+  animation-timing-function: linear;
+  animation-duration: var(--marquee-duration, 60s);
+  animation-iteration-count: infinite;
+}
+
+.itemLeft {
+  /* left: max(calc(200px * 10), calc(100% + 200px)); */
+  animation-name: scrollLeft;
+}
+
+.itemRight {
+  /* right: max(calc(200px * 8), calc(100% + 200px)); */
+  animation-name: scrollRight;
+}

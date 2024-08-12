@@ -1,0 +1,94 @@
+
+/* Define the fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Apply the fade-in effect to the div */
+.fade-in {
+    animation: fadeIn var(--fade-duration, 1s) ease-in-out; /* Use CSS variable with a default value */
+    -webkit-animation: fadeIn var(--fade-duration, 1s) ease-in-out; /* Safari and Chrome */
+    -moz-animation: fadeIn var(--fade-duration, 1s) ease-in-out; /* Firefox */
+    -o-animation: fadeIn var(--fade-duration, 1s) ease-in-out; /* Opera */
+    -ms-animation: fadeIn var(--fade-duration, 1s) ease-in-out; /* Internet Explorer */
+    opacity: 1; /* Ensures the div is visible after the animation */
+}
+
+
+/* Define the fade-in blur animation */
+@keyframes fadeInBlur {
+    from {
+        opacity: 0;
+        filter: blur(10px); /* Start with a blur */
+    }
+    to {
+        opacity: 1;
+        filter: blur(0); /* End with no blur */
+    }
+}
+
+/* Apply the fade-in blur effect to the div */
+.fade-in-blur {
+    animation: fadeInBlur var(--fade-duration, 1s) ease-in-out; /* Use CSS variable with a default value */
+    -webkit-animation: fadeInBlur var(--fade-duration, 1s) ease-in-out; /* Safari and Chrome */
+    -moz-animation: fadeInBlur var(--fade-duration, 1s) ease-in-out; /* Firefox */
+    -o-animation: fadeInBlur var(--fade-duration, 1s) ease-in-out; /* Opera */
+    -ms-animation: fadeInBlur var(--fade-duration, 1s) ease-in-out; /* Internet Explorer */
+    opacity: 1; /* Ensures the div is visible after the animation */
+    filter: blur(0); /* Ensures the div is not blurred after the animation */
+}
+
+.fade-in-from-bottom {
+    animation: fade-in-from-bottom linear;
+    -moz-animation: fade-in-from-bottom linear;
+    animation-range: entry 0% entry 125%;
+    animation-timeline: view();
+}
+.fade-in-from-left {
+    animation: fade-in-from-left linear;
+    animation-range: entry 0% entry 150%;
+    animation-timeline: view();
+}
+.fade-in-from-right {
+    animation: fade-in-from-right linear;
+    animation-range: entry 0% entry 150%;
+    animation-timeline: view();
+}
+
+@keyframes fade-in-from-bottom {
+    0% { 
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    100% { 
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fade-in-from-left {
+    0% { 
+        opacity: 0;
+        transform: translateX(-100px);
+    }
+    100% { 
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fade-in-from-right {
+    0% { 
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    100% { 
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

@@ -2,9 +2,9 @@
     {% include 'handyhelpers/htmx/bs5/content_title.htm' %}
     
     <div class="container-fluid px-5 py-2 animated fadeIn" style="animation-delay: .2s;">
-        <div class="sortable-table-wrapper" data-pagination-size="15">
+        <div class="sortable-table-wrapper" data-pagination-size="12">
             <div class="d-flex justify-content-end mb-3">
-                {% if queryset %}<i class="ms-1 pagination-toggle fs-5 fa-solid fa-square-caret-down"></i>{% endif %}
+                {% if queryset %}<span title="toggle pagination"><i class="ms-1 pagination-toggle fs-5 fa-solid fa-square-caret-down"></i></span>{% endif %}
             </div>
 
             {% if table %}{% include table %}{% endif %}
