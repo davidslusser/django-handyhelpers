@@ -1,6 +1,5 @@
 <div class="modal-dialog modal-dialog-scrollable {{ modal_size }} ">
     {% if form %}
-    {{ csrf_token }}
     <form hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
           class="modal-content">
     {% else %}
@@ -26,7 +25,7 @@
             {% if form_template %}
                 {% include form_template %}
             {% else %}
-                {{ form.as_p }}
+                {% if form_display == "bs5" %}{{ form.as_bs5 }}{% else %}{{ form.as_p }}{% endif %}
             {% endif %}
         {% else %}
             {% if modal_body %}{{ modal_body|safe }}{% endif %}

@@ -188,6 +188,47 @@ class HtmxPostForm(HtmxViewMixin, View):
         return render(request, self.template_name, context)
 
 
+class CreateModelModalView(BuildBootstrapModalView):
+    """
+    """
+
+    modal_button_submit = "Create"
+    modal_title = None
+    form = None
+    form_display = "bs5"
+
+    def get(self, request, *args, **kwargs):
+        if not self.is_htmx():
+            return HttpResponse("Invalid request", status=400)
+        if not self.form:
+            return HttpResponse("Invalid request", status=400)
+        context = {
+            "modal_title": self.modal_title if self.modal_title else f"Create {self.form.Meta.model._meta.object_name}",
+            "modal_subtitle": self.modal_subtitle,
+            "modal_body": self.modal_body,
+            "modal_size": self.modal_size,
+            "modal_button_close": self.modal_button_close,
+            "modal_button_submit": self.modal_button_submit,
+            "data": self.data,
+            "extra_data": self.extra_data,
+            "form": self.form,
+            "form_display": self.form_display,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form(request.POST)
+        if form.is_valid():
+            obj = form.save()
+            response = HttpResponse(status=204)
+            response["X-Toast-Message"] = f"""{obj._meta.object_name} '{obj}' created!"""
+            return response
+        else:
+            response = HttpResponse(status=400)
+            response["X-Toast-Message"] = f"""<span class="text-danger">Failed to create new {self.form.Meta.model._meta.object_name}</span>"""
+            return response
+
+
 class HtmxOptionView(HtmxViewMixin, View):
     template_name = None
     htmx_template_name = None

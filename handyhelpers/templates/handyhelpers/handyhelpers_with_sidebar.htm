@@ -54,6 +54,11 @@
                     {% include 'handyhelpers/component/bs5/show_messages.htm' %}
                 {% endblock messages %}
 
+                {# include toasts #}
+                <div aria-live="polite" aria-atomic="true" class="position-relative">
+                    <div class="toast-container position-fixed top-0 end-0 p-3"></div>
+                </div>
+
                 <main class="content px-3 py-2" id="body_main">
                     {% block content %}Default Content - Local page should overwrite this{% endblock content %}
                 </main>
@@ -91,7 +96,7 @@
 
         {# Global Javascript Functions #}
         <script>
-            {# Django CSRF Functions for AJAX Calls #}
+            //{# Django CSRF Functions for AJAX Calls #}
             function getCookie(name) {
                 var cookieValue = null;
                 if (document.cookie && document.cookie !== '') {
@@ -107,11 +112,43 @@
                 return cookieValue;
             }
             function csrfSafeMethod(method) {
-                {# these HTTP methods do not require CSRF protection #}
+                //{# these HTTP methods do not require CSRF protection #}
                 return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
             }
             var csrftoken = getCookie('csrftoken');
         </script>
+    <script>
+        // Function to create and show a toast
+        function showToast(message) {
+            const toastContainer = document.querySelector('.toast-container');
+            const toastElement = document.createElement('div');
+            toastElement.classList.add('toast');
+            toastElement.setAttribute('role', 'alert');
+            toastElement.setAttribute('aria-live', 'assertive');
+            toastElement.setAttribute('aria-atomic', 'true');
+            toastElement.setAttribute('data-bs-delay', '5000');
+            toastElement.innerHTML = `
+                <div class="toast-header">
+                    <strong class="me-auto">Notification</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            `;
+            toastContainer.appendChild(toastElement);
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        }
+
+        // Check for HTMX response headers
+        document.addEventListener('htmx:afterRequest', (event) => {
+            const message = event.detail.xhr.getResponseHeader('X-Toast-Message');
+            if (message) {
+                showToast(message);
+            }
+        });
+    </script>
 
     </body>
     {% endblock body %}
