@@ -29,6 +29,7 @@ wheels/
 local_test/
 
 # node_modules exclusions
+!handyhelpers/static/node_modules/*/dist
 !handyhelpers/static/node_modules/*/*/dist
 !handyhelpers/static/node_modules/*/*/lib
 

@@ -122,5 +122,45 @@
     {% endwith %}
 </div>
 
+{% elif field.widget_type in "number" %}
+<div class="form-floating mb-3">
+    {% with form|get_form_errors:field.name as errors %}
+        {% with form|get_field_value:field.name as value %}
+            <input name="{{ field.name }}"
+            type="number" 
+            class="form-control {% if errors %}is-invalid{% endif %}" 
+            {% if value %}value="{{ value }}"{% endif %} 
+            id="id_{{ field.name }}"
+            placeholder="">
+            <label for="id_{{ field.name }}">{{ field.label }}</label>
+            {% if errors %}
+                <div class="invalid-feedback">{{ errors }}</div>
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+</div>
+
+{% elif field.widget_type in "select" %}
+<div class="form-floating mb-3">
+    {% with form|get_form_errors:field.name as errors %}
+        {% with form|get_field_value:field.name as value %}
+            <select name="{{ field.name }}"
+            type="number" 
+            class="form-select {% if errors %}is-invalid{% endif %}" 
+            {% if value %}value="{{ value }}"{% endif %} 
+            id="id_{{ field.name }}"
+            placeholder="">
+                {% for value, label in field.field.choices %}
+                    <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+            <label for="id_{{ field.name }}">{{ field.label }}</label>
+            {% if errors %}
+                <div class="invalid-feedback">{{ errors }}</div>
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+</div>
+
 {% endif %}
 {% endfor %}

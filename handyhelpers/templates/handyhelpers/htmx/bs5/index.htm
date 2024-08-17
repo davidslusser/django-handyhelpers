@@ -1,0 +1,34 @@
+{% load handyhelper_tags %}
+<section>
+    <header class="m-5 animated fadeIn">
+        <div class="headline text-center">
+            <div class="container">
+                <div class="h1 text-primary fw-bold mb-3">{{ title|safe }}</div>
+                <div class="h5 text-secondary">{{ subtitle|safe }}</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="zoom-group-flex-container animated fadeIn" style="animation-delay: .25s;">
+
+        <!-- unprotected items -->
+        {% for item in item_list %}
+            <a href="{{ item.url }}" class="card zoom-card zoom-index-card">
+                <div class="icon"><i class="{{ item.icon }}"></i></div>
+                <div class="title">{{ item.title }}</div>
+                <div class="description">{{ item.description }}</div>
+            </a>
+        {% endfor %}
+
+        <!-- protected items -->
+        {% if request.user|has_group:protected_group_name %}
+            {% for item in protected_item_list %}
+                <a href="{{ item.url }}" class="card zoom-card zoom-index-card">
+                    <div class="icon"><i class="{{ item.icon }}"></i></div>
+                    <div class="title">{{ item.title }}</div>
+                    <div class="description">{{ item.description }}</div>
+                </a>
+            {% endfor %}
+        {% endif %}
+    </div>
+</section>

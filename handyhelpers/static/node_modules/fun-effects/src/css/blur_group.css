@@ -1,0 +1,22 @@
+.blur-group-container {
+    pointer-events: none;
+}
+
+.blur-group-container > * {
+    pointer-events: auto;
+    transition: .4s;
+}
+
+.blur-group-container:hover > *,
+.blur-group-container:focus-within > * {
+    opacity: 0.3;
+    filter: blur(2px);
+}
+
+.blur-group-container:hover > :hover,
+.blur-group-container:focus-within > :focus {
+    opacity: 1;
+    outline: none;
+    filter: blur(0px);
+    transform: scale(1.1); 
+}

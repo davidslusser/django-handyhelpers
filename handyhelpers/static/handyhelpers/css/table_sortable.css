@@ -1,0 +1,17 @@
+th.sortable {
+    cursor: pointer;
+    position: relative;
+}
+th.sortable .fa {
+    margin-left: 5px;
+    color: var(--bs-secondary);
+}
+th.sortable .fa.sort-active {
+    color: var(--bs-primary);
+}
+th.sortable .fa-sortable {
+    visibility: hidden;
+}
+th.sortable:hover .fa-sortable {
+    visibility: visible;
+}

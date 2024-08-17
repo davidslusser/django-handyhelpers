@@ -155,5 +155,8 @@ class HtmxViewMixin:
             True if request is htmx, otherwise False
         """
         if self.request.headers.get("Hx-Request", None):
+            self.request.is_htmx = True
             return True
+        self.request.is_htmx = False
         return False
+
