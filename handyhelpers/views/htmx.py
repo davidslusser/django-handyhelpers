@@ -325,6 +325,7 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
     queryset = None
 
     def get(self, request, *args, **kwargs):
+        page_description = request.GET.get("page_description", None)
         control_list = []
         display = kwargs.get("display", None)
         root_url = reverse(f"{request.resolver_match.app_name}:{request.resolver_match.url_name}").replace("//", "/")
@@ -406,6 +407,7 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
         elif self.model:
             self.context["title"] = self.model._meta.verbose_name_plural.title()
         
+        self.context["page_description"] = page_description
         self.context["subtitle"] = self.subtitle
         self.context["control_list"] = control_list
         self.context["display"] = display
