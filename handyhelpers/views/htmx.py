@@ -341,10 +341,10 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
             if display:
                 if display == "card" and self.htmx_card_template_name:
                     template_name = self.htmx_card_template_name
-                # elif display == "custom" and self.htmx_custom_template_name:
-                #     template_name = self.htmx_custom_template_name
-                # elif display == "index" and self.htmx_index_template_name:
-                    # template_name = self.htmx_index_template_name
+                elif display == "custom" and self.htmx_custom_template_name:
+                    template_name = self.htmx_custom_template_name
+                elif display == "index" and self.htmx_index_template_name:
+                    template_name = self.htmx_index_template_name
                 elif display == "list" and self.htmx_list_template_name:
                     template_name = self.htmx_list_template_name
                 elif display == "minimal" and self.htmx_minimal_template_name:

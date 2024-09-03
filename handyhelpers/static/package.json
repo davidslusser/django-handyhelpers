@@ -12,6 +12,7 @@
     "hover.css": "^2.3.2",
     "htmx.org": "1.9.6",
     "jquery": "^3.6.1",
-    "mdb-ui-kit": "^5.0.0"
+    "mdb-ui-kit": "^5.0.0",
+    "tippy.js": "^6.3.7"
   }
 }
