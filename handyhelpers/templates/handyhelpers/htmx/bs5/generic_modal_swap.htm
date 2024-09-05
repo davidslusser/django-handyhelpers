@@ -36,7 +36,7 @@
             <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ modal_button_close }}</button>
             {% endif %}
             {% if modal_button_submit %}
-            <button hx-post="{% if hx_post %}{{ hx_post }}{% else %}{{ request.path }}{% endif %}" 
+            <button hx-post="{% if hx_post %}{{ hx_post }}{% else %}{{ request.path }}{% endif %}" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
            
             type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ modal_button_submit }}</button>
             {% endif %}

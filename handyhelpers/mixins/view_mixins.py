@@ -60,9 +60,9 @@ class FilterByQueryParamsMixin:
                 if val is not None:
                     if val == 'None':
                         val = None
-                    elif val in 'TruetrueTRUE':
+                    elif val in ['True','true','TRUE']:
                         val = True
-                    elif val in 'FalsefalseFALSE':
+                    elif val in ['False','false','FALSE']:
                         val = False
                     filter_dict[arg] = val
             if force_distinct:

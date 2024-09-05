@@ -5,6 +5,7 @@ import re
 from django.shortcuts import render
 from django.views.generic import View
 
+from handyhelpers.mixins.view_mixins import HtmxViewMixin
 
 
 class CalendarView(View):
@@ -102,3 +103,12 @@ class CalendarView(View):
             "next_month_url": next_month_url,
         }
         return render(request, self.template_name, context)
+
+
+class HtmxCalendarView(HtmxViewMixin, CalendarView):
+    htmx_template_name = None
+
+    def get(self, request, *args, **kwargs):
+        if self.is_htmx() and self.htmx_template_name:
+            self.template_name = self.htmx_template_name
+        return super().get(request, *args, **kwargs)

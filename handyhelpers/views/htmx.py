@@ -325,6 +325,7 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
     queryset = None
 
     def get(self, request, *args, **kwargs):
+        page_description = request.GET.get("page_description", None)
         control_list = []
         display = kwargs.get("display", None)
         root_url = reverse(f"{request.resolver_match.app_name}:{request.resolver_match.url_name}").replace("//", "/")
@@ -340,10 +341,10 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
             if display:
                 if display == "card" and self.htmx_card_template_name:
                     template_name = self.htmx_card_template_name
-                # elif display == "custom" and self.htmx_custom_template_name:
-                #     template_name = self.htmx_custom_template_name
-                # elif display == "index" and self.htmx_index_template_name:
-                    # template_name = self.htmx_index_template_name
+                elif display == "custom" and self.htmx_custom_template_name:
+                    template_name = self.htmx_custom_template_name
+                elif display == "index" and self.htmx_index_template_name:
+                    template_name = self.htmx_index_template_name
                 elif display == "list" and self.htmx_list_template_name:
                     template_name = self.htmx_list_template_name
                 elif display == "minimal" and self.htmx_minimal_template_name:
@@ -406,6 +407,7 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
         elif self.model:
             self.context["title"] = self.model._meta.verbose_name_plural.title()
         
+        self.context["page_description"] = page_description
         self.context["subtitle"] = self.subtitle
         self.context["control_list"] = control_list
         self.context["display"] = display
