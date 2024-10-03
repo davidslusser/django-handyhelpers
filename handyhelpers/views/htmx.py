@@ -242,9 +242,9 @@ class CreateModelModalView(BuildBootstrapModalView):
         else:
             form_error_dict = {}
             for k, v in form.errors.as_data().items():
-                form_error_dict[k] = str(v[0].message)
+                form_error_dict[k] = str(v[0].messages[0])
             request.session[f"{self.form.__name__}__errors"] = form_error_dict
-            request.session[f"{self.form.__name__}__data"] = form.cleaned_data
+            request.session[f"{self.form.__name__}__data"] = form.data
             response = HttpResponse(status=400)
             response["X-Toast-Message"] = f"""<span class="text-danger">Failed to create new {self.form.Meta.model._meta.object_name}</span>"""
             return response
