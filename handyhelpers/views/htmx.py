@@ -202,6 +202,20 @@ class CreateModelModalView(BuildBootstrapModalView):
             return HttpResponse("Invalid request", status=400)
         if not self.form:
             return HttpResponse("Invalid request", status=400)
+
+        form_errors = request.session.get(f"{self.form.__name__}__errors")
+        if self.form and form_errors:
+            data = request.session.get(f"{self.form.__name__}__data")
+            form = self.form()
+            form.data = data
+            for field, error_message in form_errors.items():
+                try:
+                    form.add_error(field, error_message)
+                except:
+                    pass
+        else:
+            form = self.form()
+
         context = {
             "modal_title": self.modal_title if self.modal_title else f"Create {self.form.Meta.model._meta.object_name}",
             "modal_subtitle": self.modal_subtitle,
@@ -211,7 +225,7 @@ class CreateModelModalView(BuildBootstrapModalView):
             "modal_button_submit": self.modal_button_submit,
             "data": self.data,
             "extra_data": self.extra_data,
-            "form": self.form,
+            "form": form,
             "form_display": self.form_display,
         }
         return render(request, self.template_name, context)
@@ -222,8 +236,15 @@ class CreateModelModalView(BuildBootstrapModalView):
             obj = form.save()
             response = HttpResponse(status=204)
             response["X-Toast-Message"] = f"""{obj._meta.object_name} '{obj}' created!"""
+            del request.session[f"{self.form.__name__}__errors"]
+            del request.session[f"{self.form.__name__}__data"]
             return response
         else:
+            form_error_dict = {}
+            for k, v in form.errors.as_data().items():
+                form_error_dict[k] = str(v[0].messages[0])
+            request.session[f"{self.form.__name__}__errors"] = form_error_dict
+            request.session[f"{self.form.__name__}__data"] = form.data
             response = HttpResponse(status=400)
             response["X-Toast-Message"] = f"""<span class="text-danger">Failed to create new {self.form.Meta.model._meta.object_name}</span>"""
             return response
