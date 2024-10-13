@@ -332,7 +332,6 @@ class HtmxOptionMultiView(HtmxViewMixin, View):
 class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
     context = {}
     default_display = "table"
-    model = None
     htmx_template_name = None
     htmx_card_template_name = None
     htmx_card_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_card.htm"
@@ -342,6 +341,7 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
     htmx_minimal_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_minimal.htm"
     htmx_table_template_name = None
     htmx_table_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_table.htm"
+    model = None
     queryset = None
     subtitle = None
     template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/full.html"
