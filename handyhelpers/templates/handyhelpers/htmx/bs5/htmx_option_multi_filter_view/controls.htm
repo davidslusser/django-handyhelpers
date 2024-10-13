@@ -1,0 +1,21 @@
+<div class="col-2 d-flex align-items-end justify-content-end pe-2">
+    {% if control_list|length > 1 %}
+    {% for control in control_list %}
+    <span class="mx-1">
+        <a href="#" {% if control.name == display %}class="text-secondary" style="opacity: .25;"{% endif %}
+            hx-get="{{ control.url }}"
+            hx-target="#body_main"
+            title="{{ control.name }} view"
+            hx-push-url="true"
+        >{{ control.icon|safe }}</a>
+    </span>
+    {% endfor %}
+    {% endif %}
+    {% if query_string %}
+    <span class="mx-1 text-primary">
+        <a href="{{ root_url }}{{ display }}/">
+        <i class="fas fa-undo-alt"></i>
+        </a>
+    </span>
+    {% endif %}
+</div>

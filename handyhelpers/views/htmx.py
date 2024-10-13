@@ -331,48 +331,57 @@ class HtmxOptionMultiView(HtmxViewMixin, View):
 
 class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
     context = {}
-    title = None
-    subtitle = None
-    model = None
-    template_name = None
+    default_display = "table"
     htmx_template_name = None
     htmx_card_template_name = None
-    htmx_custom_template_name = None
-    htmx_index_template_name = None
+    htmx_card_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_card.htm"
     htmx_list_template_name = None
+    htmx_list_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_list.htm"
     htmx_minimal_template_name = None
+    htmx_minimal_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_minimal.htm"
     htmx_table_template_name = None
-    htmx_table_wrapper_template_name = "handyhelpers/htmx/bs5/table_wrapper.htm"
+    htmx_table_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_table.htm"
+    model = None
     queryset = None
+    subtitle = None
+    template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/full.html"
+    title = None
 
     def get(self, request, *args, **kwargs):
         page_description = request.GET.get("page_description", None)
         control_list = []
         display = kwargs.get("display", None)
+        if not display:
+            display = self.default_display
         root_url = reverse(f"{request.resolver_match.app_name}:{request.resolver_match.url_name}").replace("//", "/")
         query_params = request.GET
         template_name = None
 
         # Convert query parameters to a URL-encoded string without the extra list notation
-        query_string = "&".join([f"{key}={value}" for key, value in query_params.items()]) if query_params else ""
+        # query_string = "&".join([f"{key}={value}" for key, value in query_params.items()]) if query_params else ""
+        if query_params:
+            query_string = query_params.urlencode()
+            url = f"{root_url}{display}?{query_string}"
+        else:
+            query_string = ""
+            url = f"{root_url}{display}"
 
         if self.queryset is not None:
             self.queryset._result_cache = None
         if self.is_htmx():
             if display:
-                if display == "card" and self.htmx_card_template_name:
-                    template_name = self.htmx_card_template_name
-                elif display == "custom" and self.htmx_custom_template_name:
-                    template_name = self.htmx_custom_template_name
-                elif display == "index" and self.htmx_index_template_name:
-                    template_name = self.htmx_index_template_name
-                elif display == "list" and self.htmx_list_template_name:
-                    template_name = self.htmx_list_template_name
+                if display == "card" and self.htmx_card_wrapper_template_name:
+                    template_name = self.htmx_card_wrapper_template_name
+                    self.context["item_content"] = self.htmx_card_template_name
+                elif display == "list" and self.htmx_list_wrapper_template_name:
+                    template_name = self.htmx_list_wrapper_template_name
+                    self.context["item_content"] = self.htmx_list_template_name
                 elif display == "minimal" and self.htmx_minimal_template_name:
-                    template_name = self.htmx_minimal_template_name
+                    template_name = self.htmx_minimal_wrapper_template_name
+                    self.context["item_content"] = self.htmx_minimal_template_name
                 elif display == "table" and self.htmx_table_wrapper_template_name:
                     template_name = self.htmx_table_wrapper_template_name
-                    self.context["table"] = self.htmx_table_template_name
+                    self.context["item_content"] = self.htmx_table_template_name
                 elif self.htmx_template_name:
                     template_name = self.htmx_template_name
             else:
@@ -386,27 +395,23 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
                 {
                     "name": "card",
                     "icon": """<i class="fa-regular fa-square"></i>""",
-                    "url": f"{root_url}card?{query_string}"
+                    "url": f"{root_url}card/?{query_string}" if query_string else f"{root_url}card/"
                 }
             )
-        # if self.htmx_custom_template_name:
-        #     pass
         if self.htmx_list_template_name:
             control_list.append(
                 {
                     "name": "list",
                     "icon": """<i class="fa-solid fa-list-ul"></i>""",
-                    "url": f"{root_url}list?{query_string}"
+                    "url": f"{root_url}list/?{query_string}" if query_string else f"{root_url}list/"
                 }
             )
-        # if self.htmx_index_template_name:
-        #     pass
         if self.htmx_minimal_template_name:
             control_list.append(
                 {
                     "name": "minimal",
                     "icon": """<i class="fa-solid fa-compress"></i>""",
-                    "url": f"{root_url}minimal?{query_params}"
+                    "url": f"{root_url}minimal/?{query_string}" if query_string else f"{root_url}minimal/"
                 }
             )
         if self.htmx_table_template_name:
@@ -414,7 +419,7 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
                 {
                     "name": "table",
                     "icon": """<i class="fa-solid fa-table"></i>""",
-                    "url": f"{root_url}table?{query_params}"
+                    "url": f"{root_url}table/?{query_string}" if query_string else f"{root_url}table/"
                 }
             )
 
@@ -432,6 +437,9 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
         self.context["subtitle"] = self.subtitle
         self.context["control_list"] = control_list
         self.context["display"] = display
+        self.context["root_url"] = root_url
+        self.context["query_string"] = query_string
+        self.context["url"] = url
         self.context["htmx_template_name"] = template_name
         return render(request, template_name, self.context)
 

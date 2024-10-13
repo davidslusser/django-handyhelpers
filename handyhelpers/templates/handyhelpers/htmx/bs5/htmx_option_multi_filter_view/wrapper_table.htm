@@ -1,13 +1,12 @@
 <section>
-    {% include 'handyhelpers/htmx/bs5/content_title.htm' %}
+    {% include 'handyhelpers/htmx/bs5/htmx_option_multi_filter_view/content_title.htm' %}
     
     <div class="container-fluid px-5 py-2 animated fadeIn" style="animation-delay: .2s;">
         <div class="sortable-table-wrapper" data-pagination-size="12">
             <div class="d-flex justify-content-end mb-3">
-                {% if queryset %}<span title="toggle pagination"><i class="ms-1 pagination-toggle fs-5 fa-solid fa-square-caret-down"></i></span>{% endif %}
+                {% if queryset %}<span title="toggle pagination" class="text-primary"><i class="ms-1 pagination-toggle fs-5 fa-solid fa-square-caret-down"></i></span>{% endif %}
             </div>
-
-            {% if table %}{% include table %}{% endif %}
+            {% if item_content %}{% include item_content %}{% endif %}
 
             {% if queryset %}
             <nav class="sortable-table-nav">

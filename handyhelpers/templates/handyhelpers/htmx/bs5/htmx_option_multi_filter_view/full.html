@@ -1,0 +1,6 @@
+{% extends BASE_TEMPLATE|default:"base.htm" %}
+{% load static %}
+
+{% block content %}
+    <div hx-get="{{ url }}" hx-trigger="load"></div>
+{% endblock content %}

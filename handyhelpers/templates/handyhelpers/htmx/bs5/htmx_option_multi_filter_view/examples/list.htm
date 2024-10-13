@@ -1,0 +1,11 @@
+<div class="list-group mt-3">
+{% for row in queryset %}
+    <div class="list-group-item border rounded mb-2 hvr-grow">
+        <div class="mb-1 fs-6 fw-bold text-primary">{{ row.pk }}</div>
+        <div class="mb-1 text-secondary row" style="font-size: smaller;">
+            <div class="col-4">{{ row.created_at }}</div>
+            <div class="col-8">{{ row.updated_at }}</div>
+        </div>
+    </div>
+{% endfor %}
+</div>

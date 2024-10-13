@@ -12,9 +12,17 @@
                     hx-get="{{ control.url }}"
                     hx-target="#body_main"
                     title="{{ control.name }} view"
+                    hx-push-url="true"
                 >{{ control.icon|safe }}</a>
             </span>
             {% endfor %}
+            {% endif %}
+            {% if query_string %}
+            <span class="mx-1 text-primary">
+                <a href="{{ root_url }}{{ display }}/">
+                <i class="fas fa-undo-alt"></i>
+                </a>
+            </span>
             {% endif %}
         </div>
     </div>
