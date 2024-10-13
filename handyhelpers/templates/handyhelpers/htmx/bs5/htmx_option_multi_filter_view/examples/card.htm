@@ -1,0 +1,17 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+    {% for row in queryset %}
+    <div class="col-lg-3 col-md-4 col-sm-6 d-flex justify-content-center mb-4">
+        <div class="card hvr-grow">
+            <div class="card-body">
+                <div class="card-title mb-1 fs-6 fw-bold text-primary">{{ row.pk }}</div>
+                <div class="card-text text-secondary row" style="font-size: smaller;">
+                    <div class="col-12">{{ row.created_at }}</div>
+                    <div class="col-12">{{ row.updated_at }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+</div>

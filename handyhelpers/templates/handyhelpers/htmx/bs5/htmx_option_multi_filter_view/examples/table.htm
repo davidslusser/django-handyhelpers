@@ -1,0 +1,21 @@
+<table class="table table-condensed table-bordered table-striped mt-3">
+    <thead>
+        <tr>
+            <th class="sortable">ID<i class="fa fa-sortable fa-sort-up"></i><i class="fa fa-sortable fa-sort-down"></i></th>
+            <th class="sortable">Created At <i class="fa fa-sortable fa-sort-up"></i><i class="fa fa-sortable fa-sort-down"></i></th>
+            <th class="sortable">Updated At <i class="fa fa-sortable fa-sort-up"></i><i class="fa fa-sortable fa-sort-down"></i></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in queryset %}
+        <tr>
+            <td>{{ row.pk }}</td>
+            <td>{{ row.created_at }}</td>
+            <td>{{ row.updated_at }}</td>
+            <td>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
