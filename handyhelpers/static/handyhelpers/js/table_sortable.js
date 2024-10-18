@@ -109,7 +109,3 @@ function readTable(table) {
 function initializeTables() {
     document.querySelectorAll(".sortable-table-wrapper table").forEach(table => readTable(table));
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    initializeTables();
-});

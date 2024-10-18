@@ -332,7 +332,7 @@ class HtmxOptionMultiView(HtmxViewMixin, View):
 class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
     context = {}
     default_display = "table"
-    htmx_template_name = None
+    filter_form = None
     htmx_card_template_name = None
     htmx_card_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_card.htm"
     htmx_list_template_name = None
@@ -341,13 +341,14 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
     htmx_minimal_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_minimal.htm"
     htmx_table_template_name = None
     htmx_table_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_table.htm"
+    htmx_template_name = None
     model = None
     queryset = None
     subtitle = None
     template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/full.html"
     title = None
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, post_data={}, *args, **kwargs):
         page_description = request.GET.get("page_description", None)
         control_list = []
         display = kwargs.get("display", None)
@@ -357,35 +358,37 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
         query_params = request.GET
         template_name = None
 
-        # Convert query parameters to a URL-encoded string without the extra list notation
-        # query_string = "&".join([f"{key}={value}" for key, value in query_params.items()]) if query_params else ""
-        if query_params:
+        if post_data:
+            query_string = ""
+            url = f"""{root_url}?"""
+            for key, value in post_data.items():
+                if value:
+                    url += f'{key}={value}&'
+                    query_string += f'{key}={value}&'
+        elif query_params:
             query_string = query_params.urlencode()
             url = f"{root_url}{display}?{query_string}"
         else:
             query_string = ""
             url = f"{root_url}{display}"
-
+        
         if self.queryset is not None:
             self.queryset._result_cache = None
         if self.is_htmx():
-            if display:
-                if display == "card" and self.htmx_card_wrapper_template_name:
-                    template_name = self.htmx_card_wrapper_template_name
-                    self.context["item_content"] = self.htmx_card_template_name
-                elif display == "list" and self.htmx_list_wrapper_template_name:
-                    template_name = self.htmx_list_wrapper_template_name
-                    self.context["item_content"] = self.htmx_list_template_name
-                elif display == "minimal" and self.htmx_minimal_template_name:
-                    template_name = self.htmx_minimal_wrapper_template_name
-                    self.context["item_content"] = self.htmx_minimal_template_name
-                elif display == "table" and self.htmx_table_wrapper_template_name:
-                    template_name = self.htmx_table_wrapper_template_name
-                    self.context["item_content"] = self.htmx_table_template_name
-                elif self.htmx_template_name:
-                    template_name = self.htmx_template_name
-            else:
-                return HttpResponse("", content_type="text/plain")
+            if display == "card" and self.htmx_card_wrapper_template_name:
+                template_name = self.htmx_card_wrapper_template_name
+                self.context["item_content"] = self.htmx_card_template_name
+            elif display == "list" and self.htmx_list_wrapper_template_name:
+                template_name = self.htmx_list_wrapper_template_name
+                self.context["item_content"] = self.htmx_list_template_name
+            elif display == "minimal" and self.htmx_minimal_template_name:
+                template_name = self.htmx_minimal_wrapper_template_name
+                self.context["item_content"] = self.htmx_minimal_template_name
+            elif display == "table" and self.htmx_table_wrapper_template_name:
+                template_name = self.htmx_table_wrapper_template_name
+                self.context["item_content"] = self.htmx_table_template_name
+            elif self.htmx_template_name:
+                template_name = self.htmx_template_name
         else:
             template_name = self.template_name
 
@@ -425,7 +428,10 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
 
         if self.queryset == None and self.model:
             self.queryset = self.model.objects.all()
-        self.queryset = self.filter_by_query_params()
+        if post_data:
+            self.queryset = self.queryset.filter(**post_data)
+        elif query_params:
+            self.queryset = self.filter_by_query_params()
         self.context["queryset"] = self.queryset
 
         if self.title:
@@ -433,15 +439,27 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
         elif self.model:
             self.context["title"] = self.model._meta.verbose_name_plural.title()
         
-        self.context["page_description"] = page_description
-        self.context["subtitle"] = self.subtitle
         self.context["control_list"] = control_list
         self.context["display"] = display
-        self.context["root_url"] = root_url
-        self.context["query_string"] = query_string
-        self.context["url"] = url
+        self.context["filter_form"] = self.filter_form
         self.context["htmx_template_name"] = template_name
-        return render(request, template_name, self.context)
+        self.context["page_description"] = page_description
+        self.context["query_string"] = query_string
+        self.context["root_url"] = root_url
+        self.context["subtitle"] = self.subtitle
+        self.context["url"] = url
+
+        response = render(request, template_name, self.context)
+        if self.is_htmx():
+            response['X-Initialize-Tables'] = 'initialize-tables'
+        return response
+
+    def post(self, request, *args, **kwargs):
+        """build filter string from form fields and call get method to update queryset"""
+        form = self.filter_form(request.POST)
+        if form.is_valid():
+            post_data = {key: value for key, value in request.POST.dict().items()if value}
+        return self.get(request, post_data, *args, **kwargs)
 
 
 class HtmxItemizedView(HtmxViewMixin, HandyHelperIndexView):
@@ -452,3 +470,36 @@ class HtmxItemizedView(HtmxViewMixin, HandyHelperIndexView):
         if self.is_htmx() and self.htmx_template_name:
             self.template_name = self.htmx_template_name
         return super().get(request, *args, **kwargs)
+
+
+class HtmxFilterModalView(BuildBootstrapModalView):
+    """Render a modal containing a filter form"""
+
+    form = None
+    form_display = "bs5"
+    modal_button_submit = "Filter"
+    modal_title = "Filter"
+    template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/filter_form_modal_swap.htm"
+
+    def get(self, request, *args, **kwargs):
+        if not self.is_htmx():
+            return HttpResponse("Invalid request", status=400)
+        if not self.form:
+            return HttpResponse("Invalid request", status=400)
+
+        list_display = request.GET.get("display", None)
+
+        context = {
+            "modal_title": self.modal_title,
+            "modal_subtitle": self.modal_subtitle,
+            "modal_body": self.modal_body,
+            "modal_size": self.modal_size,
+            "modal_button_close": self.modal_button_close,
+            "modal_button_submit": self.modal_button_submit,
+            "data": self.data,
+            "display": list_display,
+            "extra_data": self.extra_data,
+            "form": self.form,
+            "form_display": self.form_display,
+        }
+        return render(request, self.template_name, context)
