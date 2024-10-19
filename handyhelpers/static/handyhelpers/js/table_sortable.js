@@ -110,6 +110,10 @@ function initializeTables() {
     document.querySelectorAll(".sortable-table-wrapper table").forEach(table => readTable(table));
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('htmx:afterRequest', function(event) {
+    // Access the custom header from the HTMX response
+    var customHeader = event.detail.xhr.getResponseHeader('X-Initialize-Tables');
+    if (customHeader === 'initialize-tables') {
     initializeTables();
+    }
 });

@@ -17,9 +17,18 @@
             </span>
             {% endfor %}
             {% endif %}
+            {% if filter_form %}
+            <a href="#" class="mx-1 text-primary" title="filter data"
+            hx-get="{{ filter_form.modal_url }}?display={{ display }}" 
+            hx-target="#modal_wrapper"
+            data-bs-toggle="modal" 
+            data-bs-target="#modal_wrapper">
+                <i class="fa-solid fa-filter"></i>
+            </a>
+            {% endif %}
             {% if query_string %}
             <span class="mx-1 text-primary">
-                <a href="{{ root_url }}{{ display }}/">
+                <a href="#" hx-get="{{ root_url }}" hx-target="#body_main" hx-push-url="true">
                 <i class="fas fa-undo-alt"></i>
                 </a>
             </span>

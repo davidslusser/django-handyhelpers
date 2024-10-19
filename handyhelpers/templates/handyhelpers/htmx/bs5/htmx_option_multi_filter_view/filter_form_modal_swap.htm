@@ -1,0 +1,48 @@
+<div class="modal-dialog modal-dialog-scrollable {{ modal_size }} ">
+    {% if form %}
+    <form hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'
+          class="modal-content">
+    {% else %}
+    <div class="modal-content">
+    {% endif %}
+        <div class="modal-header">
+            <div class="modal-title" id="generic_modal_label">
+                {% if modal_title %}
+                <span class="h5 text-primary fw-bold">
+                {{ modal_title|safe }}:
+                </span>
+                {% if modal_subtitle %}
+                <span class="h6 text-secondary fst-italic ms-2">
+                    {{ modal_subtitle|safe }}
+                </span>
+                {% endif %}
+                {% endif %}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        {% if form %}
+            {% if form_template %}
+                {% include form_template %}
+            {% else %}
+                {% if form_display == "bs5" %}{{ form.as_bs5 }}{% else %}{{ form.as_p }}{% endif %}
+            {% endif %}
+        {% else %}
+            {% if modal_body %}{{ modal_body|safe }}{% endif %}
+        {% endif %}
+        </div>
+        <div class="modal-footer">
+            {% if modal_button_close %}
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ modal_button_close }}</button>
+            {% endif %}
+            {% if modal_button_submit %}
+            <button hx-post="{{ form.hx_post_url }}{{display}}/" hx-target="#body_main" hx-push-url="true" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ modal_button_submit }}</button>
+            {% endif %}
+        </div>
+    {% if form %}
+    </form>
+    {% else %}
+    </div>
+    {% endif %}
+</div>
