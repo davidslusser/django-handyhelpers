@@ -266,6 +266,13 @@ class HtmxOptionView(HtmxViewMixin, View):
 class HtmxOptionDetailView(HtmxViewMixin, DetailView):
     template_name = None
     htmx_template_name = None
+    initialize_tables = None
+
+    def render_to_response(self, context, **response_kwargs):
+        response = super().render_to_response(context, **response_kwargs)
+        if self.initialize_tables:
+            response['X-Initialize-Tables'] = 'initialize-tables'
+        return response
 
     def get(self, request, *args, **kwargs):
         if self.is_htmx() and self.htmx_template_name:
@@ -490,16 +497,16 @@ class HtmxFilterModalView(BuildBootstrapModalView):
         list_display = request.GET.get("display", None)
 
         context = {
-            "modal_title": self.modal_title,
-            "modal_subtitle": self.modal_subtitle,
-            "modal_body": self.modal_body,
-            "modal_size": self.modal_size,
-            "modal_button_close": self.modal_button_close,
-            "modal_button_submit": self.modal_button_submit,
             "data": self.data,
             "display": list_display,
             "extra_data": self.extra_data,
             "form": self.form,
             "form_display": self.form_display,
+            "modal_body": self.modal_body,
+            "modal_button_close": self.modal_button_close,
+            "modal_button_submit": self.modal_button_submit,
+            "modal_size": self.modal_size,
+            "modal_subtitle": self.modal_subtitle,
+            "modal_title": self.modal_title,
         }
         return render(request, self.template_name, context)
