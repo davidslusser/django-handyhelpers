@@ -8,7 +8,6 @@ from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin, HtmxViewMi
 from handyhelpers.views.gui import HandyHelperIndexView
 
 
-
 class BuildBootstrapModalView(HtmxViewMixin, View):
     """Generic view used to build a Boostrap 5 modal via htmx.
 
@@ -171,8 +170,8 @@ class ModelDetailBootstrapModalView(BuildBootstrapModalView):
 class HtmxPostForm(HtmxViewMixin, View):
 
     form = None
-    template_name = 'handyhelpers/htmx/bs5/form/form_wrapper.htm'
-    
+    template_name = "handyhelpers/htmx/bs5/form/form_wrapper.htm"
+
     def post(self, request, *args, **kwargs):
 
         if not self.is_htmx():
@@ -189,8 +188,7 @@ class HtmxPostForm(HtmxViewMixin, View):
 
 
 class CreateModelModalView(BuildBootstrapModalView):
-    """
-    """
+    """ """
 
     modal_button_submit = "Create"
     modal_title = None
@@ -217,7 +215,11 @@ class CreateModelModalView(BuildBootstrapModalView):
             form = self.form()
 
         context = {
-            "modal_title": self.modal_title if self.modal_title else f"Create {self.form.Meta.model._meta.object_name}",
+            "modal_title": (
+                self.modal_title
+                if self.modal_title
+                else f"Create {self.form.Meta.model._meta.object_name}"
+            ),
             "modal_subtitle": self.modal_subtitle,
             "modal_body": self.modal_body,
             "modal_size": self.modal_size,
@@ -235,7 +237,9 @@ class CreateModelModalView(BuildBootstrapModalView):
         if form.is_valid():
             obj = form.save()
             response = HttpResponse(status=204)
-            response["X-Toast-Message"] = f"""{obj._meta.object_name} '{obj}' created!"""
+            response["X-Toast-Message"] = (
+                f"""{obj._meta.object_name} '{obj}' created!"""
+            )
             del request.session[f"{self.form.__name__}__errors"]
             del request.session[f"{self.form.__name__}__data"]
             return response
@@ -246,7 +250,9 @@ class CreateModelModalView(BuildBootstrapModalView):
             request.session[f"{self.form.__name__}__errors"] = form_error_dict
             request.session[f"{self.form.__name__}__data"] = form.data
             response = HttpResponse(status=400)
-            response["X-Toast-Message"] = f"""<span class="text-danger">Failed to create new {self.form.Meta.model._meta.object_name}</span>"""
+            response["X-Toast-Message"] = (
+                f"""<span class="text-danger">Failed to create new {self.form.Meta.model._meta.object_name}</span>"""
+            )
             return response
 
 
@@ -271,7 +277,7 @@ class HtmxOptionDetailView(HtmxViewMixin, DetailView):
     def render_to_response(self, context, **response_kwargs):
         response = super().render_to_response(context, **response_kwargs)
         if self.initialize_tables:
-            response['X-Initialize-Tables'] = 'initialize-tables'
+            response["X-Initialize-Tables"] = "initialize-tables"
         return response
 
     def get(self, request, *args, **kwargs):
@@ -317,7 +323,7 @@ class HtmxOptionMultiView(HtmxViewMixin, View):
                     template_name = self.htmx_table_wrapper_template_name
                     self.context["table"] = self.htmx_table_template_name
                 elif self.htmx_template_name:
-                    template_name = self.htmx_template_name          
+                    template_name = self.htmx_template_name
             else:
                 return HttpResponse("", content_type="text/plain")
         else:
@@ -331,7 +337,7 @@ class HtmxOptionMultiView(HtmxViewMixin, View):
             self.context["title"] = self.title
         elif self.model:
             self.context["title"] = self.model._meta.verbose_name_plural.title()
-        
+
         self.context["subtitle"] = self.subtitle
         return render(request, template_name, self.context)
 
@@ -341,13 +347,21 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
     default_display = "table"
     filter_form = None
     htmx_card_template_name = None
-    htmx_card_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_card.htm"
+    htmx_card_wrapper_template_name = (
+        "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_card.htm"
+    )
     htmx_list_template_name = None
-    htmx_list_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_list.htm"
+    htmx_list_wrapper_template_name = (
+        "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_list.htm"
+    )
     htmx_minimal_template_name = None
-    htmx_minimal_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_minimal.htm"
+    htmx_minimal_wrapper_template_name = (
+        "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_minimal.htm"
+    )
     htmx_table_template_name = None
-    htmx_table_wrapper_template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_table.htm"
+    htmx_table_wrapper_template_name = (
+        "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/wrapper_table.htm"
+    )
     htmx_template_name = None
     model = None
     queryset = None
@@ -361,7 +375,9 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
         display = kwargs.get("display", None)
         if not display:
             display = self.default_display
-        root_url = reverse(f"{request.resolver_match.app_name}:{request.resolver_match.url_name}").replace("//", "/")
+        root_url = reverse(
+            f"{request.resolver_match.app_name}:{request.resolver_match.url_name}"
+        ).replace("//", "/")
         query_params = request.GET
         template_name = None
 
@@ -370,15 +386,15 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
             url = f"""{root_url}?"""
             for key, value in post_data.items():
                 if value:
-                    url += f'{key}={value}&'
-                    query_string += f'{key}={value}&'
+                    url += f"{key}={value}&"
+                    query_string += f"{key}={value}&"
         elif query_params:
             query_string = query_params.urlencode()
             url = f"{root_url}{display}?{query_string}"
         else:
             query_string = ""
             url = f"{root_url}{display}"
-        
+
         if self.queryset is not None:
             self.queryset._result_cache = None
         if self.is_htmx():
@@ -405,7 +421,11 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
                 {
                     "name": "card",
                     "icon": """<i class="fa-regular fa-square"></i>""",
-                    "url": f"{root_url}card/?{query_string}" if query_string else f"{root_url}card/"
+                    "url": (
+                        f"{root_url}card/?{query_string}"
+                        if query_string
+                        else f"{root_url}card/"
+                    ),
                 }
             )
         if self.htmx_list_template_name:
@@ -413,7 +433,11 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
                 {
                     "name": "list",
                     "icon": """<i class="fa-solid fa-list-ul"></i>""",
-                    "url": f"{root_url}list/?{query_string}" if query_string else f"{root_url}list/"
+                    "url": (
+                        f"{root_url}list/?{query_string}"
+                        if query_string
+                        else f"{root_url}list/"
+                    ),
                 }
             )
         if self.htmx_minimal_template_name:
@@ -421,7 +445,11 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
                 {
                     "name": "minimal",
                     "icon": """<i class="fa-solid fa-compress"></i>""",
-                    "url": f"{root_url}minimal/?{query_string}" if query_string else f"{root_url}minimal/"
+                    "url": (
+                        f"{root_url}minimal/?{query_string}"
+                        if query_string
+                        else f"{root_url}minimal/"
+                    ),
                 }
             )
         if self.htmx_table_template_name:
@@ -429,7 +457,11 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
                 {
                     "name": "table",
                     "icon": """<i class="fa-solid fa-table"></i>""",
-                    "url": f"{root_url}table/?{query_string}" if query_string else f"{root_url}table/"
+                    "url": (
+                        f"{root_url}table/?{query_string}"
+                        if query_string
+                        else f"{root_url}table/"
+                    ),
                 }
             )
 
@@ -440,12 +472,7 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
         elif query_params:
             self.queryset = self.filter_by_query_params()
         self.context["queryset"] = self.queryset
-
-        if self.title:
-            self.context["title"] = self.title
-        elif self.model:
-            self.context["title"] = self.model._meta.verbose_name_plural.title()
-        
+        self.context["title"] = self.title
         self.context["control_list"] = control_list
         self.context["display"] = display
         self.context["filter_form"] = self.filter_form
@@ -458,14 +485,16 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
 
         response = render(request, template_name, self.context)
         if self.is_htmx():
-            response['X-Initialize-Tables'] = 'initialize-tables'
+            response["X-Initialize-Tables"] = "initialize-tables"
         return response
 
     def post(self, request, *args, **kwargs):
         """build filter string from form fields and call get method to update queryset"""
         form = self.filter_form(request.POST)
         if form.is_valid():
-            post_data = {key: value for key, value in request.POST.dict().items()if value}
+            post_data = {
+                key: value for key, value in request.POST.dict().items() if value
+            }
         return self.get(request, post_data, *args, **kwargs)
 
 
@@ -486,7 +515,9 @@ class HtmxFilterModalView(BuildBootstrapModalView):
     form_display = "bs5"
     modal_button_submit = "Filter"
     modal_title = "Filter"
-    template_name = "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/filter_form_modal_swap.htm"
+    template_name = (
+        "handyhelpers/htmx/bs5/htmx_option_multi_filter_view/filter_form_modal_swap.htm"
+    )
 
     def get(self, request, *args, **kwargs):
         if not self.is_htmx():
