@@ -1,5 +1,8 @@
 import calendar
-from datetime import date
+
+# from datetime import date, datetime
+from django.utils.timezone import datetime
+
 import re
 
 from django.shortcuts import render
@@ -9,21 +12,22 @@ from handyhelpers.mixins.view_mixins import HtmxViewMixin
 
 
 class CalendarView(View):
-    """ View to render a monthly calendar and optionally display events.
+    """View to render a monthly calendar and optionally display events.
 
     class parameters:
         template_name           - template used when rendering partial; defaults to: handyhelpers/partials/calendar.htm
         event_model             - django model representing events
         event_model_date_field  - date or datetime field containing event date
         event_detail_url        - url to use to get event details and display in a modal
-        use_htmx                - boolean representing option to use htmx in in today/next month/previous month links 
-    
+        use_htmx                - boolean representing option to use htmx in in today/next month/previous month links
+
     Usage Example:
         class MyEventCalendarView(CalendarView):
             event_model = Event
             event_model_date_field = "date"
-            event_detail_url = "myapp_:get_event_details"   
+            event_detail_url = "myapp_:get_event_details"
     """
+
     title = "Calendar"
     event_model = None
     event_model_date_field = None
@@ -31,7 +35,7 @@ class CalendarView(View):
     template_name = "handyhelpers/partials/calendar.htm"
     use_htmx = True
 
-    def get_next(self, this_year:int, this_month:int) -> tuple:
+    def get_next(self, this_year: int, this_month: int) -> tuple:
         """get the year and month of the next month
 
         Args:
@@ -45,7 +49,7 @@ class CalendarView(View):
             return (this_year + 1), 1
         return this_year, this_month + 1
 
-    def get_previous(self, this_year:int, this_month:int) -> tuple:
+    def get_previous(self, this_year: int, this_month: int) -> tuple:
         """get the year and month of the previous month
 
         Args:
@@ -63,8 +67,8 @@ class CalendarView(View):
         mo = re.search(r"^(/[^/]+/)", request.path)
         if mo:
             calendar_url_root = mo.groups()[0]
-        
-        today = date.today()
+
+        today = datetime.today()
         year = kwargs.get("year", today.year)
         month = kwargs.get("month", today.month)
         if year == 0:
@@ -77,19 +81,24 @@ class CalendarView(View):
         today_url = f"{calendar_url_root}{today.year}/{today.month}"
         prev_month_url = f"{calendar_url_root}{prev_year}/{prev_month}"
         next_month_url = f"{calendar_url_root}{next_year}/{next_month}"
-        
+
         cal_data = calendar.monthcalendar(year, month)
+        cal_data_str = [
+            [str(day) if day != 0 else "" for day in week] for week in cal_data
+        ]
 
         queryset = None
         if self.event_model:
             queryset = self.event_model.objects.filter(
-                **{f"{self.event_model_date_field}__year": year,
-                   f"{self.event_model_date_field}__month": month,
-                   }
-                )
+                **{
+                    f"{self.event_model_date_field}__year": year,
+                    f"{self.event_model_date_field}__month": month,
+                }
+            )
 
         context = {
             "cal_data": cal_data,
+            "cal_data_str": cal_data_str,
             "title": self.title,
             "year": year,
             "month": month,
