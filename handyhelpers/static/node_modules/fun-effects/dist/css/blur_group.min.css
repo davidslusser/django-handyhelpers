@@ -1,0 +1,1 @@
+.blur-group-container{pointer-events:none}.blur-group-container>*{pointer-events:auto;transition:.4s}.blur-group-container:focus-within>*,.blur-group-container:hover>*{opacity:.3;filter:blur(2px)}.blur-group-container:focus-within>:focus,.blur-group-container:hover>:hover{opacity:1;outline:0;filter:blur(0px);transform:scale(1.1)}
