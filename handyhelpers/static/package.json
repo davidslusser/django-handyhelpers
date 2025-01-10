@@ -8,7 +8,7 @@
     "bootstrap-table": "^1.22.1",
     "chart.js": "3.9.1",
     "clipboard": "^2.0.11",
-    "fun-effects": "github:davidslusser/fun-effects#cleanup",
+    "fun-effects": "github:davidslusser/fun-effects",
     "hover.css": "^2.3.2",
     "htmx.org": "1.9.6",
     "jquery": "^3.6.1",
