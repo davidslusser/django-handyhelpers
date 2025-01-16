@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from mixins.serializer_mixins import FlexFieldsMixin
+from handyhelpers.mixins.serializer_mixins import FlexFieldsMixin
 
 
 class FkReadWriteField(serializers.RelatedField):
