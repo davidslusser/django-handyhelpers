@@ -20,16 +20,16 @@ class FlexFieldsMixin:
             omit_param: str = getattr(settings, "HH_OMIT_PARAM", "omit")
             requested_fields = self.query_params.get(fields_param, None)
             omitted_fields = self.query_params.get(omit_param, None)
-        if requested_fields:
-            return {
-                key: value
-                for key, value in fields.items()
-                if key in requested_fields.split(",")
-            }
-        elif omitted_fields:
-            return {
-                key: value
-                for key, value in fields.items()
-                if key not in requested_fields.split(",")
-            }
+            if requested_fields:
+                return {
+                    key: value
+                    for key, value in fields.items()
+                    if key in requested_fields.split(",")
+                }
+            elif omitted_fields:
+                return {
+                    key: value
+                    for key, value in fields.items()
+                    if key not in omitted_fields.split(",")
+                }
         return fields
