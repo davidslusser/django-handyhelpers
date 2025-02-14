@@ -11,7 +11,7 @@ from handyhelpers.views.gui import HandyHelperIndexView
 class BuildBootstrapModalView(HtmxViewMixin, View):
     """Generic view used to build a Boostrap 5 modal via htmx.
 
-    class parameters:
+    Class Parameters:
         template_name       - template used to render modal; defaults to "handyhelpers/htmx/bs5/modal_swap.htm"
         modal_size          - size of the modal; defaults to "modal-md"
         modal_title         - title used in modal header
@@ -541,3 +541,46 @@ class HtmxFilterModalView(BuildBootstrapModalView):
             "modal_title": self.modal_title,
         }
         return render(request, self.template_name, context)
+
+
+class HtmxActionView(HtmxViewMixin):
+    """Perform an action and display a toast showing result message.
+
+    Class Parameters:
+        success_toast - toast to display when action is successful
+        fail_toast    - toast to display when action is unsuccessful
+
+    Methods:
+        action - method containing action code to execute; will be called in post()
+        post   - method to handle HTMX post request
+
+    Usage Example:
+        class TestActionView(HtmxActionView):
+            success_toast = "test action successful!"
+            fail_toast = "test action failed!"
+
+            def action(self):
+                '''my custom action'''
+                try:
+                    print("action successful")
+                    return
+                except Exception:
+                    print("action failed")
+                    return 1
+    """
+
+    success_toast = "success!"
+    fail_toast = "failed!"
+
+    def action(self):
+        """return any non-None value to express failure"""
+        pass
+
+    def post(self, request, *args, **kwargs):
+        """execute code in self.action(), show self.success_toast if None returned, else show self.fail_toast"""
+        response = HttpResponse(status=200)
+        if self.action():
+            response["X-Toast-Message"] = f"""{self.fail_toast}"""
+        else:
+            response["X-Toast-Message"] = f"""{self.success_toast}"""
+        return response
