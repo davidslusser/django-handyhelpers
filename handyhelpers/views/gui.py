@@ -91,7 +91,7 @@ class HandyHelperIndexView(HandyHelperGenericBaseItemizedView):
     htmx_template_name = None
     template_name = "handyhelpers/generic/bs5/generic_index.html"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         context = dict(
             base_template=self.base_template,
             title=self.title,

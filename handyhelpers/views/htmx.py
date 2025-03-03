@@ -11,7 +11,7 @@ from handyhelpers.views.gui import HandyHelperIndexView
 class BuildBootstrapModalView(HtmxViewMixin, View):
     """Generic view used to build a Boostrap 5 modal via htmx.
 
-    class parameters:
+    Class Parameters:
         template_name       - template used to render modal; defaults to "handyhelpers/htmx/bs5/modal_swap.htm"
         modal_size          - size of the modal; defaults to "modal-md"
         modal_title         - title used in modal header
@@ -569,9 +569,6 @@ class HtmxActionView(HtmxViewMixin, View):
                 except Exception:
                     print("action failed")
                     return 1
-
-    Args:
-        HtmxViewMixin (_type_): _description_
     """
 
     success_toast = "success!"
@@ -582,7 +579,7 @@ class HtmxActionView(HtmxViewMixin, View):
         pass
 
     def post(self, request, *args, **kwargs):
-        """execute code in self.action(), show self.success_toast it None returned, else show self.fail_toast"""
+        """execute code in self.action(), show self.success_toast if None returned, else show self.fail_toast"""
         response = HttpResponse(status=204)
         if self.action():
             response["X-Toast-Message"] = f"""{self.fail_toast}"""
