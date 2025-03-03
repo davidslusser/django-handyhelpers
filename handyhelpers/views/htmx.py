@@ -240,8 +240,10 @@ class CreateModelModalView(BuildBootstrapModalView):
             response["X-Toast-Message"] = (
                 f"""{obj._meta.object_name} '{obj}' created!"""
             )
-            del request.session[f"{self.form.__name__}__errors"]
-            del request.session[f"{self.form.__name__}__data"]
+            if request.session.get(f"{self.form.__name__}__errors"):
+                del request.session[f"{self.form.__name__}__errors"]
+            if request.session.get(f"{self.form.__name__}__data"):
+                del request.session[f"{self.form.__name__}__data"]
             return response
         else:
             form_error_dict = {}
@@ -499,8 +501,8 @@ class HtmxOptionMultiFilterView(FilterByQueryParamsMixin, HtmxViewMixin, View):
 
 
 class HtmxItemizedView(HtmxViewMixin, HandyHelperIndexView):
-    template_name = "handyhelpers/generic/bs5/generic_index.html"
-    htmx_template_name = "handyhelpers/htmx/bs5/index.htm"
+    template_name = "handyhelpers/htmx/bs5/full/itemized.html"
+    htmx_template_name = "handyhelpers/htmx/bs5/partial/itemized.htm"
 
     def get(self, request, *args, **kwargs):
         if self.is_htmx() and self.htmx_template_name:
@@ -543,7 +545,7 @@ class HtmxFilterModalView(BuildBootstrapModalView):
         return render(request, self.template_name, context)
 
 
-class HtmxActionView(HtmxViewMixin):
+class HtmxActionView(HtmxViewMixin, View):
     """Perform an action and display a toast showing result message.
 
     Class Parameters:
@@ -578,7 +580,7 @@ class HtmxActionView(HtmxViewMixin):
 
     def post(self, request, *args, **kwargs):
         """execute code in self.action(), show self.success_toast if None returned, else show self.fail_toast"""
-        response = HttpResponse(status=200)
+        response = HttpResponse(status=204)
         if self.action():
             response["X-Toast-Message"] = f"""{self.fail_toast}"""
         else:
