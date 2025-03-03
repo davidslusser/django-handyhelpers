@@ -88,9 +88,10 @@ class HandyHelperIndexView(HandyHelperGenericBaseItemizedView):
         protected_group_name - name of group to show protected_item_list items to
     """
 
+    htmx_template_name = None
     template_name = "handyhelpers/generic/bs5/generic_index.html"
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         context = dict(
             base_template=self.base_template,
             title=self.title,
@@ -100,6 +101,7 @@ class HandyHelperIndexView(HandyHelperGenericBaseItemizedView):
             protected_group_name=self.protected_group_name,
             args=self.args,
             kwargs=self.kwargs,
+            htmx_template_name=self.htmx_template_name,
         )
         return render(request, self.template_name, context)
 
