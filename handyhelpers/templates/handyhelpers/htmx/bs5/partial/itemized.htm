@@ -1,3 +1,4 @@
+{% load handyhelper_tags %}
 <section>
     <header class="m-5 animated fadeIn">
         <div class="headline text-center">
@@ -10,22 +11,12 @@
 
     <div class="zoom-group-flex-container animated fadeIn" style="animation-delay: .25s;" hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'>
         {% for item in item_list %}
-            {% if item.modal %}
-            <a href="#" class="card zoom-card zoom-index-card"
-                hx-get="{{ item.url }}" hx-target="#modal_wrapper" data-bs-toggle="modal" data-bs-target="#modal_wrapper">
-                <div class="icon">{{ item.icon|safe }}</div>
-                <div class="title">{{ item.title }}</div>
-                <div class="description">{{ item.description }}</div>
-            </a>
-            {% else %}
-            <a href="#" class="card zoom-card zoom-index-card"
-                {% if item.method == 'post' %}hx-post{% else %}hx-get{% endif %}="{{ item.url }}"
-                {% if item.method != 'post' %}hx-target="{% if item.target %}{{ item.target }}{% else %}#body_main{% endif %}"{% endif %}>
-                <div class="icon">{{ item.icon|safe }}</div>
-                <div class="title">{{ item.title }}</div>
-                <div class="description">{{ item.description }}</div>
-            </a>
-            {% endif %}
-        {% endfor%}
+            {% include 'handyhelpers/htmx/bs5/partial/itemized_card.htm' %}
+        {% endfor %}
+        {% if request.user|has_group:protected_group_name %}
+            {% for item in protected_item_list %}
+                {% include 'handyhelpers/htmx/bs5/partial/itemized_card.htm' %}
+            {% endfor %}
+        {% endif %}
     </div>
 </section>
