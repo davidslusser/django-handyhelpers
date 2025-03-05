@@ -1,0 +1,22 @@
+<a 
+{% if item.htmx == False %}
+    href="{{ item.url }}"
+{% else %}
+    href="#"          
+    {% if item.modal %}
+        hx-get="{{ item.url }}" hx-target="#modal_wrapper" data-bs-toggle="modal" data-bs-target="#modal_wrapper"
+    {% else %}
+        {% if item.method == 'post' %}
+            hx-post="{{ item.url }}"
+        {% else %}
+            hx-get="{{ item.url }}"
+            hx-target="{% if item.target %}{{ item.target }}{% else %}#body_main{% endif %}"
+            {% if item.push_url %}hx-push-url="true"{% endif %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+class="card zoom-card zoom-index-card">
+    <div class="icon">{{ item.icon|safe }}</div>
+    <div class="title">{{ item.title }}</div>
+    <div class="description">{{ item.description }}</div>
+</a>
