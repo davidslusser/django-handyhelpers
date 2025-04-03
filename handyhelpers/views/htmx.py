@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.forms import ValidationError
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render, reverse
@@ -187,6 +188,23 @@ class HtmxPostForm(HtmxViewMixin, View):
         return render(request, self.template_name, context)
 
 
+class HtmxFormPostSimple(HtmxViewMixin, View):
+
+    form = None
+    success_message: str | None = None
+
+    def post(self, request, *args, **kwargs) -> HttpResponse:
+        if not self.is_htmx():
+            return HttpResponse("Invalid request", status=400)
+        form = self.form(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponse("Message received, thanks!", status=201)
+        else:
+            error_message: ValidationError | str = next(iter(form.errors.values()))[0]
+            return HttpResponse(error_message, status=400)
+
+
 class CreateModelModalView(BuildBootstrapModalView):
     """ """
 
@@ -256,6 +274,24 @@ class CreateModelModalView(BuildBootstrapModalView):
                 f"""<span class="text-danger">Failed to create new {self.form.Meta.model._meta.object_name}</span>"""
             )
             return response
+
+
+class HtmxOnlyView(HtmxViewMixin, View):
+    """return rendered html if htmx request, else return 204 status
+
+    Returns:
+        HttpResponse: rendered html if htmx request, else 204 status
+    """
+
+    htmx_template_name: str | None = None
+    context: dict = {}
+
+    def get(self, request) -> HttpResponse:
+        if self.is_htmx() and self.htmx_template_name:
+            template_name: str | None = self.htmx_template_name
+            return render(request, template_name, self.context)
+        else:
+            return HttpResponse(status=204)
 
 
 class HtmxOptionView(HtmxViewMixin, View):
@@ -586,3 +622,23 @@ class HtmxActionView(HtmxViewMixin, View):
         else:
             response["X-Toast-Message"] = f"""{self.success_toast}"""
         return response
+
+
+class HtmxLoadModalView(HtmxViewMixin, View):
+    """return rendered html if htmx request, else return 204 status
+
+    Returns:
+        HttpResponse: rendered html if htmx request, else 204 status
+    """
+
+    default_modal_template: str = "handyhelpers/htmx/custom/modals/blank.htm"
+    modal_template_map: dict = {}
+
+    def get(self, request, modal_name) -> HttpResponse:
+        if self.is_htmx():
+            if modal_name in self.modal_template_map:
+                return render(request, self.modal_template_map[modal_name])
+            else:
+                return render(request, self.default_modal_template)
+        else:
+            return HttpResponse(status=204)
