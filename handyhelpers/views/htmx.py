@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.forms import ValidationError
 from django.http import HttpResponse
-from django.template import loader
 from django.shortcuts import render, reverse
+from django.template import loader
 from django.utils import timezone
 from django.views.generic import DetailView, View
+
 from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin, HtmxViewMixin
 from handyhelpers.views.gui import HandyHelperIndexView
 
@@ -169,12 +170,10 @@ class ModelDetailBootstrapModalView(BuildBootstrapModalView):
 
 
 class HtmxPostForm(HtmxViewMixin, View):
-
     form = None
     template_name = "handyhelpers/htmx/bs5/form/form_wrapper.htm"
 
     def post(self, request, *args, **kwargs):
-
         if not self.is_htmx():
             return HttpResponse("Invalid request", status=400)
         context = {}
@@ -189,7 +188,6 @@ class HtmxPostForm(HtmxViewMixin, View):
 
 
 class HtmxFormPostSimple(HtmxViewMixin, View):
-
     form = None
     success_message: str | None = None
 
@@ -199,7 +197,11 @@ class HtmxFormPostSimple(HtmxViewMixin, View):
         form = self.form(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponse("Message received, thanks!", status=201)
+            success_message: str = (
+                getattr(self.form, "success_message", None)
+                or "Request received, thanks!"
+            )
+            return HttpResponse(success_message, status=201)
         else:
             error_message: ValidationError | str = next(iter(form.errors.values()))[0]
             return HttpResponse(error_message, status=400)
@@ -640,5 +642,22 @@ class HtmxLoadModalView(HtmxViewMixin, View):
                 return render(request, self.modal_template_map[modal_name])
             else:
                 return render(request, self.default_modal_template)
+        else:
+            return HttpResponse(status=204)
+
+
+class HtmxPartialView(HtmxViewMixin, View):
+    """return rendered html if htmx request, else return 204 status
+
+    Returns:
+        HttpResponse: rendered html if htmx request, else 204 status
+    """
+
+    htmx_template_name: str | None = None
+
+    def get(self, request) -> HttpResponse:
+        if self.is_htmx() and self.htmx_template_name:
+            template_name: str | None = self.htmx_template_name
+            return render(request, template_name)
         else:
             return HttpResponse(status=204)
