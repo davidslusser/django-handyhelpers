@@ -6,20 +6,20 @@ Description:
 
 # django modules
 from django.db import models
-from django.db.utils import IntegrityError
 
 # model managers
 from handyhelpers.managers import HandyHelperModelManager
 
 
 class HandyHelperBaseModel(models.Model):
-    """ abstract model for common fields in models (these fields will appear in all models) """
+    """abstract model for common fields in models (these fields will appear in all models)"""
+
     objects = HandyHelperModelManager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def update(self, **kwargs):
-        """ perform an 'update like' operation on a single model instance """
+        """perform an 'update like' operation on a single model instance"""
         for i in kwargs:
             setattr(self, i, kwargs[i])
         self.save()
@@ -29,16 +29,14 @@ class HandyHelperBaseModel(models.Model):
 
 
 class SingletonModel(models.Model):
-    """ Singleton model to restrict a database table to one row. """
+    """Singleton model to restrict a database table to one row."""
+
     class Meta:
         abstract = True
 
     def save(self, *args, **kwargs):
-        try:
-            self.pk = 1
-            super(SingletonModel, self).save(*args, **kwargs)
-        except IntegrityError:
-            pass
+        self.pk = 1
+        super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         pass

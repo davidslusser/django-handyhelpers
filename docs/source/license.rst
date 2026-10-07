@@ -1,4 +1,5 @@
 LICENSE
 =======
 
-.. include:: ../../LICENSE
+.. literalinclude:: ../../LICENSE
+   :language: text

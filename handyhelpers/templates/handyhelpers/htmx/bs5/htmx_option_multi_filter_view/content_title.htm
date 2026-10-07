@@ -1,4 +1,4 @@
-<div class="container-fluid px-5 py-2 animated fadeIn" style="animation-delay: .1s;">
+<div class="container-fluid px-5 py-2 animate__animated animate__fadeIn" style="animation-delay: .1s;">
     <div class="row">
         <div class="col-10">
             {% if title %}<span class="h2 text-primary fw-bold my-3">{{ title }}: </span>{% endif %}
@@ -19,9 +19,9 @@
             {% endif %}
             {% if filter_form %}
             <a href="#" class="mx-1 text-primary" title="filter data"
-            hx-get="{{ filter_form.modal_url }}?display={{ display }}" 
+            hx-get="{{ filter_form.modal_url }}?display={{ display }}"
             hx-target="#modal_wrapper"
-            data-bs-toggle="modal" 
+            data-bs-toggle="modal"
             data-bs-target="#modal_wrapper">
                 <i class="fa-solid fa-filter"></i>
             </a>
@@ -29,7 +29,7 @@
             {% if query_string %}
             <span class="mx-1 text-primary">
                 <a href="#" hx-get="{{ root_url }}" hx-target="#body_main" hx-push-url="true">
-                <i class="fas fa-undo-alt"></i>
+                <i class="fa-solid fa-rotate-left"></i>
                 </a>
             </span>
             {% endif %}

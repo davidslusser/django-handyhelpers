@@ -12,5 +12,6 @@ Contents
    installation
    features
    internals
+   migration
    version_history
    license

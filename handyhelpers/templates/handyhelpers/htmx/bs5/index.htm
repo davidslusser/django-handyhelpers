@@ -1,15 +1,15 @@
 {% load handyhelper_tags %}
 <section>
-    <header class="m-5 animated fadeIn">
+    <header class="m-5 animate__animated animate__fadeIn">
         <div class="headline text-center">
             <div class="container">
-                <div class="h1 text-primary fw-bold mb-3">{{ title|safe }}</div>
-                <div class="h5 text-secondary">{{ subtitle|safe }}</div>
+                <div class="h1 text-primary fw-bold mb-3">{{ title }}</div>
+                <div class="h5 text-secondary">{{ subtitle }}</div>
             </div>
         </div>
     </header>
 
-    <div class="zoom-group-flex-container animated fadeIn" style="animation-delay: .25s;">
+    <div class="zoom-group-flex-container animate__animated animate__fadeIn" style="animation-delay: .25s;">
 
         <!-- unprotected items -->
         {% for item in item_list %}

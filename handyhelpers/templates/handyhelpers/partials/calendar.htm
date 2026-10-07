@@ -1,4 +1,4 @@
-    
+
     <style>
         /* Add custom styles if needed */
         /* Customize the calendar container */
@@ -32,7 +32,7 @@
         }
         /* Highlight today's date with a different background color */
         .today {
-            background-color: var(--bg-light-subtle) !important; /* Change to your desired background color */
+            background-color: var(--bs-light-bg-subtle) !important; /* Change to your desired background color */
         }
         /* Styling for events */
         .event {
@@ -50,21 +50,21 @@
             cursor: pointer;
           }
     </style>
-    
+
     <div class="container-fluid calendar-container">
         <div class="h2 mt-5 text-primary text-center fw-bold">{{ title }}</div>
         <div class="h4 mb-3 text-secondary text-center">{{ month_name }} {{ year }}</div>
         <div class="text-end nav-links">
-            <a 
+            <a
             {% if use_htmx %}
             hx-get="{{ today_url }}" hx-target="#body_main"
             {% else %}
-            href="{{ today_url }}" 
+            href="{{ today_url }}"
             {% endif %}
             class="me-3" style="text-decoration: none">
                 today
             </a>
-            <a 
+            <a
             {% if use_htmx %}
             hx-get="{{ prev_month_url }}" hx-target="#body_main"
             {% else %}
@@ -73,7 +73,7 @@
             class="me-2" title="previous month">
                 <i class="fa-solid fa-angle-left"></i>
             </a>
-            <a 
+            <a
             {% if use_htmx %}
             hx-get="{{ next_month_url }}" hx-target="#body_main"
             {% else %}
@@ -104,16 +104,16 @@
                             <div class="text-end {% if day == today.day and month == today.month and year == today.year %}fw-bold{% endif %}">{{ day }}</div>
                             {%endif%}
                             {% for event in event_list %}
-                                {% if event.date_time.day == day and event.date_time.month == month and event.date_time.year == year %}   
+                                {% if event.day == day and event.month == month and event.year == year %}
                                     {% if event_detail_url %}
                                 <div class="event hvr-grow d-block cursor-pointer"
                                 hx-get="{% url event_detail_url event.pk %}"
                                 hx-target="#modal_wrapper"
                                 data-bs-toggle="modal"
-                                data-bs-target="#modal_wrapper">{{ event }}
+                                data-bs-target="#modal_wrapper">{{ event.object }}
                                 </div>
                                     {% else %}
-                                    <div class="event">{{ event }}</div>
+                                    <div class="event">{{ event.object }}</div>
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}

@@ -1,14 +1,14 @@
-{% extends base_template|default:"userextensions/userextensions_base.htm" %}
+{% extends base_template|default:"handyhelpers/handyhelpers_base_bs5.htm" %}
 {% load static %}
 
 {% block content %}
-    <div class="container-fluid mb-4 animated fadeIn">
+    <div class="container-fluid mb-4 animate__animated animate__fadeIn">
         <h1><span class="text-primary"><b>{{ title }}: </b></span><span class="text-secondary"><small>{{ subtitle }}</small></span></h1><br/>
     </div><br/>
 
-    <div class="container mb-4 animated fadeIn" style="animation-delay: .25s;">
+    <div class="container mb-4 animate__animated animate__fadeIn" style="animation-delay: .25s;">
         <div class="row">
-            <div class="col-sm-2"><i class="far fa-address-card fa-5x text-primary"></i></div>
+            <div class="col-sm-2"><i class="fa-regular fa-address-card fa-5x text-primary"></i></div>
             <div class="col-sm-10">
 
                 {% if version %}
@@ -67,7 +67,7 @@
                         </div>
                         <div class="col-sm-8">
                             {% for link in links %}
-                            <a href="{{ link.value }}" target="_blank">{{ link.key }}</a><br/>
+                            <a href="{{ link.value }}" target="_blank" rel="noopener noreferrer">{{ link.key }}</a><br/>
                             {% endfor %}
                         </div>
                     </div>

@@ -1,31 +1,3 @@
-
 {% csrf_token %}
-<input type="hidden" name="{{ form_name }}" value="1">
-{% if form.errors %}
-    <div class="alert alert-danger">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        {{ form.errors }}
-    </div>
-{% endif %}
-{% for field in form.visible_fields %}
-    <div class="form-group mx-2 mt-2 mb-3">
-        <div class="col-sm-12 fw-bold text-primary">
-            <span id="id_{{ field.name }}_required" class="text-danger">{% if field.field.required %}*{% endif %}</span>{{ field.label_tag }}
-        </div>
-        <div class="col-sm-12">
-            {% if field.errors %}
-                <div class="alert alert-danger alert-tiny">
-                    {{ field.errors }}
-                </div>
-            {% endif %}
-            <span data-bs-toggle="tooltip" data-bs-title="{{ field.help_text }}" data-placement="right" data-container="body">
-                {{ field }}
-                <div class="valid-feedback" id="id_{{field.name}}_valid"></div>
-                <div class="invalid-feedback" id="id_{{field.name}}_invalid"></div>
-            </span>
-        </div>
-    </div>
-{% endfor %}
-{% for field in form.hidden_fields %}
-    {{ field }}
-{% endfor %}
+{% if form_name %}<input type="hidden" name="{{ form_name }}" value="1">{% endif %}
+{% include 'handyhelpers/htmx/bs5/form/inline_form.htm' %}

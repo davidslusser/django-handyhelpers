@@ -1,4 +1,4 @@
-{% extends base_template|default:"handyhelpers/handyhelpers_base.htm" %}
+{% extends base_template|default:"handyhelpers/handyhelpers_base_bs5.htm" %}
 {% load static %}
 {% load handyhelper_tags %}
 
@@ -9,19 +9,19 @@
 
 {% block content %}
     <!-- Page header -->
-    <section class="animated fadeIn">
+    <section class="animate__animated animate__fadeIn">
         <header class="m-5">
             <div class="headline text-center">
                 <div class="container">
-                    <div class="h1 text-primary fw-bold mb-3">{{ title|safe }}</div>
-                    <div class="h5 text-secondary">{{ subtitle|safe }}</div>
+                    <div class="h1 text-primary fw-bold mb-3">{{ title }}</div>
+                    <div class="h5 text-secondary">{{ subtitle }}</div>
                 </div>
             </div>
         </header>
     </section>
 
     <!-- Page Content -->
-    <section class="animated fadeIn" style="animation-delay: .25s;">
+    <section class="animate__animated animate__fadeIn" style="animation-delay: .25s;">
         <div class="zoom-group-flex-container">
             <!-- unprotected items -->
             {% for item in item_list %}
@@ -44,7 +44,7 @@
                     class="card zoom-card zoom-admin-card">
                     {% else %}
                     <a href="{{ item.url }}" class="card zoom-card zoom-admin-card">
-                    {% endif %}                        
+                    {% endif %}
                         <div class="icon">{{ item.icon|safe }}</div>
                         <div class="title">{{ item.title }}</div>
                     </a>

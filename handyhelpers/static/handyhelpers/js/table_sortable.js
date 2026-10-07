@@ -1,119 +1,53 @@
-function readTable(table) {
-    var sortableTableWrapper = document.querySelector('.sortable-table-wrapper');
-    // Get the value of the data-pagination-size attribute
-    var paginationSize = sortableTableWrapper.getAttribute('data-pagination-size');
-    // Convert the pagination size to an integer
-    const rowsPerPage = parseInt(paginationSize, 10);
-
-    let currentPage = 1;
-    let currentSortColumn = null;
-    let currentSortOrder = true; // true for ascending, false for descending
-    let paginationEnabled = true;
-
-    const tableBody = table.querySelector("tbody");
-    if (!tableBody) return;
-
-    const rows = Array.from(tableBody.querySelectorAll("tr"));
-    const totalRows = rows.length;
-    let sortedRows = rows.slice();
-
-    const renderTable = (data, page = 1, rowsPerPage = rowsPerPage) => {
-        tableBody.innerHTML = "";
-
-        const navElement = table.closest('.sortable-table-wrapper').querySelector(".sortable-table-nav");
-
-        if (paginationEnabled) {
-            const start = (page - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            data.slice(start, end).forEach(row => tableBody.appendChild(row));
-            renderPagination(data.length, page, rowsPerPage, table);
-            if (navElement) navElement.style.display = 'block';
-        } else {
-            data.forEach(row => tableBody.appendChild(row));
-            if (navElement) navElement.style.display = 'none';
+/* Each custom table owns its pagination and sort state. */
+(() => {
+    const initialized = new WeakSet();
+    window.dataValueInt = (a,b) => numericValue(a)-numericValue(b);
+    window.dataValueFloat = window.dataValueInt;
+    function numericValue(html) {
+        const documentValue=new DOMParser().parseFromString(String(html),'text/html');
+        return Number(documentValue.querySelector('[data-value]')?.dataset.value ?? documentValue.body.textContent) || 0;
+    }
+    window.initializeTables = (root=document) => {
+        const tables=[...(root.matches?.('.sortable-table-wrapper table')?[root]:[]),...root.querySelectorAll('.sortable-table-wrapper table')];
+        for (const table of tables) {
+            if (initialized.has(table) || table.matches('[data-toggle="table"]')) continue;
+            const wrapper=table.closest('.sortable-table-wrapper'), body=table.tBodies[0];
+            if (!wrapper || !body) continue;
+            initialized.add(table);
+            let rows=Array.from(body.rows), page=1, enabled=true, sortIndex=-1, ascending=true;
+            const pageSize=Math.max(1,parseInt(wrapper.dataset.paginationSize,10)||12);
+            const nav=wrapper.querySelector('.sortable-table-nav'), pagination=nav?.querySelector('.pagination');
+            const render = () => {
+                const pages=Math.max(1,Math.ceil(rows.length/pageSize)); page=Math.min(page,pages);
+                body.replaceChildren(...(enabled?rows.slice((page-1)*pageSize,page*pageSize):rows));
+                if (!nav || !pagination) return;
+                nav.hidden=!enabled || pages===1; pagination.replaceChildren();
+                for (let number=1;number<=pages;number++) {
+                    const item=document.createElement('li'); item.className='page-item'+(number===page?' active':'');
+                    const button=document.createElement('button'); button.type='button'; button.className='page-link'; button.textContent=number;
+                    if (number===page) button.setAttribute('aria-current','page');
+                    button.onclick=()=>{page=number;render();}; item.append(button); pagination.append(item);
+                }
+            };
+            for (const header of table.querySelectorAll('th.sortable')) {
+                header.tabIndex=0;
+                const sort = () => {
+                    const index=header.cellIndex; ascending=sortIndex===index?!ascending:true; sortIndex=index;
+                    rows.sort((a,b)=>{
+                        const left=a.cells[index]?.dataset.value ?? a.cells[index]?.textContent.trim() ?? '';
+                        const right=b.cells[index]?.dataset.value ?? b.cells[index]?.textContent.trim() ?? '';
+                        const result=left!=='' && right!=='' && Number.isFinite(Number(left)) && Number.isFinite(Number(right))?
+                            Number(left)-Number(right):left.localeCompare(right);
+                        return ascending?result:-result;
+                    });
+                    table.querySelectorAll('th.sortable').forEach(node=>node.removeAttribute('aria-sort'));
+                    header.setAttribute('aria-sort',ascending?'ascending':'descending'); page=1;render();
+                };
+                header.addEventListener('click',sort);
+                header.addEventListener('keydown',event=>{if (['Enter',' '].includes(event.key)) {event.preventDefault();sort();}});
+            }
+            wrapper.querySelector('.pagination-toggle')?.addEventListener('click',()=>{enabled=!enabled;render();});
+            render();
         }
     };
-
-    const renderPagination = (totalRows, page, rowsPerPage, table) => {
-        const totalPages = Math.ceil(totalRows / rowsPerPage);
-        const pagination = table.parentNode.querySelector(".pagination");
-        if (!pagination) return;
-
-        pagination.innerHTML = "";
-
-        for (let i = 1; i <= totalPages; i++) {
-            pagination.innerHTML += `
-                <li class="page-item ${i === page ? 'active' : ''}">
-                    <a class="page-link" href="#">${i}</a>
-                </li>
-            `;
-        }
-
-        pagination.querySelectorAll(".page-link").forEach(link => {
-            link.addEventListener("click", (e) => {
-                e.preventDefault();
-                currentPage = parseInt(e.target.textContent);
-                renderTable(sortedRows, currentPage, rowsPerPage);
-            });
-        });
-    };
-
-    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-
-    const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
-        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
-    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-
-    table.querySelectorAll("th.sortable").forEach(th => th.addEventListener("click", () => {
-        const idx = Array.from(th.parentNode.children).indexOf(th);
-        const asc = !(currentSortColumn === idx && currentSortOrder);  // Toggle sort order
-
-        currentSortColumn = idx;
-        currentSortOrder = asc;
-
-        sortedRows.sort(comparer(idx, asc));
-
-        table.querySelectorAll('th.sortable').forEach(header => {
-            header.classList.remove('asc', 'desc');
-            header.querySelector('.fa-sort-up').classList.remove('sort-active');
-            header.querySelector('.fa-sort-down').classList.remove('sort-active');
-        });
-
-        th.classList.toggle('asc', asc);
-        th.classList.toggle('desc', !asc);
-        if (asc) {
-            th.querySelector('.fa-sort-up').classList.add('sort-active');
-            th.querySelector('.fa-sort-down').classList.remove('sort-active');
-        } else {
-            th.querySelector('.fa-sort-up').classList.remove('sort-active');
-            th.querySelector('.fa-sort-down').classList.add('sort-active');
-        }
-
-        currentPage = 1;  // Reset to the first page after sorting
-        renderTable(sortedRows, currentPage, rowsPerPage);
-    }));
-
-    const paginationToggle = table.parentNode.querySelector(".pagination-toggle");
-    if (paginationToggle) {
-        paginationToggle.addEventListener("click", () => {
-            paginationEnabled = !paginationEnabled;
-            paginationToggle.classList.toggle('disabled', !paginationEnabled);
-            paginationToggle.style.color = paginationEnabled ? 'var(--bs-parimary)' : 'var(--bs-secondary)';
-            renderTable(sortedRows, currentPage, rowsPerPage);
-        });
-    }
-
-    renderTable(sortedRows, currentPage, rowsPerPage);
-}
-
-function initializeTables() {
-    document.querySelectorAll(".sortable-table-wrapper table").forEach(table => readTable(table));
-}
-
-document.addEventListener('htmx:afterRequest', function(event) {
-    // Access the custom header from the HTMX response
-    var customHeader = event.detail.xhr.getResponseHeader('X-Initialize-Tables');
-    if (customHeader === 'initialize-tables') {
-    initializeTables();
-    }
-});
+})();

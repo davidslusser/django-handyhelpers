@@ -1,0 +1,16 @@
+{% extends 'handyhelpers/handyhelpers_with_sidebar.htm' %}
+{% block mainnavbar %}<nav><button id="sidebar-toggle">Sidebar</button><button class="theme-toggle">Theme</button></nav>{% endblock %}
+{% block sidebar %}<aside id="sidebar">Navigation</aside>{% endblock %}
+{% block local_head %}{% include 'handyhelpers/component/bs5/table_components.htm' %}{% include 'handyhelpers/component/clipboard.htm' %}{% endblock %}
+{% block content %}
+<button id="open-modal" hx-get="/browser/modal/" hx-target="#modal_wrapper" data-bs-toggle="modal" data-bs-target="#modal_wrapper">Create item</button>
+<button id="load-partial" hx-get="/browser/partial/" hx-target="#partial">Load partial</button>
+<button id="tooltip" data-bs-toggle="tooltip" title="Tooltip content">Tooltip</button>
+<button id="popover" data-bs-toggle="popover" data-bs-content="Popover content">Popover</button>
+<div class="alert alert-info alert-dismissible" id="alert">Alert<button class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+{% include 'handyhelpers/htmx/bs5/form/form_wrapper.htm' %}
+<div id="partial">{% include 'browser_partial.htm' %}</div>
+<canvas id="example-chart"></canvas>{% include 'handyhelpers/report/chartjs/bar_chart.htm' %}
+<table id="bootstrap-table" data-toggle="table" data-search="true"><thead><tr><th data-field="name" data-sortable="true">Name</th></tr></thead><tbody><tr><td>Alpha</td></tr><tr><td>Beta</td></tr></tbody></table>
+<button class="cpy" data-clipboard-text="Copied">Copy</button>
+{% endblock %}

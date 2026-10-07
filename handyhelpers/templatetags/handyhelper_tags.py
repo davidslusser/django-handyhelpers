@@ -1,256 +1,166 @@
-import re
-import datetime
+"""Presentation filters with explicit handling of empty values and safe output."""
 
-from hurry.filesize import size
+from datetime import datetime
+from urllib.parse import parse_qsl, urlencode
 
 from django import template
-from django.contrib.auth.models import Group
+from django.template.defaultfilters import filesizeformat
+from django.utils import timezone
+from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
 register = template.Library()
 
 
-@register.filter(name='has_group')
+def group_names(user):
+    return (
+        set(user.groups.values_list("name", flat=True))
+        if getattr(user, "is_authenticated", False)
+        else set()
+    )
+
+
+@register.filter
 def has_group(user, group_name):
-    """
-    {% if request.user|has_group:"mygroup" %}
-        <p>User belongs to my group
-    {% else %}
-        <p>User doesn't belong to mygroup</p>
-    {% endif %}
-    """
-    try:
-        group = Group.objects.get(name=group_name)
-        return group in user.groups.all()
-    except:
-        return None
+    return group_name in group_names(user)
 
 
-@register.filter(name='in')
+@register.filter(name="in")
 def inside(value, arg):
     try:
         return value in arg
-    except:
-        return None
+    except TypeError:
+        return False
 
 
 @register.filter
 def add(value, arg):
-    if arg:
-        return value + arg
+    return value + arg
 
 
 @register.filter
 def subtract(value, arg):
-    if arg:
-        return value - arg
+    return value - arg
 
 
 @register.filter
 def index(indexable, i):
-    return indexable[i]
+    try:
+        return indexable[int(i)]
+    except (IndexError, KeyError, TypeError, ValueError):
+        return ""
 
 
-@register.filter()
-def nbsp(value):
-    return mark_safe("&nbsp;".join(value.split(' ')))
+@register.filter(needs_autoescape=True)
+def nbsp(value, autoescape=True):
+    escape = conditional_escape if autoescape else str
+    return mark_safe("&nbsp;".join(escape(str(value)).split(" ")))
 
 
 @register.filter
 def intcomma(value):
-    if value:
-        return "{:,}".format(value)
-    else:
-        return 0
+    return f"{value:,}" if value is not None else ""
 
 
 @register.filter
 def usd(value):
-    if value:
-        return "${0:,.2f}".format(value)
-    else:
-        return 0
+    return f"${value:,.2f}" if value is not None else ""
+
 
 @register.filter
 def or_blank(value):
-    """ return an empty string if value is None """
-    if value:
-        return value
-    else:
-        return ""
+    return "" if value is None else value
 
 
 @register.filter
 def or_zero(value):
-    """ return a zero if value is None """
-    if value:
-        return value
-    else:
-        return 0
+    return 0 if value is None else value
 
 
-@register.filter(name='percentage')
+@register.filter
 def percentage(value):
-    if not value:
+    if value is None:
         return ""
     try:
-        return "{:4.2f}%".format(float(value)*100)
-    except:
+        return f"{float(value) * 100:.2f}%"
+    except (TypeError, ValueError):
         return ""
 
 
-@register.filter(name='title_underscore')
+@register.filter(name="title_underscore")
 def field_name_to_label(value):
-    value = value.replace('_', ' ')
-    return value.title()
+    return str(value).replace("_", " ").title()
 
 
-@register.filter(name='host_ip_address')
+@register.filter(name="host_ip_address")
 def host_ip_address(value):
-    return value.split(':')[0]
+    text = str(value)
+    if text.startswith("["):
+        return text[1 : text.find("]")]
+    return text.rsplit(":", 1)[0] if text.count(":") == 1 else text
 
 
-@register.filter(name='inlist')
+@register.filter
 def inlist(value, value_list):
-    """
-    return True if value is in a 'list' of values
-
-        usage:
-            {% value|inlist:"val1,val2,val3" %}
-
-    Args:
-        value: (str) value to check
-        value_list: (str) comma separated values
-
-    Returns:
-        True if value in value_list, otherwise False
-    """
-    return True if value in value_list else False
+    values = (
+        [item.strip() for item in value_list.split(",")]
+        if isinstance(value_list, str)
+        else value_list
+    )
+    return value in values
 
 
-@register.filter(name='in_any_group')
+@register.filter
 def in_any_group(user, group_list):
-    """
-    return True if user is in at least one group defined in 'list'
-
-        usage:
-            {% if request.user|in_any_group:"admins,operators,users" %}
-
-    Args:
-        user: user object
-        group_list: (str) comma separated values
-
-    Returns:
-        True if user is in at least one group defined in 'group_list' otherwise False
-    """
-    return any(group in [i.name for i in user.groups.all()] for group in group_list.split(','))
+    return bool(group_names(user).intersection(item.strip() for item in group_list.split(",")))
 
 
-@register.filter(name='in_all_group')
+@register.filter
 def in_all_groups(user, group_list):
-    """
-    return True if user is in all groups defined in 'list'
-
-        usage:
-            {% if request.user|in_all_groups:"admins,operators,users" %}
-
-    Args:
-        user: user object
-        group_list: (str) comma separated values
-
-    Returns:
-        True if user is in all groups defined in 'group_list' otherwise False
-    """
-    return set(group_list.split(',')).issubset([i.name for i in user.groups.all()])
+    return {item.strip() for item in group_list.split(",") if item.strip()}.issubset(
+        group_names(user)
+    )
 
 
-@register.filter(name='get_filtered_pagination_link')
+@register.filter
 def get_filtered_pagination_link(page, query_params):
-    """
-    return the paginated link with (filter) query parameters included
-        usage example:
-            <a href="?page={{ page_obj.paginator.num_pages|get_filtered_pagination_link:request.META.QUERY_STRING }}">
-
-    Args:
-        page: page number (probably from paginator)
-        query_params: request query string
-    """
-    query_params = str(query_params)
-    match = re.search('^page=\d+(.*)$', query_params)
-    if match:
-        filter_string = match.groups()[0]
-        if not filter_string:
-            return page
-        return f'{page}{filter_string}'
-    else:
-        return f'{page}&{query_params}'
-    return page
+    params = [
+        (key, value)
+        for key, value in parse_qsl(str(query_params), keep_blank_values=True)
+        if key != "page"
+    ]
+    return urlencode([("page", page), *params])
 
 
-@register.filter(name='get_groups')
+@register.filter
 def get_groups(user):
-    """
-    Args:
-        user: django user object
-
-    Returns:
-        list of group names representing all groups user is a member of
-    """
-    try:
-        return [group.name for group in user.groups.all()]
-    except Exception:
-        return []
+    return sorted(group_names(user))
 
 
-@register.filter(name='in_any')
-def in_any(l1, l2):
-    """
-    checks if there is any intersection of two lists
-    Args:
-        l1: list
-        l2: list
-
-    Returns:
-        True if there is at least one intersection; otherwise False
-    """
-    return True if set(l1).intersection(l2.split(',')) else False
+@register.filter
+def in_any(values, other):
+    return bool(set(values).intersection(other.split(",") if isinstance(other, str) else other))
 
 
-@register.filter(name='next')
+@register.filter(name="next")
 def dj_iter(gen):
-    """
-    return the next value as yielded from a generator
-    Args:
-        gen: generator object
-
-    Returns:
-        value as yielded from generator
-    """
-    try:
-        return next(gen)
-    except StopIteration:
-        return None
+    return next(gen, None)
 
 
-@register.filter(name='byte_size')
+@register.filter
 def byte_size(value):
-    try:
-        return size(value)
-    except:
-        return None
+    return filesizeformat(value)
 
 
-@register.filter(name='to_datetime')
+@register.filter
 def to_datetime(value):
     try:
-        return datetime.datetime.fromtimestamp(value)
-    except:
+        result = datetime.fromtimestamp(float(value), tz=timezone.get_current_timezone())
+        return result
+    except (ValueError, TypeError, OverflowError, OSError):
         return None
 
 
 @register.filter
 def model_label(value):
-    if value:
-        return value._meta.label_lower
-    else:
-        return 0
+    return value._meta.label_lower if value is not None else ""

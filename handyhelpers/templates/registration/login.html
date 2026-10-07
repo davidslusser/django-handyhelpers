@@ -1,9 +1,9 @@
-{% extends BASE_TEMPLATE|default:"handyhelpers/handyhelpers_base.htm" %}
+{% extends base_template|default:"handyhelpers/handyhelpers_base_bs5.htm" %}
 {% load static %}
 
 
 {% block content %}
-    <div class="container animated fadeIn my-5">
+    <div class="container animate__animated animate__fadeIn my-5">
         <div class="h1 text-center text-primary fw-bold mb-3">
             {% if PROJECT_NAME %}
             Welcome to {{ PROJECT_NAME|title }}!
@@ -18,19 +18,19 @@
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <strong>Error: </strong>Your username and password didn't match or invalid username provided. Please try again.
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                      </div>                    
+                      </div>
                 {% endif %}
 
                 {% if next %}
                     {% if user.is_authenticated %}
                         <div class="alert alert-danger">
-                            <button type="button" class="close" data-bs-dismiss="alert">x</button>
+                            <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
                             <p>Your account doesn't have access to this page. To proceed,
                                 please login with an account that has access.</p>
                         </div>
                     {% else %}
                         <div class="alert alert-danger">
-                            <button type="button" class="close" data-bs-dismiss="alert">x</button>
+                            <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
                             <p>Please login to see this page.</p>
                         </div>
                     {% endif %}
@@ -41,15 +41,15 @@
                     <input type="hidden" name="next" value="{{ request.GET.next }}" />
                     <br>
 
-                    <div class="form-group input-group mb-3">
-                        <span class="input-group-text text-primary"><i class="fa fa-user"></i></span>
+                    <div class="mb-3 input-group mb-3">
+                        <span class="input-group-text text-primary"><i class="fa-solid fa-user"></i></span>
                         <input id="id_username" maxlength="254" name="username" type="text" class="form-control" style="border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;" placeholder="User Name" required autofocus>
-                        <label for="inputUser" class="sr-only">User</label>
+                        <label for="inputUser" class="visually-hidden">User</label>
                     </div>
-                    <div class="form-group input-group mb-3">
-                        <span class="input-group-text text-primary"><i class="fa fa-lock"></i></span>
+                    <div class="mb-3 input-group mb-3">
+                        <span class="input-group-text text-primary"><i class="fa-solid fa-lock"></i></span>
                         <input id="id_password" name="password" type="password" class="form-control" style="border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;" placeholder="Password" required>
-                        <label for="inputPassword" class="sr-only">Password</label>
+                        <label for="inputPassword" class="visually-hidden">Password</label>
                     </div>
                     <br>
                     <div class=" text-end">

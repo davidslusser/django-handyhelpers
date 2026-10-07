@@ -1,104 +1,47 @@
-{% load static %}
-
-<!DOCTYPE html>
-
-<html lang="en">
-    {# block for main header content #}
-    {% block mainheader %}
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        {# block to set favicon #}
-        {% block favicon %}{% endblock favicon %}
-
-        {# block for project defined HEAD content #}
-        {% block project_head %}
-        <script type="text/javascript" src="{% static 'node_modules/jquery/dist/jquery.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'node_modules/@popperjs/core/dist/umd/popper.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-
-        <link href="{% static 'node_modules/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
-        <link href="{% static 'node_modules/animate.css/animate.compat.css' %}" rel="stylesheet">
-        <link href="{% static 'node_modules/hover.css/css/hover.css' %}" rel="stylesheet">
-        {% endblock project_head %}
-
-        {# block for project level theme(s) #}
-        {% block project_theme %}
-        <link href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-        {% endblock project_theme %}
-
-        {# block for app defined HEAD content #}
-        {% block app_head %}{% endblock app_head %}
-
-        {# block for page defined HEAD content #}
-        {% block page_head %}{% endblock page_head %}
-
-        {# block for locally defined HEAD content #}
-        {% block local_head %}{% endblock local_head %}
-
-        {# Global Javascript Functions #}
-        <script>
-            {# Django CSRF Functions for AJAX Calls #}
-            function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = jQuery.trim(cookies[i]);
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-            function csrfSafeMethod(method) {
-                {# these HTTP methods do not require CSRF protection #}
-                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-            }
-            var csrftoken = getCookie('csrftoken');
-        </script>
-
-        {# project Javascript Functions #}
-        {% block project_javascript %}{% endblock project_javascript %}
-
-        {# app Javascript Functions #}
-        {% block app_javascript %}{% endblock app_javascript %}
-
-        {# page Javascript Functions #}
-        {% block page_javascript %}{% endblock page_javascript %}
-
-        {# Local Javascript Functions #}
-        {% block local_javascript %}{% endblock local_javascript %}
-
-    </head>
-    {% endblock mainheader %}
-
-    {% block body %}
-    <body class="d-flex flex-column min-vh-100">
-        {# block for navigation bar #}
-        {% block mainnavbar %}{% endblock mainnavbar %}
-
-        <section id='page-container' class="container-fluid flex-grow-1">
-            {# block to display django messages #}
-            {% block messages %}
-                {% include 'handyhelpers/component/bs5/show_messages.htm' %}
-            {% endblock messages %}
-
-            {# block to contain main page content #}
-            {% block content %} Default Content - Local page should overwrite this {% endblock content %}
-            {% block modals %} {% endblock modals %}
-        </section>
-
-        {% block mainfooter %}
-            <footer class="mt-auto mb-4">
-                <div class="text-center">
-                </div>
-            </footer>
-        {% endblock mainfooter%}
-    </body>
-    {% endblock body %}
+{% load static asset_tags %}
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+{% block mainheader %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% if title %}{{ title }}{% elif PROJECT_NAME %}{{ PROJECT_NAME }}{% else %}Django Handyhelpers{% endif %}{% endblock %}</title>
+    {% block favicon %}{% endblock %}
+    {% block project_theme %}{% cdn_asset 'bootstrap_css' %}{% endblock %}
+    {% block project_head %}
+        {% block icon_assets %}{% cdn_asset 'fontawesome' %}{% endblock %}
+        {% block animation_assets %}{% cdn_asset 'animate' %}{% cdn_asset 'hover' %}{% endblock %}
+    {% endblock %}
+    {% block project_head_extra %}{% endblock %}
+    {% block app_head %}{% endblock %}
+    {% block page_head %}{% endblock %}
+    {% block local_head %}{% endblock %}
+</head>
+{% endblock %}
+{% block body %}
+<body class="d-flex flex-column min-vh-100">
+    {% block mainnavbar %}{% endblock %}
+    {% block layout %}
+    <main id="body_main" class="container-fluid flex-grow-1">
+        {% block messages %}{% include 'handyhelpers/component/bs5/show_messages.htm' %}{% endblock %}
+        {% block content %}{% endblock %}
+    </main>
+    {% endblock %}
+    {% block modals %}
+        {% if not disable_modals_in_base %}{% include 'handyhelpers/htmx/bs5/generic_modal.htm' %}{% endif %}
+    {% endblock %}
+    <div class="toast-container position-fixed top-0 end-0 p-3" aria-live="polite" aria-atomic="true"></div>
+    {% block mainfooter %}<footer class="mt-auto mb-4"></footer>{% endblock %}
+    {% block project_javascript %}
+        {% block core_assets %}{% cdn_asset 'jquery' %}{% cdn_asset 'bootstrap_js' %}{% cdn_asset 'htmx' %}{% endblock %}
+        <script src="{% static 'handyhelpers/js/components.js' %}"></script>
+        <script src="{% static 'handyhelpers/js/charts.js' %}"></script>
+        <script src="{% static 'handyhelpers/js/table_sortable.js' %}"></script>
+    {% endblock %}
+    {% block project_javascript_extra %}{% endblock %}
+    {% block app_javascript %}{% endblock %}
+    {% block page_javascript %}{% endblock %}
+    {% block local_javascript %}{% endblock %}
+</body>
+{% endblock %}
 </html>

@@ -1,7 +1,7 @@
 <br>
 <div class="container-fluid">
-    <h4 class="font-weight-bold text-primary">Changes</h4>
-    <table class="table table-condensed table-bordered table-striped">
+    <h4 class="fw-bold text-primary">Changes</h4>
+    <table class="table table-sm table-bordered table-striped">
         <col width="30%">
         <col width="70%">
         <tbody>
@@ -11,13 +11,13 @@
                 <td><b>{{ key }}</b></td>
                 <td class="small">
                     <div class="row">
-                        <div class="col-sm-6 font-weight-bold">From:</div>
-                        <div class="col-sm-6 font-weight-bold">To:</div>
+                        <div class="col-sm-6 fw-bold">From:</div>
+                        <div class="col-sm-6 fw-bold">To:</div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
                             {% if value.0 == "None" %}
-                            <span class="text-warning font-italic">None</span>
+                            <span class="text-warning fst-italic">None</span>
                             {% else %}
                             {{value.0}}
                             {% endif %}</div>
@@ -31,8 +31,8 @@
     </table>
 
     <br/>
-    <h4 class="font-weight-bold text-primary">Metadata</h4>
-    <table class="table table-condensed table-bordered table-striped">
+    <h4 class="fw-bold text-primary">Metadata</h4>
+    <table class="table table-sm table-bordered table-striped">
         <col width="30%">
         <col width="70%">
         <tbody>

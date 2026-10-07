@@ -1,5 +1,9 @@
-from rest_framework import serializers
+from django.core.exceptions import ValidationError as DjangoValidationError
+
 from handyhelpers.mixins.serializer_mixins import FlexFieldsMixin
+from handyhelpers.utils import optional_import
+
+serializers = optional_import("rest_framework.serializers", "api")
 
 
 class FkReadWriteField(serializers.RelatedField):
@@ -24,15 +28,17 @@ class FkReadWriteField(serializers.RelatedField):
 
     def to_internal_value(self, data):
         try:
-            return self.model.objects.get(**{self.lookup_field: data})
+            return self.get_queryset().get(**{self.lookup_field: data})
         except self.model.DoesNotExist:
             raise serializers.ValidationError(
                 f"{self.model._meta.model_name} with {self.lookup_field} '{data}' not found"
             )
         except self.model.MultipleObjectsReturned:
             raise serializers.ValidationError(
-                f"multiple objects returned; lookup_field must be unique"
+                "multiple objects returned; lookup_field must be unique"
             )
+        except (TypeError, ValueError, DjangoValidationError) as error:
+            raise serializers.ValidationError("Invalid related-object lookup value") from error
 
 
 class NoModelFlexSerializer(FlexFieldsMixin, serializers.Serializer):

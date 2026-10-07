@@ -1,2 +1,2 @@
-{% load static %}
-<script src="{% static 'node_modules/chart.js/dist/chart.min.js' %}" type="text/javascript"></script>
+{% load asset_tags %}
+{% cdn_asset 'chart' %}

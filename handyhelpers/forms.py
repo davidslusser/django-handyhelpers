@@ -1,45 +1,43 @@
 from django import forms
 
-from .mixins.form_mixins import SetRequiredMixin, HtmxFormMixin
+from .mixins.form_mixins import HtmxFormMixin, SetRequiredMixin
 
 
 class SetRequiredModelForm(SetRequiredMixin, forms.ModelForm):
-    """
-    A form class to add functionality from the SetRequiredMixin to a ModelForm. This allows for form fields specified
-    in the 'required' parameter to be required on the rendered form. This further allows for form fields specified
-    in the 'not_required' parameter to be not be required on the rendered form. Both the 'required' and 'not_required'
-    parameters should be provided as a list or set when used.
+    """ModelForm with ``Meta.required`` and ``Meta.not_required`` field lists.
 
-        example:
-
-        class MyModelForm(SetRequiredModelForm):
-
-            class Meta:
-                model = MyModel
-                widgets = {
-                    'some_field': forms.TextInput(attrs={'class': 'form-control'}),
-                    'some_other_field': forms.TextInput(attrs={'class': 'form-control'}),
-                }
-                required = ['some_field']
-                not_required = ['some_other_field']
+    Fields in both lists are required. Original Django widgets are preserved.
     """
 
 
 class TimestampFilter(forms.Form):
-    """ Generic Form class to filter by created_at and updated_at timestamps """
-    created_at__gte = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-                                      required=False, label='Created After')
-    created_at__lte = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-                                      required=False, label='Created Before')
-    updated_at__gte = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-                                      required=False, label='Updated After')
-    updated_at__lte = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-                                      required=False, label='Updated Before')
+    """Generic Form class to filter by created_at and updated_at timestamps"""
+
+    created_at__gte = forms.DateField(
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        required=False,
+        label="Created After",
+    )
+    created_at__lte = forms.DateField(
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        required=False,
+        label="Created Before",
+    )
+    updated_at__gte = forms.DateField(
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        required=False,
+        label="Updated After",
+    )
+    updated_at__lte = forms.DateField(
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        required=False,
+        label="Updated Before",
+    )
 
 
 class HtmxModelForm(HtmxFormMixin, forms.ModelForm):
-    """ ModelForm class with the HtmxFormMixin included """
+    """ModelForm class with the HtmxFormMixin included"""
 
 
 class HtmxForm(HtmxFormMixin, forms.Form):
-    """ Form class with the HtmxFormMixin included """
+    """Form class with the HtmxFormMixin included"""

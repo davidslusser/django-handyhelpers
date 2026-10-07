@@ -1,7 +1,8 @@
-include README.md
-include requirements.txt
-recursive-include handyhelpers/management/commands/drf_templates *
-recursive-include handyhelpers/management/commands/admin_templates *
-recursive-include handyhelpers/management/commands/unittest_templates *
-recursive-include handyhelpers/templates *
-recursive-include handyhelpers/static *
+include README.md LICENSE
+include handyhelpers/assets.json
+recursive-include handyhelpers/templates *.htm *.html
+recursive-include handyhelpers/static/handyhelpers *.css *.js
+recursive-include handyhelpers/management/commands/admin_templates *.jinja
+prune tests
+prune handyhelpers_tests
+global-exclude *.py[cod]

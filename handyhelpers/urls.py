@@ -2,10 +2,10 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.urls import path
 from django.utils import timezone
-from handyhelpers.views import action
-from handyhelpers.views import htmx
 
-if "auditlog" in settings.INSTALLED_APPS:
+from handyhelpers.views import action, htmx
+
+if any(app == "auditlog" or app.startswith("auditlog.apps.") for app in settings.INSTALLED_APPS):
     from handyhelpers.views import auditlog
 
 
@@ -36,11 +36,11 @@ urlpatterns = [
     path("about", htmx.AboutProjectModalView.as_view(), name="about"),
 ]
 
-if "auditlog" in settings.INSTALLED_APPS:
+if any(app == "auditlog" or app.startswith("auditlog.apps.") for app in settings.INSTALLED_APPS):
     urlpatterns.extend(
         [
             path(
-                "get_auditlog_entries/<str:model_name>/<str:pk>/",
+                "get_auditlog_entries/<str:app_label>/<str:model_name>/<str:pk>/",
                 auditlog.GetAuditLogEntries.as_view(),
                 name="get_auditlog_entries",
             ),

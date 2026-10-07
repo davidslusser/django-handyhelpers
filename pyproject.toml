@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-handyhelpers"
+dynamic = ["version"]
+description = "Reusable Django views, Bootstrap 5 templates, HTMX components, and utilities"
+readme = "README.md"
+license = "GPL-3.0-only"
+authors = [{name = "David Slusser", email = "dbslusser@gmail.com"}]
+requires-python = ">=3.10"
+dependencies = ["Django>=5.2,<5.3", "python-dateutil>=2.9,<3"]
+classifiers = [
+  "Framework :: Django :: 5.2",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+
+[project.urls]
+Source = "https://github.com/davidslusser/django-handyhelpers"
+Documentation = "https://django-handyhelpers.readthedocs.io/"
+
+[project.optional-dependencies]
+api = ["djangorestframework>=3.16,<4", "django-filter>=25.1,<27"]
+auditlog = ["django-auditlog>=3.2,<4"]
+admin = ["Jinja2>=3.1.6,<4"]
+excel = ["openpyxl>=3.1.5,<4"]
+all = ["django-handyhelpers[api,auditlog,admin,excel]"]
+dev = ["django-handyhelpers[all]", "pytest>=8,<10", "pytest-django>=4.11,<5", "pytest-playwright>=0.7,<1", "ruff>=0.12,<1", "build>=1.2,<2", "twine>=6,<7", "psycopg[binary]>=3.2,<4"]
+docs = ["django-handyhelpers[all]", "Sphinx>=8,<9", "sphinx-rtd-theme>=3,<4"]
+
+[tool.setuptools.dynamic]
+version = {attr = "handyhelpers.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["handyhelpers", "handyhelpers.*"]
+
+[tool.setuptools.package-data]
+handyhelpers = ["assets.json", "templates/**/*.htm", "templates/**/*.html", "static/handyhelpers/**/*.css", "static/handyhelpers/**/*.js", "management/commands/admin_templates/*.jinja"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+pythonpath = ["."]
+testpaths = ["tests"]
+markers = ["browser: browser integration tests requiring Playwright and CDN access"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+extend-exclude = ["build", "dist", "venv"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP"]

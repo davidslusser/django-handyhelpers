@@ -1,47 +1,38 @@
-from django import template
+"""Bootstrap styling layered onto bound Django fields."""
+
+from django import forms, template
 
 register = template.Library()
 
 
 @register.filter
 def get_form_errors(form, field_name):
-    """Get errors on a form field
-
-    Args:
-        form (Form): django form object
-        field_name (str): name of form field
-
-    Returns:
-        str: comma separated list of errors on the form field
-
-    Usage Example:
-        {{ form|get_form_errors:field.name }}
-    """
-    try:
-        error_list = [
-            item for sublist in form.errors.as_data()[field_name] for item in sublist
-        ]
-        return ", ".join(error_list)
-    except Exception:
-        return ""
+    return ", ".join(form.errors.get(field_name, ()))
 
 
 @register.filter
 def get_field_value(form, field_name):
-    """Get the value of a form field
+    return form[field_name].value()
 
-    Args:
-        form (Form): django form object
-        field_name (str): name of form field
 
-    Returns:
-        str: value of the form field
-
-    Usage Example:
-        {{ form|get_field_value:field.name }}
-    """
-
-    try:
-        return form.data.get(field_name)
-    except Exception:
-        return ""
+@register.simple_tag
+def bootstrap_field(field, disabled=False):
+    widget = field.field.widget
+    attrs = {}
+    if not widget.is_hidden:
+        if isinstance(
+            widget, (forms.CheckboxInput, forms.RadioSelect, forms.CheckboxSelectMultiple)
+        ):
+            css = "form-check-input" if isinstance(widget, forms.CheckboxInput) else ""
+        elif isinstance(widget, (forms.Select, forms.SelectMultiple)):
+            css = "form-select"
+        else:
+            css = "form-control"
+        classes = widget.attrs.get("class", "").split()
+        for name in (css, "is-invalid" if field.errors else ""):
+            if name and name not in classes:
+                classes.append(name)
+        attrs["class"] = " ".join(classes)
+    if disabled:
+        attrs["disabled"] = True
+    return field.as_widget(attrs=attrs)

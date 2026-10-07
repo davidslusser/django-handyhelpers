@@ -1,0 +1,54 @@
+{% extends base_template|default:"handyhelpers/handyhelpers_base_bs5.htm" %}
+{% load static %}
+
+{% block content %}
+    <!-- Page header -->
+    <section class="animate__animated animate__fadeIn">
+        <header class="m-5">
+            <div class="headline text-center">
+                <div class="container">
+                    <div class="h1 text-primary fw-bold mb-3">{{ title }}</div>
+                    <div class="h5 text-secondary">{{ subtitle }}</div>
+                </div>
+            </div>
+        </header>
+    </section>
+
+    <!-- Page Content -->
+    <section class="animate__animated animate__fadeIn" style="animation-delay: .25s;">
+        <div class="container mb-3">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="text-primary" style="font-size: 60px; text-align: left; vertical-align: top;">
+                        <i class="fa-solid fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <div class="col-sm-10">
+                    <p>{{ message }}</p>
+                    <table class='table borderless'>
+                        <col width="25%">
+                        <col width="75%">
+                        <tr style="border-bottom: 1px solid whitesmoke;">
+                            <td><span class="text-primary fw-bold">Host:</span></td>
+                            <td>{{ request.META.HTTP_HOST }}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid whitesmoke;">
+                            <td><span class="text-primary fw-bold">Path:</span></td>
+                            <td>{{ request.META.PATH_INFO }}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid whitesmoke;">
+                            <td><span class="text-primary fw-bold">Method:</span></td>
+                            <td>{{ request.META.REQUEST_METHOD }}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid whitesmoke;">
+                            <td><span class="text-primary fw-bold">Referrer:</span></td>
+                            <td>{{ request.META.HTTP_REFERER }}</td>
+                        </tr>
+                    </table>
+                    <br/><p><b><a class="text-primary" href="{% url 'home' %}">Return to the home page</a></b></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

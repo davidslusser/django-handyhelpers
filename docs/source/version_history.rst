@@ -1,21 +1,21 @@
-.. _version_history:
+Release notes
+=============
 
+1.0.0
+-----
 
-Version History
-===============
+* Target Django 5.2 LTS and Python 3.10–3.14; use modern Python packaging and extras.
+* Remove vendored npm packages and Bootstrap 4 templates; use pinned CDN assets.
+* Consolidate list/permission APIs and fix authentication timing and request isolation.
+* Validate filters, preserve Django form widgets/uploads, and repair HTMX modal behavior.
+* Protect audit logs with model permissions and distinguish app/model identifiers.
+* Replace legacy XLS exports with XLSX; protect spreadsheet strings from formulas.
+* Use portable aggregation, timezone-aware calendar periods, and safely serialized charts.
+* Modernize account/admin-generation commands, documentation, and CI verification.
 
-.. csv-table::
-   :header: "Release", "Details"
-   :widths: 20, 100
+See :doc:`migration` for all breaking interfaces and replacements.
 
-   "0.1.24", "adding new template tags"
-   "0.1.5", "adding modal size parameter for modals used in create and filter forms"
-   "0.1.0", "updates to support django 3.2"
-   "0.0.27", "added HandyHelperListPlusFilterView and HandyHelperListPlusCreateAndFilterView"
-   "0.0.26", "updated docstrings for views; added arg/kwargs to views"
-   "0.0.25", "removing djangohelpers path; only using handyhelpers now"
-   "0.0.24", "added zoom and card css"
-   "0.0.23", "adding support for drf-dynamic-fields in INVALID_LOOKUP_SKIP_LIST"
-   "0.0.22", "adding INVALID_LOOKUP_SKIP_LIST parameter via settings variable for InvalidLookupMixin"
-   "0.0.21", "updating jinja templates and output path for drf generation"
-   "0.0.20", "adding related_objects and distinct option to FilterByQueryParamsMixin"
+0.3.42
+------
+
+Previous release with mixed Bootstrap generations and vendored frontend packages.

@@ -1,47 +1,51 @@
-.. _internals:
+API reference
+=============
 
-
-Internals
-=========
-
-The documentation below details some of the internal workings of django-userextensions and its components. This
-documentation is automatically generated from the source code. See the source code in github for full details.
-
-https://github.com/davidslusser/django-handyhelpers
-
-
-GUI Views
+GUI views
 ---------
 .. automodule:: handyhelpers.views.gui
-    :members: HandyHelperGenericBaseView, HandyHelperGenericBaseItemizedView, HandyHelperGenericBaseListView, HandyHelperActionView, HandyHelperAboutView, HandyHelperSingletonView, HandyHelperListView, HandyHelperListPlusCreateView, HandyHelperListPlusFilterView, HandyHelperListPlusCreateAndFilterView
+   :members:
 
+HTMX views
+----------
+.. automodule:: handyhelpers.views.htmx
+   :members:
 
-Export Views
-------------
+Reports, calendars, and exports
+-------------------------------
+.. automodule:: handyhelpers.views.report
+   :members:
+.. automodule:: handyhelpers.views.calendar
+   :members:
 .. automodule:: handyhelpers.views.export
-    :members: CsvExportView, ExcelExportView
+   :members:
 
-
-View Mixins
------------
+Mixins and permissions
+----------------------
 .. automodule:: handyhelpers.mixins.view_mixins
-    :members: FilterByQueryParamsMixin
-
-
-Viewset Mixins
---------------
+   :members:
+.. automodule:: handyhelpers.mixins.form_mixins
+   :members:
+.. automodule:: handyhelpers.mixins.model_mixins
+   :members:
 .. automodule:: handyhelpers.mixins.viewset_mixins
-    :members: InvalidLookupMixin, PaginationControlMixin
-
-
-Permission Mixins
------------------
+   :members:
+.. automodule:: handyhelpers.mixins.serializer_mixins
+   :members:
 .. automodule:: handyhelpers.permissions
-    :members: InAllGroups, InAnyGroup
-
-
-DRF Permission Mixins
----------------------
+   :members:
 .. automodule:: handyhelpers.drf_permissions
-    :members: IsInAllGroups, IsInAnyGroup
+   :members:
 
+Models, forms, and serializers
+------------------------------
+.. automodule:: handyhelpers.models
+   :members:
+.. automodule:: handyhelpers.managers
+   :members:
+.. automodule:: handyhelpers.forms
+   :members:
+.. automodule:: handyhelpers.serializers
+   :members:
+.. automodule:: handyhelpers.querysets
+   :members:

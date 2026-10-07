@@ -1,89 +1,73 @@
-import datetime
+"""CSV and optional XLSX exports."""
+
 import csv
-import xlwt
+from datetime import date, datetime
+from io import BytesIO
+from numbers import Number
+from pathlib import Path
+
 from django.http import HttpResponse
 from django.views.generic import View
+
 from handyhelpers.mixins.view_mixins import FilterByQueryParamsMixin
+from handyhelpers.utils import optional_import
+
+
+def safe_csv_value(value):
+    text = "" if value is None else str(value)
+    if not isinstance(value, Number) and text.lstrip().startswith(
+        ("=", "+", "-", "@", "\t", "\r", "\n")
+    ):
+        text = "'" + text
+    return text
 
 
 class CsvExportView(FilterByQueryParamsMixin, View):
-    """
-    View to dump a queryset to a csv file
-
-    class parameters:
-        queryset - queryset to be rendered on the page
-        filename - filename for the output file created; model name used if not provided
-    """
-    queryset = None
     filename = None
 
-    def get(self, request):
-        try:
-            model = self.queryset.model
-            if not self.filename:
-                self.filename = "{}.csv".format(model._meta.model_name)
-            response = HttpResponse(content_type='text/csv')
-            cd = 'attachment; filename="{0}"'.format(self.filename)
-            response['Content-Disposition'] = cd
-            headers = [field.name for field in model._meta.fields]
-            writer = csv.DictWriter(response, fieldnames=headers)
-            writer.writeheader()
-
-            queryset = self.filter_by_query_params()
-            for row in queryset:
-                writer.writerow({column: str(getattr(row, column)) for column in headers})
-            return response
-        except AttributeError:
-            return HttpResponse(content_type='text/csv')
+    def get(self, request, *args, **kwargs):
+        queryset = self.filter_by_query_params()
+        filename = Path(self.filename or queryset.model._meta.model_name).stem + ".csv"
+        response = HttpResponse(content_type="text/csv; charset=utf-8")
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        fields = [field.name for field in queryset.model._meta.fields]
+        writer = csv.writer(response)
+        writer.writerow(fields)
+        for row in queryset.iterator():
+            writer.writerow([safe_csv_value(getattr(row, name)) for name in fields])
+        return response
 
 
 class ExcelExportView(FilterByQueryParamsMixin, View):
-    """
-    View to dump a queryset to a xls file
+    """Export modern .xlsx files; requires django-handyhelpers[excel]."""
 
-    class parameters:
-        queryset - queryset to be rendered on the page
-        filename - filename for the output file created; model name used if not provided
-    """
-    queryset = None
     filename = None
 
-    def get(self, request):
-        try:
-            model = self.queryset.model
-            if not self.filename:
-                self.filename = "{}.xls".format(model._meta.model_name)
-            response = HttpResponse(content_type='application/ms-excel')
-            response['Content-Disposition'] = 'attachment; filename="{}"'.format(self.filename)
-
-            wb = xlwt.Workbook(encoding='utf-8')
-            ws = wb.add_sheet(model._meta.model_name)
-
-            # Sheet header, first row
-            row_num = 0
-
-            font_style = xlwt.XFStyle()
-            font_style.font.bold = True
-
-            columns = [field.name for field in model._meta.fields]
-
-            for col_num in range(len(columns)):
-                ws.write(row_num, col_num, columns[col_num], font_style)
-
-            # Sheet body, remaining rows
-            font_style = xlwt.XFStyle()
-
-            queryset = self.filter_by_query_params()
-            for row in queryset.values_list():
-                row_num += 1
-                for col_num in range(len(row)):
-                    if type(row[col_num]) == datetime.datetime:
-                        cell_data = str(row[col_num])
-                    else:
-                        cell_data = row[col_num]
-                    ws.write(row_num, col_num, cell_data, font_style)
-            wb.save(response)
-            return response
-
-        except AttributeError:
-            return HttpResponse(content_type='application/ms-excel')
+    def get(self, request, *args, **kwargs):
+        openpyxl = optional_import("openpyxl", "excel")
+        queryset = self.filter_by_query_params()
+        workbook = openpyxl.Workbook(write_only=True)
+        sheet = workbook.create_sheet(queryset.model._meta.model_name[:31])
+        fields = [field.name for field in queryset.model._meta.fields]
+        sheet.append(fields)
+        for row in queryset.values_list(*fields).iterator():
+            cells = []
+            for value in row:
+                if isinstance(value, datetime):
+                    value = value.isoformat()
+                elif value is not None and not isinstance(value, (str, int, float, bool, date)):
+                    value = str(value)
+                cell = openpyxl.cell.WriteOnlyCell(sheet, value=value)
+                if isinstance(value, str):
+                    cell.data_type = "s"
+                cells.append(cell)
+            sheet.append(cells)
+        output = BytesIO()
+        workbook.save(output)
+        response = HttpResponse(
+            output.getvalue(),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        filename = Path(self.filename or queryset.model._meta.model_name).stem + ".xlsx"
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return response

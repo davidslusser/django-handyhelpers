@@ -1,5 +1,5 @@
 <div id="{{ form.hx_target }}">
-    <form enctype="multipart/form-data" 
+    <form enctype="multipart/form-data"
     {% if form.hx_post %}hx-post="{{ form.hx_post }}"{% endif %}
     {% if form.hx_target %}hx-target="#{{ form.hx_target }}"{% endif %}
     {% if form.hx_trigger %}hx-trigger="{{ form.hx_trigger }}"{% endif %}

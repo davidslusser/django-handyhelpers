@@ -1,8 +1,2 @@
-{% load static %}
-
-<script src="{% static 'node_modules/clipboard/dist/clipboard.min.js' %}"></script>
-<script>
-    $( document ).ready(function() {
-        new ClipboardJS('.cpy');
-    });
-</script>
+{% load asset_tags %}
+{% cdn_asset 'clipboard' %}

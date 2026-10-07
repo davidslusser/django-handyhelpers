@@ -1,22 +1,25 @@
-import json
+"""Reusable JSON-wrapped HTML response for conventional AJAX components."""
 
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.views import View
-from django.http import HttpResponse
+
+from handyhelpers.utils import RequestStateMixin
 
 
-class AjaxGetView(View):
-    """ generic view for handling GET requests sent via ajax """
-    template = None
-    data = {}
+class AjaxGetView(RequestStateMixin, View):
+    template_name = None
+    data = None
 
     def get(self, request, *args, **kwargs):
-        try:
-            if not self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return HttpResponse('Invalid request', status=400)    
-            if 'client_response' in self.request.GET:
-                return HttpResponse(json.dumps({'server_response': self.template.render({'data': self.data})}),
-                                    content_type='application/javascript')
-            return HttpResponse('Invalid request inputs', status=400)
-        except Exception:
-            return HttpResponse(json.dumps({'server_response': self.template.render({'data': None})}),
-                                    content_type='application/javascript')
+        if request.headers.get("X-Requested-With") != "XMLHttpRequest":
+            return JsonResponse({"detail": "Invalid request"}, status=400)
+        if "client_response" not in request.GET:
+            return JsonResponse({"detail": "Invalid request inputs"}, status=400)
+        return JsonResponse(
+            {
+                "server_response": render_to_string(
+                    self.template_name, {"data": self.data}, request=request
+                )
+            }
+        )

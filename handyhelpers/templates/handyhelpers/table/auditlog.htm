@@ -1,4 +1,4 @@
-<table class="table table-condensed table-bordered table-striped" data-toggle="table" data-search="true"
+<table class="table table-sm table-bordered table-striped" data-toggle="table" data-search="true"
        data-flat="true" data-pagination="true" data-show-pagination-switch="true" data-show-columns="true"
        data-show-export="true" data-reorderable-columns="true" data-resizable="false" data-export-types="['excel','csv','txt','sql']">
     <thead>
@@ -32,8 +32,8 @@
                     {% for key, value in row.changes_dict.items %}
                 <div class="row ms-1"><b>{{ key }}:</b></div>
                 <div class="row ms-2">
-                    <div class="col-sm-6"><small>{% if value.0 %}{{ value.0 }}{% else %} <span class="font-italic">None</span> {% endif %}</small></div>
-                    <div class="col-sm-6"><small>{% if value.1 %}{{ value.1 }}{% else %} <span class="font-italic">None</span> {% endif %}</small></div>
+                    <div class="col-sm-6"><small>{% if value.0 %}{{ value.0 }}{% else %} <span class="fst-italic">None</span> {% endif %}</small></div>
+                    <div class="col-sm-6"><small>{% if value.1 %}{{ value.1 }}{% else %} <span class="fst-italic">None</span> {% endif %}</small></div>
                 </div>
                     {% endfor %}
                 {% endif %}

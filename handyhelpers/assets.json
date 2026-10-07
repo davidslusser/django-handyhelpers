@@ -1,0 +1,67 @@
+{
+  "bootstrap_css": {
+    "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css",
+    "integrity": "sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB",
+    "kind": "css"
+  },
+  "bootstrap_js": {
+    "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js",
+    "integrity": "sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI",
+    "kind": "js"
+  },
+  "jquery": {
+    "url": "https://cdn.jsdelivr.net/npm/jquery@4.0.0/dist/jquery.min.js",
+    "integrity": "sha384-fgGyf7Mo7DURSOMnOy7ed+dkq5Job205Gnzu6QIg0BOHKaqt4D76Dt8VlDCzcMHV",
+    "kind": "js"
+  },
+  "table_css": {
+    "url": "https://cdn.jsdelivr.net/npm/bootstrap-table@1.27.3/dist/bootstrap-table.min.css",
+    "integrity": "sha384-ITZ/KDfTyAobiSNOWQXtckidYWnjwp8fYQqwl+M6568KJKzh4PDqusbhoyr7wT4D",
+    "kind": "css"
+  },
+  "table_js": {
+    "url": "https://cdn.jsdelivr.net/npm/bootstrap-table@1.27.3/dist/bootstrap-table.min.js",
+    "integrity": "sha384-PCXzD9+BIZBoxHYpm07NqcdbtJylL7UwcCMs2OonBgci8qeEZq7KXZ3obEHwrwZM",
+    "kind": "js"
+  },
+  "table_locale": {
+    "url": "https://cdn.jsdelivr.net/npm/bootstrap-table@1.27.3/dist/locale/bootstrap-table-en-US.min.js",
+    "integrity": "sha384-r3e1+R1EbYNabO+Q+C7qz7PMWvZjzZUJZDfI1kykK7J4bGL/agmESF+E2HOpv5TM",
+    "kind": "js"
+  },
+  "chart": {
+    "url": "https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js",
+    "integrity": "sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ",
+    "kind": "js"
+  },
+  "htmx": {
+    "url": "https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js",
+    "integrity": "sha384-2OatzQy1H+Zd/IIrjr1TcuDGqLXeHhbooAyJY1KdQMKnr4LZ22k31GBLdYKHmVjg",
+    "kind": "js"
+  },
+  "fontawesome": {
+    "url": "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css",
+    "integrity": "sha384-qrALq7+6jBOZIQsNnT6xGkMDru64qD6uTlDra39xrt2SoXl4pO3FX6Roz/RpR/BS",
+    "kind": "css"
+  },
+  "bootstrap_icons": {
+    "url": "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css",
+    "integrity": "sha384-CK2SzKma4jA5H/MXDUU7i1TqZlCFaD4T01vtyDFvPlD97JQyS+IsSh1nI2EFbpyk",
+    "kind": "css"
+  },
+  "animate": {
+    "url": "https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css",
+    "integrity": "sha384-Gu3KVV2H9d+yA4QDpVB7VcOyhJlAVrcXd0thEjr4KznfaFPLe0xQJyonVxONa4ZC",
+    "kind": "css"
+  },
+  "hover": {
+    "url": "https://cdn.jsdelivr.net/npm/hover.css@2.3.2/css/hover-min.css",
+    "integrity": "sha384-qwz/+Tn3z5AMzRwR+8wmMa+uJpiWCujlEQcX+WAXzRkyvRAQPbIvKqhhKV2UBit2",
+    "kind": "css"
+  },
+  "clipboard": {
+    "url": "https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js",
+    "integrity": "sha384-J08i8An/QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q",
+    "kind": "js"
+  }
+}
